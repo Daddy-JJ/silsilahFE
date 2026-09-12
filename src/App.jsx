@@ -447,7 +447,7 @@ export default function App() {
         showNotification(err.message, 'error');
       }
     },
-    [setNodes, setEdges, activeMemberProfile, rfInstance]
+    [setNodes, setEdges, activeMemberProfile, rfInstance, currentTree]
   );
 
   // Handler Manual: Menata ulang posisi pohon secara otomatis (Re-layout)
@@ -499,7 +499,7 @@ export default function App() {
   const handleCreateFirstTreeAndMember = async ({ treeName, ancestor, spouse }) => {
     const treeRes = await api.trees.createTree({
       nama_silsilah: treeName,
-      max_members: 50,
+      max_members: 30,
     });
 
     if (treeRes.success && treeRes.data) {
@@ -706,7 +706,7 @@ export default function App() {
         pendingCount={approvalsList.length}
         user={currentUser}
         onLogout={handleLogout}
-        memberCount={nodes.length}
+        memberCount={membersList.length}
         maxMembers={currentTree?.max_members || 30}
         onOpenLimitModal={openLimitModal}
         onOpenSuperAdmin={() => setIsSuperAdminOpen(true)}
@@ -843,7 +843,7 @@ export default function App() {
 
         {/* Mobile Floating Action Button (FAB) */}
         <MobileQuickFab
-          canAdd={['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) && nodes.length < (currentTree?.max_members || 30)}
+          canAdd={['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) && membersList.length < (currentTree?.max_members || 30)}
           onAddMember={() => {
             setAddModalPrefill({});
             setAddModalMode('default');
@@ -889,7 +889,7 @@ export default function App() {
           setIsEditModalOpen(true);
         }}
         onAddSpouse={(m) => {
-          if (membersList.length >= 50) {
+          if (membersList.length >= (currentTree?.max_members || 30)) {
             openLimitModal('NODE_LIMIT');
             return;
           }
@@ -901,7 +901,7 @@ export default function App() {
           setIsAddModalOpen(true);
         }}
         onAddChild={(m) => {
-          if (membersList.length >= 50) {
+          if (membersList.length >= (currentTree?.max_members || 30)) {
             openLimitModal('NODE_LIMIT');
             return;
           }

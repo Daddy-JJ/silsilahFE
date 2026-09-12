@@ -3,7 +3,7 @@ import { X, AlertCircle } from 'lucide-react';
 
 export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
   const [namaSilsilah, setNamaSilsilah] = useState('');
-  const [maxMembers, setMaxMembers] = useState(50);
+  const [maxMembers, setMaxMembers] = useState(30);
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +22,7 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
     try {
       await onCreateTree({
         nama_silsilah: namaSilsilah.trim(),
-        max_members: Number(maxMembers) || 50,
+        max_members: Number(maxMembers) || 30,
       });
       setNamaSilsilah('');
       onClose();
@@ -88,14 +88,14 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
             <input
               type="number"
               min={1}
-              max={50}
+              max={30}
               value={maxMembers}
               onChange={(e) => setMaxMembers(e.target.value)}
               className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 bg-zinc-100 cursor-not-allowed font-mono text-zinc-700"
               disabled
             />
             <span className="text-[10px] font-mono text-zinc-400 mt-1 block">
-              Hard limit 50 anggota per semesta pohon (SOT Aturan Bisnis #1).
+              Batas 30 anggota keluarga per semesta pohon pada Fase 1.
             </span>
           </div>
 

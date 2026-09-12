@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Shield, HelpCircle, ChevronDown, ChevronUp, Check, AlertTriangle, BookOpen, Layers } from 'lucide-react';
 
 export default function AboutFaqModal({ isOpen, onClose }) {
@@ -13,7 +13,7 @@ export default function AboutFaqModal({ isOpen, onClose }) {
     },
     {
       q: 'Berapa banyak anggota keluarga yang bisa saya masukkan?',
-      a: 'Pada fase saat ini, setiap semesta pohon keluarga dibatasi hingga 50 anggota keluarga untuk menjaga performa render graf tetap mulus dan bebas lag. Anda dapat membuat banyak semesta pohon terpisah (misal: satu untuk silsilah garis Ayah, satu untuk Ibu, dan satu untuk keluarga Mertua).',
+      a: 'Pada fase 1 saat ini, setiap semesta pohon keluarga memiliki kuota hingga 30 anggota keluarga untuk menjaga performa render graf tetap mulus dan bebas lag. Batas kuota yang lebih besar akan tersedia pada fase upgrade berikutnya.',
     },
     {
       q: 'Bagaimana jika kerabat salah mengedit nama atau data leluhur utama?',
