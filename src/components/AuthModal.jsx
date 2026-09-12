@@ -9,9 +9,9 @@ export default function AuthModal({
   initialEmail = '',
 }) {
   const [isRegister, setIsRegister] = useState(initialRegister);
-  const [email, setEmail] = useState(initialEmail || 'admin_demo@silsilah.local');
-  const [password, setPassword] = useState(initialEmail ? '' : 'password123');
-  const [namaLengkap, setNamaLengkap] = useState(initialEmail ? '' : 'Admin Keluarga');
+  const [email, setEmail] = useState(initialEmail || '');
+  const [password, setPassword] = useState('');
+  const [namaLengkap, setNamaLengkap] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,9 +24,11 @@ export default function AuthModal({
       setIsRegister(initialRegister);
       if (initialEmail) {
         setEmail(initialEmail);
-        setPassword('');
-        setNamaLengkap('');
+      } else {
+        setEmail('');
       }
+      setPassword('');
+      setNamaLengkap('');
       setErrorMsg('');
     }
   }, [isOpen, initialRegister, initialEmail]);
@@ -244,7 +246,7 @@ export default function AuthModal({
                   required
                   value={namaLengkap}
                   onChange={(e) => setNamaLengkap(e.target.value)}
-                  placeholder="Nama Anda"
+                  placeholder="Contoh: Budi Santoso"
                   className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                 />
               </div>
@@ -286,39 +288,6 @@ export default function AuthModal({
               <span>{loading ? 'MEMPROSES...' : isRegister ? 'DAFTAR DENGAN EMAIL' : 'MASUK KE AKUN'}</span>
             </button>
           </form>
-
-          {/* Quick Demo Credentials */}
-          {!isRegister && (
-            <div className="pt-3 border-t border-zinc-100 space-y-1.5">
-              <span className="text-[10px] font-mono text-zinc-400 block uppercase tracking-wider">
-                Akun Demo Cepat (1-Klik):
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('admin_demo@silsilah.local');
-                    setPassword('password123');
-                    setErrorMsg('');
-                  }}
-                  className="py-1.5 px-2.5 rounded border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-50 text-[10px] font-mono font-bold text-zinc-800 text-left transition-colors"
-                >
-                  👑 Admin Demo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('kontributor_demo@silsilah.local');
-                    setPassword('password123');
-                    setErrorMsg('');
-                  }}
-                  className="py-1.5 px-2.5 rounded border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-50 text-[10px] font-mono font-bold text-zinc-800 text-left transition-colors"
-                >
-                  ✍️ Kontributor
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
