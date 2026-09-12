@@ -1,0 +1,340 @@
+import React from 'react';
+import {
+  GitBranch,
+  Shield,
+  Layers,
+  Sparkles,
+  ArrowRight,
+  Heart,
+  Users,
+  CheckCircle2,
+  Lock,
+  Download,
+  HelpCircle,
+} from 'lucide-react';
+
+export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
+  return (
+    <div className="w-full h-full min-h-screen overflow-y-auto overflow-x-hidden bg-[#fafafa] text-zinc-900 font-sans flex flex-col selection:bg-[#f7e043] selection:text-black">
+      {/* Top Editorial Ticker */}
+      <div className="h-7 bg-zinc-900 text-zinc-400 border-b border-zinc-800 px-6 flex items-center justify-between text-[10px] font-mono tracking-widest uppercase">
+        <div className="flex items-center gap-2">
+          <span className="text-[#f7e043] font-bold">PUBLIC PREVIEW</span>
+          <span className="text-zinc-600">—</span>
+          <span>PLATFORM KOLABORATIF SILSILAH KELUARGA</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-3 text-zinc-400">
+          <span>SECURE</span>
+          <span>•</span>
+          <span>MULTI-TENANT DAG</span>
+          <span>•</span>
+          <span>v2.0.0</span>
+        </div>
+      </div>
+
+      {/* Navigation Header */}
+      <header className="h-16 bg-white border-b border-zinc-200 px-6 md:px-12 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-sm bg-[#f7e043] text-black font-black font-mono text-sm flex items-center justify-center shadow-xs border border-yellow-400">
+            S
+          </div>
+          <div>
+            <span className="font-black text-zinc-900 text-base leading-none tracking-tight block">
+              Silsilah
+            </span>
+            <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
+              Keluarga Besar
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 sm:gap-4">
+          <button
+            type="button"
+            onClick={onOpenAboutFaq}
+            className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded transition-colors"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-zinc-500" />
+            <span className="hidden sm:inline">Tentang & FAQ</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenAuth(false)}
+            className="text-xs font-mono font-bold uppercase text-zinc-800 hover:text-black px-3 py-1.5 transition-colors"
+          >
+            Masuk
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenAuth(true)}
+            className="px-4 py-2 bg-zinc-900 hover:bg-black text-[#f7e043] font-mono text-xs font-bold uppercase tracking-wider rounded transition-all shadow-xs"
+          >
+            Mulai Gratis
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-1">
+        <section className="px-6 py-16 md:py-24 max-w-5xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-700 text-xs font-mono font-bold tracking-wide">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>PLATFORM SILSILAH KELUARGA MODERN & TERSTRUKTUR</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tight leading-tight max-w-4xl mx-auto uppercase">
+            Dokumentasikan & Rawat Silsilah Keluarga Besar Anda
+          </h1>
+
+          <p className="text-zinc-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
+            Platform visual interaktif dengan tata letak simetris otomatis, kolaborasi aman dua lapis lintas generasi, dan privasi tertutup terenkripsi.
+          </p>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <button
+              type="button"
+              onClick={() => onOpenAuth(true)}
+              className="w-full sm:w-auto px-7 py-3.5 bg-zinc-900 hover:bg-black text-[#f7e043] font-mono text-xs sm:text-sm font-bold uppercase tracking-wider rounded-md transition-all shadow-md flex items-center justify-center gap-2 group"
+            >
+              <span>Mulai Buat Silsilah (Gratis)</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+
+            <button
+              type="button"
+              onClick={onOpenAboutFaq}
+              className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-800 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider rounded-md transition-all shadow-xs"
+            >
+              Pelajari Fitur & Hak Akses
+            </button>
+          </div>
+
+          {/* Interactive Visual Preview Mockup */}
+          <div className="pt-10 max-w-4xl mx-auto">
+            <div className="p-4 sm:p-6 bg-white rounded-xl border border-zinc-200 shadow-xl overflow-hidden relative">
+              <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center justify-between pb-4 border-b border-zinc-100">
+                <span>SIMULASI VISUALISASI KANVAS SILSILAH</span>
+                <span className="hidden sm:inline">ALGORITMA BOTTOM-UP SUBTREE</span>
+              </div>
+
+              {/* Mock Family Diagram: 3 Generasi (Kakek/Nenek -> Anak -> Cucu) */}
+              <div className="pt-6 pb-2 flex flex-col items-center gap-4 sm:gap-5">
+                {/* Generasi 1: Kakek & Nenek (Mbah Wiro) */}
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-3 bg-white border border-zinc-900 rounded-md shadow-xs text-left w-36 sm:w-40">
+                    <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      LELUHUR • L
+                    </span>
+                    <div className="font-bold text-xs text-zinc-900 mt-1 truncate">Mbah Wiro Kakung</div>
+                    <div className="text-[10px] font-mono text-zinc-400">1920 — Solo</div>
+                  </div>
+
+                  <div className="w-7 h-7 rounded-full bg-pink-50 border border-pink-200 flex items-center justify-center text-xs text-pink-500 shadow-2xs">
+                    💍
+                  </div>
+
+                  <div className="p-3 bg-white border border-zinc-900 rounded-md shadow-xs text-left w-36 sm:w-40">
+                    <span className="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      LELUHUR • P
+                    </span>
+                    <div className="font-bold text-xs text-zinc-900 mt-1 truncate">Mbah Wiro Putri</div>
+                    <div className="text-[10px] font-mono text-zinc-400">1923 — Solo</div>
+                  </div>
+                </div>
+
+                {/* Knot Indicator Gen 1 -> Gen 2 */}
+                <div className="flex flex-col items-center">
+                  <div className="w-px h-3 bg-zinc-300" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-900 shadow-xs" />
+                  <div className="w-px h-3 bg-zinc-300" />
+                </div>
+
+                {/* Generasi 2: Anak-anak (Sephia, Bagas, Kenzo) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-2xl">
+                  {/* Anak 1 (Sephia) + Pasangan (Arya) */}
+                  <div className="p-3 bg-white border-2 border-zinc-900 rounded-md shadow-xs text-left relative">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
+                        ANAK SULUNG
+                      </span>
+                      <span className="text-[11px]" title="Menikah">💍</span>
+                    </div>
+                    <div className="font-black text-xs text-zinc-900">Sephia</div>
+                    <div className="text-[11px] font-semibold text-zinc-600 truncate">+ Arya Pratama</div>
+                    <div className="text-[9px] font-mono text-zinc-400 mt-0.5">1950 • Orang Tua Cucu Mbah Wiro</div>
+                  </div>
+
+                  {/* Anak 2: Bagas */}
+                  <div className="p-3 bg-zinc-50 border border-zinc-300 rounded-md text-left">
+                    <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                      ANAK KE-2
+                    </span>
+                    <div className="font-bold text-xs text-zinc-900 mt-1">Bagas</div>
+                    <div className="text-[9px] font-mono text-zinc-400">1953 — Yogyakarta</div>
+                  </div>
+
+                  {/* Anak 3: Kenzo */}
+                  <div className="p-3 bg-zinc-50 border border-zinc-300 rounded-md text-left">
+                    <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-purple-100 text-purple-800">
+                      ANAK BUNGSU
+                    </span>
+                    <div className="font-bold text-xs text-zinc-900 mt-1">Kenzo</div>
+                    <div className="text-[9px] font-mono text-zinc-400">1957 — Jakarta</div>
+                  </div>
+                </div>
+
+                {/* Knot Indicator Gen 2 -> Gen 3 (Cucu-Cucu Mbah Wiro) */}
+                <div className="flex flex-col items-center pt-1">
+                  <div className="w-px h-3 bg-zinc-300" />
+                  <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold text-zinc-600 uppercase bg-zinc-100 px-3 py-0.5 rounded-full border border-zinc-200">
+                    <span>⚡ GENERASI 3: CUCU-CUCU MBAH WIRO (DILAHIRKAN OLEH SEPHIA & ARYA)</span>
+                  </div>
+                  <div className="w-px h-3 bg-zinc-300" />
+                </div>
+
+                {/* Generasi 3: Cucu-cucu Mbah Wiro (Mix 1 Suku Kata, 2 Suku Kata, dan 5 Suku Kata Nama) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-2xl">
+                  {/* Cucu 1: 1 Suku Kata ("El") */}
+                  <div className="p-3 bg-white border border-blue-200 rounded-md text-left shadow-2xs hover:border-blue-400 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-blue-50 text-blue-700">
+                        CUCU MBAH WIRO • 1 SUKU KATA
+                      </span>
+                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                    </div>
+                    <div className="font-black text-sm text-zinc-900 mt-1">El</div>
+                    <div className="text-[9px] font-mono text-zinc-400">Kelahiran 1978 • Jakarta</div>
+                  </div>
+
+                  {/* Cucu 2: 2 Suku Kata / 2 Kata ("Nayla Kirana") */}
+                  <div className="p-3 bg-white border border-emerald-200 rounded-md text-left shadow-2xs hover:border-emerald-400 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700">
+                        CUCU MBAH WIRO • 2 SUKU KATA / 2 KATA
+                      </span>
+                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                    </div>
+                    <div className="font-bold text-xs text-zinc-900 mt-1">Nayla Kirana</div>
+                    <div className="text-[9px] font-mono text-zinc-400">Kelahiran 1982 • Bandung</div>
+                  </div>
+
+                  {/* Cucu 3: 5 Suku Kata / 5 Kata Nama ("Muhammad Al Fatih Daniswara Putra") */}
+                  <div className="p-3 bg-white border border-purple-200 rounded-md text-left shadow-2xs hover:border-purple-400 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-purple-50 text-purple-700">
+                        CUCU MBAH WIRO • 5 KATA NAMA (PANJANG)
+                      </span>
+                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                    </div>
+                    <div className="font-bold text-xs text-zinc-900 mt-1 leading-snug break-words" title="Muhammad Al Fatih Daniswara Putra">
+                      Muhammad Al Fatih Daniswara Putra
+                    </div>
+                    <div className="text-[9px] font-mono text-zinc-400 mt-0.5">Kelahiran 1986 • Surabaya</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3 Core Value Pillars */}
+        <section className="px-6 py-16 bg-white border-y border-zinc-200">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center max-w-xl mx-auto mb-12">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                STANDAR ARSITEKTUR DIGITAL KELUARGA
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight uppercase">
+                Mengapa Memilih Silsilah Keluarga?
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Feature 1 */}
+              <div className="p-6 rounded-lg border border-zinc-200 bg-zinc-50/50 space-y-3">
+                <div className="w-10 h-10 rounded bg-zinc-900 text-[#f7e043] flex items-center justify-center font-bold">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-zinc-900 text-base uppercase font-mono">
+                  1. Tampilan Bersih & Mudah Dipahami
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Setiap generasi dan cabang keluarga langsung menempati posisi yang ideal. Hubungan silsilah dari kakek-nenek hingga anak-cucu dapat dipahami dengan jelas hanya dalam sekali pandang.
+                </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="p-6 rounded-lg border border-zinc-200 bg-zinc-50/50 space-y-3">
+                <div className="w-10 h-10 rounded bg-zinc-900 text-[#f7e043] flex items-center justify-center font-bold">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-zinc-900 text-base uppercase font-mono">
+                  2. Kolaborasi Aman Dua Lapis
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Kerabat dapat mendaftarkan keluarga kecilnya sendiri, namun perubahan data leluhur utama wajib melalui persetujuan Admin Utama (*Handover Proposal*). Data asli keluarga aman terlindungi.
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="p-6 rounded-lg border border-zinc-200 bg-zinc-50/50 space-y-3">
+                <div className="w-10 h-10 rounded bg-zinc-900 text-[#f7e043] flex items-center justify-center font-bold">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-zinc-900 text-base uppercase font-mono">
+                  3. Privasi Tertutup & Ekspor Mandiri
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Silsilah Anda sepenuhnya privat dan hanya bisa dilihat oleh anggota terundang. Kapan pun siap, ekspor silsilah ke format gambar PNG kualitas tinggi (2x) atau dokumen HTML mandiri yang bisa dibuka tanpa internet.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Banner */}
+        <section className="px-6 py-16 bg-zinc-900 text-white text-center">
+          <div className="max-w-3xl mx-auto space-y-5">
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight uppercase">
+              Mulai Susun Warisan Silsilah Keluarga Anda Hari Ini
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-lg mx-auto leading-relaxed">
+              Gratis, tanpa instalasi aplikasi rumit, dan dapat diakses bersama seluruh kerabat langsung dari browser HP maupun laptop.
+            </p>
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => onOpenAuth(true)}
+                className="px-8 py-3.5 bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-xs sm:text-sm font-black uppercase tracking-wider rounded-md transition-all shadow-md"
+              >
+                Daftar & Buat Silsilah Pertama
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="px-6 py-8 bg-zinc-50 border-t border-zinc-200 text-center text-xs text-zinc-500 font-mono">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-zinc-800 uppercase">Silsilah Keluarga</span>
+            <span>•</span>
+            <span>Hak Cipta © 2026</span>
+          </div>
+
+          <div className="flex items-center gap-4 text-[11px]">
+            <button type="button" onClick={onOpenAboutFaq} className="hover:text-zinc-900 underline">
+              Matriks Hak Akses & FAQ
+            </button>
+            <button type="button" onClick={() => onOpenAuth(false)} className="hover:text-zinc-900 underline">
+              Masuk ke Akun
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
