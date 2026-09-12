@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3 } from 'lucide-react';
+import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3, Settings } from 'lucide-react';
 
 export default function Navbar({
   trees = [],
@@ -19,6 +19,7 @@ export default function Navbar({
   maxMembers = 30,
   onOpenLimitModal,
   onOpenSuperAdmin,
+  onOpenUserPanel,
 }) {
   const remainingNodes = Math.max(0, maxMembers - memberCount);
   const percentUsed = Math.min(100, Math.round((memberCount / maxMembers) * 100));
@@ -252,14 +253,28 @@ export default function Navbar({
             </button>
           )}
 
-          {/* User Profile & Logout */}
+          {/* User Profile Control Panel Trigger & Logout */}
           <div className="flex items-center gap-2 pl-2 border-l border-zinc-200">
-            <div
-              className="w-7 h-7 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-800 flex items-center justify-center font-bold text-xs font-mono"
-              title={user?.email}
+            <button
+              type="button"
+              onClick={onOpenUserPanel}
+              className="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1 rounded-md border border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all text-left group"
+              title={`Pusat Kontrol Pengguna (${user?.email || 'Akun'})`}
             >
-              {user?.nama_lengkap?.[0]?.toUpperCase() || 'U'}
-            </div>
+              <div className="w-7 h-7 rounded-sm bg-zinc-900 text-[#f7e043] flex items-center justify-center font-black text-xs font-mono group-hover:scale-105 transition-transform shadow-2xs">
+                {user?.nama_lengkap?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <div className="hidden md:block leading-none">
+                <div className="text-[11px] font-bold text-zinc-800 truncate max-w-[80px]">
+                  {user?.nama_lengkap?.split(' ')[0] || 'User'}
+                </div>
+                <div className="text-[9px] font-mono text-zinc-400 uppercase mt-0.5">
+                  {user?.system_role === 'SUPER_ADMIN' ? 'ADMIN' : currentTree?.role || 'PANEL'}
+                </div>
+              </div>
+              <Settings className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-700 hidden sm:block ml-0.5" />
+            </button>
+
             <button
               type="button"
               onClick={onLogout}

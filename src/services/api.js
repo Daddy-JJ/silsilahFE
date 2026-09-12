@@ -82,6 +82,18 @@ export const api = {
     googleLogin: (credential) =>
       fetchWithAuth('/auth/google', { method: 'POST', body: { credential } }),
     getMe: () => fetchWithAuth('/auth/me'),
+    forgotPassword: (email) =>
+      fetchWithAuth('/auth/forgot-password', { method: 'POST', body: { email } }),
+    resetPassword: ({ email, token, newPassword }) =>
+      fetchWithAuth('/auth/reset-password', {
+        method: 'POST',
+        body: { email, token, newPassword },
+      }),
+    updateProfile: (data) =>
+      fetchWithAuth('/auth/profile', { method: 'PUT', body: data }),
+    changePassword: (data) =>
+      fetchWithAuth('/auth/change-password', { method: 'PUT', body: data }),
+    getMyInvitations: () => fetchWithAuth('/auth/my-invitations'),
   },
   trees: {
     getUserTrees: () => fetchWithAuth('/trees'),

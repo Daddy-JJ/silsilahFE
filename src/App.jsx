@@ -34,6 +34,8 @@ import EditMemberModal from './components/EditMemberModal';
 import PendingApprovalsModal from './components/PendingApprovalsModal';
 import CreateTreeModal from './components/CreateTreeModal';
 import AuthModal from './components/AuthModal';
+import ResetPasswordModal from './components/ResetPasswordModal';
+import UserControlPanelModal from './components/UserControlPanelModal';
 import OnboardingModal from './components/OnboardingModal';
 import UserGuideModal from './components/UserGuideModal';
 import CollaboratorsModal from './components/CollaboratorsModal';
@@ -93,6 +95,9 @@ export default function App() {
   const [isCollaboratorsOpen, setIsCollaboratorsOpen] = useState(false);
   const [isAboutFaqOpen, setIsAboutFaqOpen] = useState(false);
   const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
+  const [isUserPanelOpen, setIsUserPanelOpen] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [resetPasswordData, setResetPasswordData] = useState({ token: '', email: '' });
   const [authInitialRegister, setAuthInitialRegister] = useState(false);
   const [authInitialEmail, setAuthInitialEmail] = useState('');
 
@@ -124,10 +129,20 @@ export default function App() {
     []
   );
 
-  // Deteksi jika pengguna membuka link undangan email (?invite=...&email=...)
+  // Deteksi jika pengguna membuka link reset password (?reset_token=...&email=...) atau undangan (?invite=...&email=...)
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
+      const resetToken = params.get('reset_token');
+      const resetEmail = params.get('email');
+
+      if (resetToken) {
+        setResetPasswordData({ token: resetToken, email: resetEmail || '' });
+        setIsResetPasswordOpen(true);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+
       const inviteToken = params.get('invite');
       const inviteEmail = params.get('email');
       if (inviteToken || inviteEmail) {
@@ -661,6 +676,19 @@ export default function App() {
           initialRegister={authInitialRegister}
           initialEmail={authInitialEmail}
         />
+        <ResetPasswordModal
+          isOpen={isResetPasswordOpen}
+          onClose={() => setIsResetPasswordOpen(false)}
+          token={resetPasswordData.token}
+          email={resetPasswordData.email}
+          onResetSuccess={(email) => {
+            setIsResetPasswordOpen(false);
+            setAuthInitialEmail(email);
+            setAuthInitialRegister(false);
+            setIsAuthOpen(true);
+            showNotification('Kata sandi berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.');
+          }}
+        />
         <AboutFaqModal
           isOpen={isAboutFaqOpen}
           onClose={() => setIsAboutFaqOpen(false)}
@@ -710,6 +738,7 @@ export default function App() {
         maxMembers={currentTree?.max_members || 30}
         onOpenLimitModal={openLimitModal}
         onOpenSuperAdmin={() => setIsSuperAdminOpen(true)}
+        onOpenUserPanel={() => setIsUserPanelOpen(true)}
       />
 
       {/* Area Canvas Interaktif React Flow */}
@@ -1003,6 +1032,37 @@ export default function App() {
       <SuperAdminModal
         isOpen={isSuperAdminOpen}
         onClose={() => setIsSuperAdminOpen(false)}
+      />
+
+      <UserControlPanelModal
+        isOpen={isUserPanelOpen}
+        onClose={() => setIsUserPanelOpen(false)}
+        user={currentUser}
+        trees={trees}
+        currentTree={currentTree}
+        onSelectTree={(tree) => {
+          setCurrentTree(tree);
+          loadTreeData(tree.id);
+        }}
+        onUserUpdated={(updatedUser) => {
+          setCurrentUser(updatedUser);
+          showNotification('Profil akun berhasil diperbarui!');
+        }}
+        onLogout={handleLogout}
+      />
+
+      <ResetPasswordModal
+        isOpen={isResetPasswordOpen}
+        onClose={() => setIsResetPasswordOpen(false)}
+        token={resetPasswordData.token}
+        email={resetPasswordData.email}
+        onResetSuccess={(email) => {
+          setIsResetPasswordOpen(false);
+          setAuthInitialEmail(email);
+          setAuthInitialRegister(false);
+          setIsAuthOpen(true);
+          showNotification('Kata sandi berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.');
+        }}
       />
 
       {/* Pop-up Batasan Fitur Fase Awal (Under Development) */}
