@@ -28,15 +28,26 @@ async function fetchWithAuth(endpoint, options = {}) {
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
   } catch (networkError) {
+    console.error('[API Network Error]', networkError);
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     throw new Error(
-      'Koneksi gagal: Tidak dapat menghubungi server backend. Pastikan server backend pada port 5000 aktif.'
+      isLocalhost
+        ? 'Koneksi gagal: Tidak dapat menghubungi server backend lokal. Pastikan server backend pada port 5000 aktif.'
+        : 'Koneksi gagal: Tidak dapat menghubungi server backend cloud hosting. Pastikan status aplikasi Node.js di cPanel sedang AKTIF (Running).'
     );
   }
 
-  // Periksa apakah Vite proxy mengembalikan 502/504 Bad Gateway (backend offline)
+  // Periksa apakah proxy / gateway mengembalikan 502/504 Bad Gateway (backend offline)
   if (response.status === 502 || response.status === 504) {
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     throw new Error(
-      'Server backend (Port 5000) belum dijalankan. Silakan jalankan perintah "npm run dev" di dalam folder silsilah-backend.'
+      isLocalhost
+        ? 'Server backend (Port 5000) belum dijalankan. Silakan jalankan perintah "npm run dev" di dalam folder silsilah-backend.'
+        : 'Server backend di cloud hosting sedang tidak merespon (502/504 Bad Gateway). Silakan periksa status Node.js di cPanel.'
     );
   }
 
