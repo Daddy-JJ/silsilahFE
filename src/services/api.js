@@ -94,6 +94,10 @@ export const api = {
       fetchWithAuth(`/trees/${treeId}/collaborators`),
     addCollaborator: (treeId, data) =>
       fetchWithAuth(`/trees/${treeId}/collaborators`, { method: 'POST', body: data }),
+    resendInvitation: (treeId, invitationId) =>
+      fetchWithAuth(`/trees/${treeId}/invitations/${invitationId}/resend`, { method: 'POST' }),
+    revokeInvitation: (treeId, invitationId) =>
+      fetchWithAuth(`/trees/${treeId}/invitations/${invitationId}`, { method: 'DELETE' }),
   },
   members: {
     getCanvas: (treeId) => fetchWithAuth(`/trees/${treeId}/canvas`),

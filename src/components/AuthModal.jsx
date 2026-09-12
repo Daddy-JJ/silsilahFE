@@ -1,24 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2, X } from 'lucide-react';
 
-export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialRegister = false }) {
+export default function AuthModal({
+  isOpen,
+  onClose,
+  onLoginSuccess,
+  initialRegister = false,
+  initialEmail = '',
+}) {
   const [isRegister, setIsRegister] = useState(initialRegister);
-  const [email, setEmail] = useState('admin_demo@silsilah.local');
-  const [password, setPassword] = useState('password123');
-  const [namaLengkap, setNamaLengkap] = useState('Admin Keluarga');
+  const [email, setEmail] = useState(initialEmail || 'admin_demo@silsilah.local');
+  const [password, setPassword] = useState(initialEmail ? '' : 'password123');
+  const [namaLengkap, setNamaLengkap] = useState(initialEmail ? '' : 'Admin Keluarga');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
   const googleBtnRef = useRef(null);
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  // Sinkronkan tab Masuk vs Daftar saat modal dibuka dari Landing Page
+  // Sinkronkan tab Masuk vs Daftar saat modal dibuka dari Landing Page / Link Undangan
   useEffect(() => {
     if (isOpen) {
       setIsRegister(initialRegister);
+      if (initialEmail) {
+        setEmail(initialEmail);
+        setPassword('');
+        setNamaLengkap('');
+      }
       setErrorMsg('');
     }
-  }, [isOpen, initialRegister]);
+  }, [isOpen, initialRegister, initialEmail]);
 
   // Inisialisasi Google Identity Services Button
   useEffect(() => {
@@ -160,6 +171,15 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, initialRegi
         </div>
 
         <div className="p-6 space-y-4">
+          {initialEmail && (
+            <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded text-xs flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span className="leading-relaxed">
+                Anda diundang ke semesta silsilah keluarga! Silakan lengkapi pendaftaran akun untuk otomatis bergabung.
+              </span>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded text-xs flex items-start gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />

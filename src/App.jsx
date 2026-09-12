@@ -94,6 +94,7 @@ export default function App() {
   const [isAboutFaqOpen, setIsAboutFaqOpen] = useState(false);
   const [isSuperAdminOpen, setIsSuperAdminOpen] = useState(false);
   const [authInitialRegister, setAuthInitialRegister] = useState(false);
+  const [authInitialEmail, setAuthInitialEmail] = useState('');
 
   // Profile Drawer State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -122,6 +123,22 @@ export default function App() {
     }),
     []
   );
+
+  // Deteksi jika pengguna membuka link undangan email (?invite=...&email=...)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const inviteToken = params.get('invite');
+      const inviteEmail = params.get('email');
+      if (inviteToken || inviteEmail) {
+        if (inviteEmail) setAuthInitialEmail(inviteEmail);
+        setAuthInitialRegister(true);
+        setIsAuthOpen(true);
+      }
+    } catch {
+      // Abaikan jika parsing gagal
+    }
+  }, []);
 
   // 1. Cek sesi otentikasi awal (Jangan auto-buka modal agar landing page bersih)
   useEffect(() => {
@@ -642,6 +659,7 @@ export default function App() {
           onClose={() => setIsAuthOpen(false)}
           onLoginSuccess={handleLoginSuccess}
           initialRegister={authInitialRegister}
+          initialEmail={authInitialEmail}
         />
         <AboutFaqModal
           isOpen={isAboutFaqOpen}
@@ -912,6 +930,7 @@ export default function App() {
         onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={handleLoginSuccess}
         initialRegister={authInitialRegister}
+        initialEmail={authInitialEmail}
       />
 
       <OnboardingModal

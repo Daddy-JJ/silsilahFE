@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { X, Users, UserPlus, Shield, CheckCircle2, AlertCircle, Mail, Crown } from 'lucide-react';
+import {
+  X,
+  Users,
+  UserPlus,
+  Shield,
+  CheckCircle2,
+  AlertCircle,
+  Mail,
+  Crown,
+  Clock,
+  RotateCw,
+  Trash2,
+  Send,
+} from 'lucide-react';
 import { api } from '../services/api';
 
 export default function CollaboratorsModal({
@@ -10,10 +23,12 @@ export default function CollaboratorsModal({
   onOpenLimitModal,
 }) {
   const [collaborators, setCollaborators] = useState([]);
+  const [pendingInvitations, setPendingInvitations] = useState([]);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('KONTRIBUTOR');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [actionLoading, setActionLoading] = useState({});
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -32,7 +47,13 @@ export default function CollaboratorsModal({
     try {
       const res = await api.trees.getCollaborators(currentTree.id);
       if (res.success && res.data) {
-        setCollaborators(res.data);
+        if (Array.isArray(res.data)) {
+          setCollaborators(res.data);
+          setPendingInvitations([]);
+        } else {
+          setCollaborators(res.data.members || []);
+          setPendingInvitations(res.data.pendingInvitations || []);
+        }
       }
     } catch (err) {
       console.error('Gagal mengambil daftar kolaborator:', err);
@@ -47,7 +68,8 @@ export default function CollaboratorsModal({
   const invitedCollaborators = collaborators.filter(
     (c) => c.role !== 'ADMIN_UTAMA' || c.user_id !== currentTree.created_by_user_id
   );
-  const isLimitReached = invitedCollaborators.length >= 1;
+  const totalOccupiedSlots = invitedCollaborators.length + pendingInvitations.length;
+  const isLimitReached = totalOccupiedSlots >= 1;
 
   const handleInvite = async (e) => {
     e.preventDefault();
@@ -72,7 +94,9 @@ export default function CollaboratorsModal({
       });
 
       if (res.success) {
-        setSuccessMsg(`Berhasil mengundang "${email.trim()}" sebagai ${role}!`);
+        setSuccessMsg(
+          res.message || `Berhasil mengundang "${email.trim()}" sebagai ${role}!`
+        );
         setEmail('');
         await loadCollaborators();
         if (onCollaboratorAdded) onCollaboratorAdded();
@@ -87,6 +111,47 @@ export default function CollaboratorsModal({
       setLoading(false);
     }
   };
+
+  const handleResend = async (invitationId, recipientEmail) => {
+    setActionLoading((prev) => ({ ...prev, [invitationId]: 'resend' }));
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const res = await api.trees.resendInvitation(currentTree.id, invitationId);
+      setSuccessMsg(res.message || `Email undangan ke ${recipientEmail} berhasil dikirim ulang!`);
+    } catch (err) {
+      setErrorMsg(err.message || 'Gagal mengirim ulang email undangan.');
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [invitationId]: null }));
+    }
+  };
+
+  const handleRevoke = async (invitationId, recipientEmail) => {
+    if (
+      !window.confirm(
+        `Batalkan undangan untuk "${recipientEmail}"? Kuota kolaborator semesta ini akan tersedia kembali.`
+      )
+    ) {
+      return;
+    }
+
+    setActionLoading((prev) => ({ ...prev, [invitationId]: 'revoke' }));
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      const res = await api.trees.revokeInvitation(currentTree.id, invitationId);
+      setSuccessMsg(res.message || `Undangan ke ${recipientEmail} berhasil dibatalkan.`);
+      await loadCollaborators();
+      if (onCollaboratorAdded) onCollaboratorAdded();
+    } catch (err) {
+      setErrorMsg(err.message || 'Gagal membatalkan undangan.');
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [invitationId]: null }));
+    }
+  };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
@@ -118,20 +183,20 @@ export default function CollaboratorsModal({
         {/* Content Body */}
         <div className="p-6 overflow-y-auto flex-1 space-y-5">
           {errorMsg && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded text-xs flex items-start gap-2">
+            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded text-xs flex items-start gap-2 animate-in fade-in duration-150">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{errorMsg}</span>
+              <span className="leading-relaxed">{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded text-xs flex items-start gap-2">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded text-xs flex items-start gap-2 animate-in fade-in duration-150">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{successMsg}</span>
+              <span className="leading-relaxed">{successMsg}</span>
             </div>
           )}
 
-          {/* Form Undang Kolaborator (Hanya Admin Utama) */}
+          {/* Form / Notice Undang Kolaborator (Hanya Admin Utama) */}
           {isAdminUtama ? (
             isLimitReached ? (
               <div className="p-4 rounded-lg bg-zinc-50 border border-zinc-200 flex flex-col gap-3">
@@ -141,7 +206,7 @@ export default function CollaboratorsModal({
                     <span>Undang Kerabat ke Pohon Ini</span>
                   </div>
                   <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                    1/1 Kuota Terpakai
+                    {totalOccupiedSlots}/1 Kuota Terpakai
                   </span>
                 </div>
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-900 flex items-start gap-2">
@@ -149,7 +214,8 @@ export default function CollaboratorsModal({
                   <div>
                     <div className="font-bold">Batas Kolaborator Fase 1 Telah Tercapai</div>
                     <p className="text-[11px] text-amber-800/90 mt-0.5 leading-relaxed">
-                      Pada fase awal ini, setiap semesta dapat menambahkan maksimal 1 kolaborator. Fitur multi-kolaborator tim keluarga besar tanpa batas akan segera hadir pada fase berikutnya.
+                      Pada fase awal ini, setiap semesta dapat mengundang maksimal 1 kolaborator aktif atau pending.
+                      Anda dapat membatalkan undangan tertunda di bawah untuk mengganti alamat email penerima.
                     </p>
                   </div>
                 </div>
@@ -164,105 +230,197 @@ export default function CollaboratorsModal({
               </div>
             ) : (
               <form onSubmit={handleInvite} className="p-4 rounded-lg bg-zinc-50 border border-zinc-200 space-y-3">
-                <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-900">
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span>Undang Kerabat ke Pohon Ini</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-900">
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Undang Kerabat ke Pohon Ini</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-zinc-200 text-zinc-700">
+                    {totalOccupiedSlots}/1 Kuota Terpakai
+                  </span>
                 </div>
 
-              <div>
-                <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 mb-1">
-                  Email Akun Kerabat <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <Mail className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="kerabat@email.com"
-                    className="w-full text-xs pl-9 pr-3 py-2 border border-zinc-300 rounded outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 mb-1">
-                  Peran Otoritas (Role)
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <label
-                    className={`p-2 rounded border cursor-pointer transition-all flex flex-col gap-0.5 ${
-                      role === 'KONTRIBUTOR'
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="collabRole"
-                      value="KONTRIBUTOR"
-                      checked={role === 'KONTRIBUTOR'}
-                      onChange={() => setRole('KONTRIBUTOR')}
-                      className="sr-only"
-                    />
-                    <span className="text-xs font-mono font-bold uppercase flex items-center gap-1">
-                      ✍️ Kontributor
-                    </span>
-                    <span className={`text-[10px] leading-snug ${role === 'KONTRIBUTOR' ? 'text-zinc-300' : 'text-zinc-500'}`}>
-                      Bisa tambah anak & ajukan usulan revisi.
-                    </span>
+                <div>
+                  <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                    Email Akun Kerabat <span className="text-rose-500">*</span>
                   </label>
-
-                  <label
-                    className={`p-2 rounded border cursor-pointer transition-all flex flex-col gap-0.5 ${
-                      role === 'VIEWER'
-                        ? 'border-zinc-900 bg-zinc-900 text-white'
-                        : 'border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700'
-                    }`}
-                  >
+                  <div className="relative">
+                    <Mail className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
-                      type="radio"
-                      name="collabRole"
-                      value="VIEWER"
-                      checked={role === 'VIEWER'}
-                      onChange={() => setRole('VIEWER')}
-                      className="sr-only"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="kerabat@email.com"
+                      className="w-full text-xs pl-9 pr-3 py-2 border border-zinc-300 rounded outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
                     />
-                    <span className="text-xs font-mono font-bold uppercase flex items-center gap-1">
-                      👀 Viewer
-                    </span>
-                    <span className={`text-[10px] leading-snug ${role === 'VIEWER' ? 'text-zinc-300' : 'text-zinc-500'}`}>
-                      Hanya melihat kanvas & ekspor dokumen.
-                    </span>
-                  </label>
+                  </div>
                 </div>
-              </div>
 
-              <div className="pt-1 flex items-center justify-between">
-                <span className="text-[10px] text-zinc-400 font-mono">
-                  * Kerabat harus sudah terdaftar di sistem.
-                </span>
-                <button
-                  type="submit"
-                  disabled={loading || !email.trim()}
-                  className="px-4 py-2 bg-zinc-900 hover:bg-black disabled:bg-zinc-300 text-[#f7e043] rounded text-xs font-mono font-bold uppercase tracking-wider transition-colors shadow-xs"
-                >
-                  {loading ? 'Mengundang...' : 'Kirim Undangan'}
-                </button>
-              </div>
-            </form>
-          )) : (
+                <div>
+                  <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                    Peran Otoritas (Role)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label
+                      className={`p-2 rounded border cursor-pointer transition-all flex flex-col gap-0.5 ${
+                        role === 'KONTRIBUTOR'
+                          ? 'border-zinc-900 bg-zinc-900 text-white'
+                          : 'border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="collabRole"
+                        value="KONTRIBUTOR"
+                        checked={role === 'KONTRIBUTOR'}
+                        onChange={() => setRole('KONTRIBUTOR')}
+                        className="sr-only"
+                      />
+                      <span className="text-xs font-mono font-bold uppercase flex items-center gap-1">
+                        ✍️ Kontributor
+                      </span>
+                      <span className={`text-[10px] leading-snug ${role === 'KONTRIBUTOR' ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                        Bisa tambah anak & ajukan usulan revisi.
+                      </span>
+                    </label>
+
+                    <label
+                      className={`p-2 rounded border cursor-pointer transition-all flex flex-col gap-0.5 ${
+                        role === 'VIEWER'
+                          ? 'border-zinc-900 bg-zinc-900 text-white'
+                          : 'border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="collabRole"
+                        value="VIEWER"
+                        checked={role === 'VIEWER'}
+                        onChange={() => setRole('VIEWER')}
+                        className="sr-only"
+                      />
+                      <span className="text-xs font-mono font-bold uppercase flex items-center gap-1">
+                        👀 Viewer
+                      </span>
+                      <span className={`text-[10px] leading-snug ${role === 'VIEWER' ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                        Hanya melihat kanvas & ekspor dokumen.
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <span className="text-[10px] text-zinc-500 font-mono leading-tight">
+                    * Kerabat yang belum mendaftar akan menerima email undangan resmi dan langsung otomatis tergabung ke semesta ini setelah membuat akun.
+                  </span>
+                  <button
+                    type="submit"
+                    disabled={loading || !email.trim()}
+                    className="shrink-0 px-4 py-2 bg-zinc-900 hover:bg-black disabled:bg-zinc-300 text-[#f7e043] rounded text-xs font-mono font-bold uppercase tracking-wider transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Send className="w-3 h-3" />
+                    <span>{loading ? 'Mengundang...' : 'Kirim Undangan'}</span>
+                  </button>
+                </div>
+              </form>
+            )
+          ) : (
             <div className="p-3 bg-zinc-50 border border-zinc-200 rounded text-xs text-zinc-500">
               Hanya <strong>ADMIN_UTAMA</strong> yang dapat mengundang atau mengelola kolaborator pada semesta pohon ini.
             </div>
           )}
 
-          {/* Daftar Kolaborator Saat Ini */}
+          {/* Undangan Tertunda (Menunggu Pendaftaran Kerabat) */}
+          {pendingInvitations.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
+                  <span>Undangan Terkirim ({pendingInvitations.length})</span>
+                </h4>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-bold uppercase">
+                  Menunggu Pendaftaran
+                </span>
+              </div>
+
+              <div className="divide-y divide-amber-100 border border-amber-200 rounded-md overflow-hidden bg-amber-50/30">
+                {pendingInvitations.map((inv) => {
+                  const isResending = actionLoading[inv.id] === 'resend';
+                  const isRevoking = actionLoading[inv.id] === 'revoke';
+
+                  return (
+                    <div
+                      key={inv.id}
+                      className="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-white"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-300 text-amber-800 font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                          <Mail className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-bold text-zinc-900 truncate flex items-center gap-1.5">
+                            <span>{inv.email}</span>
+                            <span
+                              className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded border uppercase ${
+                                inv.role === 'KONTRIBUTOR'
+                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                  : 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                              }`}
+                            >
+                              {inv.role}
+                            </span>
+                          </div>
+                          <div className="text-[10px] font-mono text-zinc-400">
+                            Dikirim:{' '}
+                            {inv.created_at
+                              ? new Date(inv.created_at).toLocaleDateString('id-ID', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric',
+                                })
+                              : '-'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {isAdminUtama && (
+                        <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                          <button
+                            type="button"
+                            disabled={isResending || isRevoking}
+                            onClick={() => handleResend(inv.id, inv.email)}
+                            className="px-2.5 py-1 text-[11px] font-mono font-bold rounded border border-zinc-300 bg-white hover:bg-zinc-100 text-zinc-700 transition-colors flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                            title="Kirim ulang email undangan"
+                          >
+                            <RotateCw className={`w-3 h-3 ${isResending ? 'animate-spin' : ''}`} />
+                            <span>{isResending ? 'Mengirim...' : 'Kirim Ulang'}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={isResending || isRevoking}
+                            onClick={() => handleRevoke(inv.id, inv.email)}
+                            className="px-2.5 py-1 text-[11px] font-mono font-bold rounded border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 transition-colors flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                            title="Batalkan undangan ini"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            <span>{isRevoking ? 'Batal...' : 'Batalkan'}</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Daftar Anggota Semesta Saat Ini */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h4 className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
-                Anggota Semesta ({collaborators.length})
+                Anggota Aktif ({collaborators.length})
               </h4>
               {fetching && <span className="text-[10px] font-mono text-zinc-400">Memuat...</span>}
             </div>
@@ -316,7 +474,7 @@ export default function CollaboratorsModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono font-bold uppercase text-zinc-600 hover:bg-zinc-200 rounded transition-colors"
+            className="px-4 py-2 text-xs font-mono font-bold uppercase text-zinc-600 hover:bg-zinc-200 rounded transition-colors cursor-pointer"
           >
             Tutup
           </button>
