@@ -1,5 +1,6 @@
 import React from 'react';
 import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3, Settings } from 'lucide-react';
+import logoApp from '../assets/logo-nexus.svg';
 
 export default function Navbar({
   trees = [],
@@ -52,11 +53,13 @@ export default function Navbar({
       <div className="h-16 px-6 flex items-center justify-between gap-4">
         {/* Left: Brand Emblem & Multi-Universe Dropdown */}
         <div className="flex items-center gap-4">
-          {/* Yellow Geometric Emblem (Inspired by yellow square 'H' badge) */}
+          {/* Brand Logo Nexus Emblem */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-sm bg-[#f7e043] text-black font-black font-mono text-sm flex items-center justify-center shadow-xs border border-yellow-400">
-              S
-            </div>
+            <img
+              src={logoApp}
+              alt="Logo Silsilah"
+              className="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-md shadow-2xs"
+            />
             <div className="hidden sm:block">
               <h1 className="font-black text-zinc-900 text-base leading-none tracking-tight">
                 Silsilah

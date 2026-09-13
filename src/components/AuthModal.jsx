@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2, X, ArrowLeft, Mail } from 'lucide-react';
 import { api } from '../services/api';
+import logoApp from '../assets/logo-nexus.svg';
 
 export default function AuthModal({
   isOpen,
@@ -184,9 +185,11 @@ export default function AuthModal({
             </div>
           ) : (
             <div>
-              <div className="w-10 h-10 mx-auto rounded-xs bg-[#f7e043] text-black border border-yellow-400 font-mono font-black text-base flex items-center justify-center shadow-xs mb-3">
-                S
-              </div>
+              <img
+                src={logoApp}
+                alt="Logo Silsilah"
+                className="w-12 h-12 mx-auto object-contain rounded-lg shadow-xs mb-3"
+              />
               <h2 className="text-lg font-black text-zinc-900 tracking-tight uppercase">
                 Silsilah Keluarga
               </h2>

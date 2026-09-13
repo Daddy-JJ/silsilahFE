@@ -12,6 +12,7 @@ import {
   Download,
   HelpCircle,
 } from 'lucide-react';
+import logoApp from '../assets/logo-nexus.svg';
 
 export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
   return (
@@ -35,9 +36,11 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
       {/* Navigation Header */}
       <header className="h-16 bg-white border-b border-zinc-200 px-6 md:px-12 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-sm bg-[#f7e043] text-black font-black font-mono text-sm flex items-center justify-center shadow-xs border border-yellow-400">
-            S
-          </div>
+          <img
+            src={logoApp}
+            alt="Logo Silsilah"
+            className="w-10 h-10 object-contain rounded-md shadow-2xs"
+          />
           <div>
             <span className="font-black text-zinc-900 text-base leading-none tracking-tight block">
               Silsilah

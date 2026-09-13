@@ -49,6 +49,7 @@ import KnotNode from './components/KnotNode';
 import { NODE_WIDTH, NODE_HEIGHT } from './utils/layout';
 
 import { Layers, Download } from 'lucide-react';
+import logoApp from './assets/logo-nexus.svg';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -802,9 +803,11 @@ export default function App() {
         {/* State Kosong */}
         {nodes.length === 0 ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-5 select-none">
-            <div className="w-12 h-12 rounded-xs bg-[#f7e043] border border-yellow-400 text-black flex items-center justify-center font-mono font-black text-xl mb-3 shadow-sm">
-              S
-            </div>
+            <img
+              src={logoApp}
+              alt="Logo Silsilah"
+              className="w-16 h-16 object-contain rounded-xl mb-3 shadow-sm"
+            />
             <h2 className="text-base font-black uppercase tracking-wider text-zinc-900 mb-1">
               {currentTree ? currentTree.nama_silsilah : 'Belum Ada Semesta Terpilih'}
             </h2>
