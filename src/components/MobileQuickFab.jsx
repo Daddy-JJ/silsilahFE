@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, X, Layers, CheckSquare, BookOpen, UserPlus } from 'lucide-react';
+import { Plus, X, Layers, CheckSquare, BookOpen, UserPlus, Users, HelpCircle } from 'lucide-react';
 
 export default function MobileQuickFab({
   onAddMember,
   onRelayout,
   onOpenApprovals,
   onOpenGuide,
+  onOpenCollaborators,
+  onOpenAboutFaq,
   pendingCount = 0,
   canAdd = true,
 }) {
@@ -30,6 +32,40 @@ export default function MobileQuickFab({
               <BookOpen className="w-3.5 h-3.5 text-zinc-700" />
             </div>
           </button>
+
+          {/* Action: About & FAQ */}
+          {onOpenAboutFaq && (
+            <button
+              type="button"
+              onClick={() => {
+                setExpanded(false);
+                onOpenAboutFaq();
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-zinc-300 text-zinc-800 text-xs font-mono font-bold uppercase shadow-md active:scale-95 transition-all"
+            >
+              <span>About & FAQ</span>
+              <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center">
+                <HelpCircle className="w-3.5 h-3.5 text-zinc-700" />
+              </div>
+            </button>
+          )}
+
+          {/* Action: Kolaborator */}
+          {onOpenCollaborators && (
+            <button
+              type="button"
+              onClick={() => {
+                setExpanded(false);
+                onOpenCollaborators();
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-zinc-300 text-zinc-800 text-xs font-mono font-bold uppercase shadow-md active:scale-95 transition-all"
+            >
+              <span>Kolaborator</span>
+              <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center">
+                <Users className="w-3.5 h-3.5 text-zinc-700" />
+              </div>
+            </button>
+          )}
 
           {/* Action: Atur Layout Otomatis */}
           <button

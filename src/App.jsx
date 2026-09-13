@@ -884,6 +884,8 @@ export default function App() {
           onRelayout={handleRelayout}
           onOpenApprovals={() => setIsApprovalsOpen(true)}
           onOpenGuide={() => setIsGuideOpen(true)}
+          onOpenCollaborators={() => setIsCollaboratorsOpen(true)}
+          onOpenAboutFaq={() => setIsAboutFaqOpen(true)}
           pendingCount={approvalsList.length}
         />
       </main>

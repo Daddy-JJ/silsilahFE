@@ -28,21 +28,21 @@ export default function Navbar({
   return (
     <header className="bg-white border-b border-zinc-200 select-none z-20 shrink-0">
       {/* Top Editorial Ticker */}
-      <div className="h-7 border-b border-zinc-100 px-6 flex items-center justify-between text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 font-semibold">SILSILAH KELUARGA</span>
-          <span className="text-zinc-300">—</span>
-          <span className="font-medium text-zinc-700">RAWAT SILSILAH BERSAMA</span>
+      <div className="h-7 border-b border-zinc-100 px-3 sm:px-6 flex items-center justify-between text-[11px] font-mono tracking-widest text-zinc-400 uppercase overflow-hidden">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <span className="text-zinc-500 font-semibold truncate">SILSILAH KELUARGA</span>
+          <span className="text-zinc-300 shrink-0">—</span>
+          <span className="font-medium text-zinc-700 truncate">RAWAT SILSILAH BERSAMA</span>
         </div>
 
         {/* Center Architectural Crosshair */}
-        <div className="hidden md:flex items-center gap-1 text-zinc-300 font-mono text-xs">
+        <div className="hidden md:flex items-center gap-1 text-zinc-300 font-mono text-xs shrink-0">
           <span>—</span>
           <span>┼</span>
           <span>—</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
           <span className="text-zinc-500">KUOTA 30 ANGGOTA (GRATIS)</span>
           <span className="text-zinc-300">•</span>
           <span className="font-semibold text-zinc-700">PRIVAT & AMAN</span>
@@ -50,9 +50,9 @@ export default function Navbar({
       </div>
 
       {/* Main Navbar Bar */}
-      <div className="h-16 px-6 flex items-center justify-between gap-4">
+      <div className="h-14 sm:h-16 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand Emblem & Multi-Universe Dropdown */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Brand Logo Nexus Emblem */}
           <div className="flex items-center gap-2.5">
             <img
@@ -167,7 +167,7 @@ export default function Navbar({
         </div>
 
         {/* Right: Action Buttons & User Menu */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1 sm:gap-2.5">
           {/* Tombol Tambah Anggota */}
           {['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) && (
             <button
@@ -203,12 +203,12 @@ export default function Navbar({
             </button>
           )}
 
-          {/* Tombol Kolaborator (Kelola & Undang Anggota) */}
+          {/* Tombol Kolaborator (Kelola & Undang Anggota) — hidden di mobile, ada di FAB */}
           {currentTree && (
             <button
               type="button"
               onClick={onOpenCollaborators}
-              className="flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-3 py-1.5 rounded-md transition-all shadow-2xs"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-3 py-1.5 rounded-md transition-all shadow-2xs"
               title="Kelola & Undang Kolaborator"
             >
               <Users className="w-3.5 h-3.5 text-zinc-600" />
@@ -216,11 +216,11 @@ export default function Navbar({
             </button>
           )}
 
-          {/* Tombol Buku Panduan UX */}
+          {/* Tombol Buku Panduan UX — hidden di mobile, ada di FAB */}
           <button
             type="button"
             onClick={onOpenGuide}
-            className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
             title="Buku Panduan & Alur Kerja Aplikasi"
           >
             <span className="w-4 h-4 rounded-xs bg-[#f7e043] text-black text-[10px] font-bold flex items-center justify-center">
@@ -229,11 +229,11 @@ export default function Navbar({
             <span className="hidden xl:inline">Panduan</span>
           </button>
 
-          {/* Tombol About & FAQ */}
+          {/* Tombol About & FAQ — hidden di mobile, ada di FAB */}
           <button
             type="button"
             onClick={onOpenAboutFaq}
-            className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
             title="Tentang Platform, Matriks Hak Akses & FAQ"
           >
             <HelpCircle className="w-3.5 h-3.5 text-zinc-500" />
