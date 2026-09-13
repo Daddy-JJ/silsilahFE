@@ -117,10 +117,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   <span className="w-5 h-5 rounded-xs bg-zinc-900 text-[#f7e043] flex items-center justify-center text-xs">
                     A
                   </span>
-                  Mendaftar & Masuk Akun (JWT Secure)
+                  Mendaftar & Masuk ke Akun Keluarga
                 </div>
                 <p>
-                  Pengguna baru dapat langsung mengklik tombol <strong>Daftar</strong> pada modal masuk. Masukkan nama lengkap, email, dan kata sandi. Sistem menerbitkan token sesi JWT terenkripsi yang tersimpan aman untuk akses kolaborasi lintas perangkat.
+                  Anda dapat langsung masuk secara instan menggunakan <strong>Akun Google (1-Klik)</strong> atau mendaftar menggunakan email dan kata sandi. Akun Anda dilindungi dengan enkripsi keamanan modern, sehingga Anda dapat mengakses dan merawat silsilah keluarga secara leluasa dari laptop, tablet, maupun ponsel.
                 </p>
               </div>
 
@@ -156,15 +156,15 @@ export default function UserGuideModal({ isOpen, onClose }) {
               <div className="p-4 rounded border border-zinc-200 bg-zinc-50/50 space-y-2">
                 <h4 className="font-bold text-zinc-900 text-sm font-mono uppercase flex items-center gap-2">
                   <Heart className="w-4 h-4 text-pink-500" />
-                  1. Menghubungkan Pasangan (Tersimpan ke Database)
+                  1. Menautkan Pasangan (Suami & Istri)
                 </h4>
                 <p>
-                  Data pernikahan kini tersimpan permanen di database server, bukan lagi di memori browser lokal.
+                  Setiap ikatan pernikahan tersimpan rapi dan otomatis tersinkronisasi di seluruh perangkat keluarga, sehingga bagan perkawinan tampil akurat dan terhubung dengan benar.
                 </p>
                 <ul className="list-disc list-inside space-y-1.5 pt-1 text-zinc-800">
-                  <li><strong>Pasangan Baru:</strong> Klik tombol <strong>Pasangan</strong> pada kartu anggota untuk mendaftarkan suami/istri baru.</li>
-                  <li><strong>Pasangan yang Sudah Ada:</strong> Di panel samping (Profile Drawer), Anda dapat memilih dan menautkan anggota lawan jenis yang sudah terdaftar.</li>
-                  <li><strong>Dukungan Poligami:</strong> Seorang anggota dapat memiliki lebih dari satu pasangan sah; masing-masing pasangan akan memiliki simpul keturunan terpisah yang rapi.</li>
+                  <li><strong>Pasangan Baru:</strong> Klik tombol <strong>Pasangan</strong> pada kartu anggota untuk menambahkan suami atau istri baru.</li>
+                  <li><strong>Pasangan yang Sudah Terdaftar:</strong> Jika suami/istri sudah ada di daftar anggota, Anda cukup menautkannya melalui panel profil samping.</li>
+                  <li><strong>Pernikahan Lebih dari Sekali:</strong> Mendukung pencatatan lebih dari satu pasangan sah; setiap ikatan pernikahan akan memiliki garis cabang keturunan masing-masing yang teratur.</li>
                 </ul>
               </div>
 
