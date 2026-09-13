@@ -37,7 +37,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           <img
             src={logoApp}
             alt="Logo Silsilah Keluarga — Platform Pohon Silsilah Online Indonesia"
-            className="w-10 h-10 object-contain rounded-md shadow-2xs"
+            className="w-10 h-10 object-contain"
           />
           <div>
             <span className="font-black text-zinc-900 text-base leading-none tracking-tight block">

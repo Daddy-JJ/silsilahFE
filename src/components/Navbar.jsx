@@ -58,7 +58,7 @@ export default function Navbar({
             <img
               src={logoApp}
               alt="Logo Silsilah"
-              className="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-md shadow-2xs"
+              className="w-8 h-8 object-contain"
             />
             <div className="hidden sm:block">
               <h1 className="font-black text-zinc-900 text-base leading-none tracking-tight">

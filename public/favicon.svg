@@ -1,11 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1E293B"/>
-      <stop offset="100%" stop-color="#0F172A"/>
-    </linearGradient>
-
     <!-- Hexagon Frame Gradient -->
     <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#6366F1"/>
@@ -21,15 +15,12 @@
 
     <!-- Subtle Glow Filter -->
     <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="800" height="800" rx="48" fill="url(#bgGrad3)"/>
-
-  <!-- Outer Modular Hexagon Frame -->
+  <!-- Outer Modular Hexagon Frame (Transparent Interior) -->
   <!-- Center: (400, 400), Radius: 260 -->
   <polygon points="
     400,140
@@ -38,13 +29,13 @@
     400,660
     175,530
     175,270" 
-    fill="#0F172A" 
+    fill="none" 
     stroke="url(#hexGrad)" 
-    stroke-width="14" 
+    stroke-width="16" 
     stroke-linejoin="round"/>
 
   <!-- Inner Connection Circuit Lines -->
-  <g stroke="#334155" stroke-width="3" stroke-dasharray="8 8" fill="none">
+  <g stroke="#94A3B8" stroke-width="3" stroke-dasharray="8 8" fill="none">
     <line x1="400" y1="140" x2="400" y2="280"/>
     <line x1="175" y1="530" x2="310" y2="440"/>
     <line x1="625" y1="530" x2="490" y2="440"/>
@@ -74,8 +65,8 @@
   <!-- Child Figure & Nexus Connection (Center-Bottom) -->
   <g>
     <!-- Unifying Trunk / Base Node -->
-    <path d="M310,410 L400,470 L490,410" fill="none" stroke="#F8FAFC" stroke-width="8" stroke-linecap="round"/>
-    <line x1="400" y1="470" x2="400" y2="570" stroke="#F8FAFC" stroke-width="8" stroke-linecap="round"/>
+    <path d="M310,410 L400,470 L490,410" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
+    <line x1="400" y1="470" x2="400" y2="570" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
 
     <circle cx="400" cy="490" r="28" fill="url(#avatarAmber)" filter="url(#softGlow)"/>
     <path d="M340,580 C340,545 365,535 400,535 C435,535 460,545 460,580" 
@@ -86,7 +77,7 @@
   </g>
 
   <!-- Modular Ports (Connection Terminals at Hexagon Vertices) -->
-  <g fill="#F8FAFC" filter="url(#softGlow)">
+  <g fill="#FFFFFF" filter="url(#softGlow)">
     <circle cx="400" cy="140" r="14" stroke="#6366F1" stroke-width="6"/>
     <circle cx="625" cy="270" r="14" stroke="#06B6D4" stroke-width="6"/>
     <circle cx="625" cy="530" r="14" stroke="#3B82F6" stroke-width="6"/>
