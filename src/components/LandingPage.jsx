@@ -149,9 +149,9 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                   <div className="w-px h-3 bg-zinc-300" />
                 </div>
 
-                {/* Generasi 2: Anak-anak (Sephia, Bagas, Kenzo) */}
+                {/* Generasi 2: Anak-anak (Ibunda Asmara, Bagas, Kenzo) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-2xl">
-                  {/* Anak 1 (Sephia) + Pasangan (Arya) */}
+                  {/* Anak 1 (Ibunda Asmara) + Pasangan (Arya) */}
                   <div className="p-3 bg-white border-2 border-zinc-900 rounded-md shadow-xs text-left relative">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
@@ -159,7 +159,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       </span>
                       <span className="text-[11px]" title="Menikah">💍</span>
                     </div>
-                    <div className="font-black text-xs text-zinc-900">Sephia</div>
+                    <div className="font-black text-xs text-zinc-900">Ibunda Asmara</div>
                     <div className="text-[11px] font-semibold text-zinc-600 truncate">+ Arya Pratama</div>
                     <div className="text-[9px] font-mono text-zinc-400 mt-0.5">1950 • Orang Tua Cucu Mbah Wiro</div>
                   </div>
@@ -187,7 +187,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                 <div className="flex flex-col items-center pt-1">
                   <div className="w-px h-3 bg-zinc-300" />
                   <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold text-zinc-600 uppercase bg-zinc-100 px-3 py-0.5 rounded-full border border-zinc-200">
-                    <span>⚡ GENERASI 3: CUCU-CUCU MBAH WIRO (DILAHIRKAN OLEH SEPHIA & ARYA)</span>
+                    <span>⚡ GENERASI 3: CUCU-CUCU MBAH WIRO (DILAHIRKAN OLEH IBUNDA ASMARA & ARYA)</span>
                   </div>
                   <div className="w-px h-3 bg-zinc-300" />
                 </div>
