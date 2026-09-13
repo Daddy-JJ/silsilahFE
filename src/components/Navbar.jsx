@@ -62,11 +62,8 @@ export default function Navbar({
             />
             <div className="hidden sm:block">
               <h1 className="font-black text-zinc-900 text-base leading-none tracking-tight">
-                Silsilah
+                Silsilah<span className="font-black"> Keluarga Indonesia</span>
               </h1>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
-                Collaborative Tree
-              </span>
             </div>
           </div>
 

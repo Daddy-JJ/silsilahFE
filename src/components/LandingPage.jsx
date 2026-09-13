@@ -41,10 +41,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           />
           <div>
             <span className="font-black text-zinc-900 text-base leading-none tracking-tight block">
-              Silsilah
-            </span>
-            <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
-              Keluarga Besar
+              Silsilah<span className="font-black"> Keluarga Indonesia</span>
             </span>
           </div>
         </div>
