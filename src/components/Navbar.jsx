@@ -27,12 +27,12 @@ export default function Navbar({
 
   return (
     <header className="bg-white border-b border-zinc-200 select-none z-20 shrink-0">
-      {/* Editorial Top Ticker (Inspired by PROJECT — AIRES / FIELD — REAL ESTATE) */}
+      {/* Top Editorial Ticker */}
       <div className="h-7 border-b border-zinc-100 px-6 flex items-center justify-between text-[11px] font-mono tracking-widest text-zinc-400 uppercase">
         <div className="flex items-center gap-2">
-          <span>PROJECT</span>
+          <span className="text-zinc-500 font-semibold">SILSILAH KELUARGA</span>
           <span className="text-zinc-300">—</span>
-          <span className="font-semibold text-zinc-700">SILSILAH KELUARGA</span>
+          <span className="font-medium text-zinc-700">RAWAT SILSILAH BERSAMA</span>
         </div>
 
         {/* Center Architectural Crosshair */}
@@ -43,9 +43,9 @@ export default function Navbar({
         </div>
 
         <div className="flex items-center gap-2">
-          <span>PHASE 1</span>
-          <span className="text-zinc-300">—</span>
-          <span className="font-semibold text-zinc-700">30 NODES SANDBOX</span>
+          <span className="text-zinc-500">KUOTA 30 ANGGOTA (GRATIS)</span>
+          <span className="text-zinc-300">•</span>
+          <span className="font-semibold text-zinc-700">PRIVAT & AMAN</span>
         </div>
       </div>
 

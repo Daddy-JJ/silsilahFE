@@ -20,16 +20,14 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
       {/* Top Editorial Ticker */}
       <div className="h-7 bg-zinc-900 text-zinc-400 border-b border-zinc-800 px-6 flex items-center justify-between text-[10px] font-mono tracking-widest uppercase">
         <div className="flex items-center gap-2">
-          <span className="text-[#f7e043] font-bold">PUBLIC PREVIEW</span>
-          <span className="text-zinc-600">—</span>
-          <span>PLATFORM KOLABORATIF SILSILAH KELUARGA</span>
+          <span className="text-[#f7e043] font-bold">🌳 RAWAT & ABADIKAN SILSILAH KELUARGA BESAR ANDA</span>
         </div>
         <div className="hidden sm:flex items-center gap-3 text-zinc-400">
-          <span>SECURE</span>
+          <span>PRIVAT & AMAN</span>
           <span>•</span>
-          <span>MULTI-TENANT DAG</span>
+          <span>AKSES BERSAMA KELUARGA</span>
           <span>•</span>
-          <span>v2.0.0</span>
+          <span className="text-[#f7e043] font-semibold">MULAI GRATIS</span>
         </div>
       </div>
 
@@ -38,7 +36,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
         <div className="flex items-center gap-3">
           <img
             src={logoApp}
-            alt="Logo Silsilah"
+            alt="Logo Silsilah Keluarga — Platform Pohon Silsilah Online Indonesia"
             className="w-10 h-10 object-contain rounded-md shadow-2xs"
           />
           <div>
@@ -88,11 +86,11 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tight leading-tight max-w-4xl mx-auto uppercase">
-            Dokumentasikan & Rawat Silsilah Keluarga Besar Anda
+            Aplikasi Online Silsilah & Bagan Pohon Keluarga Indonesia
           </h1>
 
           <p className="text-zinc-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
-            Platform visual interaktif dengan tata letak simetris otomatis, kolaborasi aman dua lapis lintas generasi, dan privasi tertutup terenkripsi.
+            Dokumentasikan, rawat, dan abadikan warisan silsilah keluarga besar Anda. Platform visual interaktif dengan tata letak simetris otomatis, kolaborasi aman dua lapis lintas generasi, dan privasi tertutup terenkripsi.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
@@ -293,6 +291,121 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                   Silsilah Anda sepenuhnya privat dan hanya bisa dilihat oleh anggota terundang. Kapan pun siap, ekspor silsilah ke format gambar PNG kualitas tinggi (2x) atau dokumen HTML mandiri yang bisa dibuka tanpa internet.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3 Simple Steps Section (SEO-friendly structured content) */}
+        <section className="px-6 py-16 bg-[#fafafa] border-b border-zinc-200">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center max-w-xl mx-auto mb-12">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                PANDUAN PRAKTIS
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight uppercase">
+                3 Langkah Mudah Memulai Silsilah Keluarga
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 rounded-lg border border-zinc-200 bg-white space-y-2 shadow-2xs">
+                <span className="text-2xl font-mono font-black text-[#f7e043] bg-zinc-900 w-9 h-9 rounded-full flex items-center justify-center">
+                  1
+                </span>
+                <h3 className="font-bold text-zinc-900 text-sm uppercase pt-1">
+                  Buat Pohon & Tentukan Leluhur
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Daftar gratis dalam hitungan detik. Masukkan nama kakek-nenek atau tetua sebagai simpul awal pohon keluarga Anda.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-lg border border-zinc-200 bg-white space-y-2 shadow-2xs">
+                <span className="text-2xl font-mono font-black text-[#f7e043] bg-zinc-900 w-9 h-9 rounded-full flex items-center justify-center">
+                  2
+                </span>
+                <h3 className="font-bold text-zinc-900 text-sm uppercase pt-1">
+                  Tambahkan Anak & Pasangan
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Klik tombol tambah pasangan atau anak di setiap simpul keluarga. Algoritma cerdas otomatis menata posisi pohon secara simetris dan rapi.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-lg border border-zinc-200 bg-white space-y-2 shadow-2xs">
+                <span className="text-2xl font-mono font-black text-[#f7e043] bg-zinc-900 w-9 h-9 rounded-full flex items-center justify-center">
+                  3
+                </span>
+                <h3 className="font-bold text-zinc-900 text-sm uppercase pt-1">
+                  Undang Kerabat & Kolaborasi
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Bagikan tautan undangan privat via WhatsApp. Kerabat dapat langsung melihat atau melengkapi data anak-cucu keluarga mereka sendiri.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SEO FAQ Section */}
+        <section className="px-6 py-16 bg-white border-b border-zinc-200">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center max-w-xl mx-auto">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block mb-1">
+                TANYA JAWAB
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight uppercase">
+                Pertanyaan yang Sering Diajukan (FAQ)
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="p-5 rounded-lg border border-zinc-200 bg-zinc-50/60 space-y-2">
+                <h3 className="font-bold text-xs sm:text-sm text-zinc-900">
+                  Apakah aplikasi silsilah keluarga ini gratis digunakan?
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Ya, sepenuhnya gratis untuk sandbox hingga 30 anggota keluarga. Anda bisa langsung membuat akun, menyusun pohon keluarga, dan mengundang kerabat tanpa dipungut biaya.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-lg border border-zinc-200 bg-zinc-50/60 space-y-2">
+                <h3 className="font-bold text-xs sm:text-sm text-zinc-900">
+                  Apakah data silsilah keluarga saya aman & privat?
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Sangat aman. Pohon keluarga Anda bersifat tertutup (private by default) dan hanya dapat dilihat atau diedit oleh anggota keluarga yang Anda berikan tautan undangan resmi.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-lg border border-zinc-200 bg-zinc-50/60 space-y-2">
+                <h3 className="font-bold text-xs sm:text-sm text-zinc-900">
+                  Bagaimana cara mengajak saudara mengisi data keluarganya?
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Cukup kirimkan tautan kolaborator dari menu Pengaturan Pohon. Kerabat dapat mendaftar dan mengajukan penambahan anak/pasangan dengan persetujuan (*approval*) dari Anda.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-lg border border-zinc-200 bg-zinc-50/60 space-y-2">
+                <h3 className="font-bold text-xs sm:text-sm text-zinc-900">
+                  Apakah silsilah keluarga bisa diunduh atau dicetak?
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Bisa. Anda dapat mengekspor bagan pohon silsilah ke gambar beresolusi tinggi (PNG 2x) siap cetak, atau menyimpannya sebagai file dokumen mandiri yang bisa dibuka secara offline.
+                </p>
+              </div>
+            </div>
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={onOpenAboutFaq}
+                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-zinc-700 hover:text-black underline uppercase"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                <span>Lihat Panduan Lengkap, Matriks Hak Akses & FAQ</span>
+              </button>
             </div>
           </div>
         </section>
