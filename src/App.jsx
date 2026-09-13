@@ -699,7 +699,7 @@ export default function App() {
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#f4f4f5] overflow-hidden font-sans">
+    <div className="w-full h-dvh min-h-dvh flex flex-col bg-[#f4f4f5] overflow-hidden font-sans">
       {/* Toast Notification */}
       {notification && (
         <div
@@ -743,7 +743,7 @@ export default function App() {
       />
 
       {/* Area Canvas Interaktif React Flow */}
-      <main className="flex-1 w-full h-full relative">
+      <main className="flex-1 w-full h-full relative min-h-0">
         {/* Floating Overview Widget */}
         {currentTree && (
           <TreeStatsWidget
@@ -859,8 +859,12 @@ export default function App() {
           maxZoom={2.5}
           className="bg-[#f4f4f5]"
         >
-          <Background variant={BackgroundVariant.Cross} gap={28} size={1} color="#d4d4d8" />
-          <Controls position="bottom-left" showInteractive={false} />
+          <Controls
+            position="bottom-left"
+            showInteractive={false}
+            showFitView={true}
+            fitViewOptions={{ padding: 0.25, duration: 400 }}
+          />
           <MiniMap
             position="bottom-right"
             zoomable
