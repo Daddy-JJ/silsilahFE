@@ -875,7 +875,7 @@ export default function App() {
             maskStrokeColor="#f59e0b"
             maskStrokeWidth={3}
             nodeColor={(n) => (n.data?.jenis_kelamin === 'L' ? '#18181b' : '#71717a')}
-            className="hidden md:block"
+            className="hidden md:block [@media(max-height:500px)]:hidden"
           />
         </ReactFlow>
 
