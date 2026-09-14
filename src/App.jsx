@@ -744,19 +744,21 @@ export default function App() {
 
       {/* Area Canvas Interaktif React Flow */}
       <main className="flex-1 w-full h-full relative min-h-0">
-        {/* Floating Overview Widget */}
+        {/* Floating Overview Widget — hidden on short viewports (HP landscape) */}
         {currentTree && (
-          <TreeStatsWidget
-            treeName={currentTree.nama_silsilah}
-            members={membersList}
-            pendingCount={approvalsList.length}
-            maxMembers={currentTree.max_members || 30}
-          />
+          <div className="[@media(max-height:500px)]:hidden">
+            <TreeStatsWidget
+              treeName={currentTree.nama_silsilah}
+              members={membersList}
+              pendingCount={approvalsList.length}
+              maxMembers={currentTree.max_members || 30}
+            />
+          </div>
         )}
 
         {/* Floating Center Control: Tombol Rapikan Layout */}
         {nodes.length > 0 && (
-          <div className="hidden sm:flex absolute top-4 left-1/2 -translate-x-1/2 z-10 items-center">
+          <div className="hidden sm:flex absolute top-2 [@media(min-height:501px)]:top-4 left-1/2 -translate-x-1/2 z-10 items-center">
             <button
               type="button"
               onClick={handleRelayout}
@@ -771,7 +773,7 @@ export default function App() {
 
         {/* Floating Right Actions: Ekspor */}
         {nodes.length > 0 && (
-          <div className="hidden sm:flex absolute top-4 right-4 z-10 items-center gap-2">
+          <div className="hidden sm:flex absolute top-2 [@media(min-height:501px)]:top-4 right-4 z-10 items-center gap-2">
             <button
               type="button"
               onClick={() => {

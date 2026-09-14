@@ -82,6 +82,24 @@ html, body {
   }
 }
 
+/* Short-height viewport (HP landscape, height ≤ 500px) — compact controls */
+@media (max-height: 500px) {
+  .react-flow__panel.bottom.left {
+    bottom: 8px !important;
+    left: 12px !important;
+    margin: 0 !important;
+  }
+  .react-flow__controls-button {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 7px !important;
+  }
+  .react-flow__controls-button svg {
+    max-width: 16px !important;
+    max-height: 16px !important;
+  }
+}
+
 .react-flow__controls-button {
   display: flex !important;
   align-items: center !important;

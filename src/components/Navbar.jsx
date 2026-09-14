@@ -28,7 +28,7 @@ export default function Navbar({
   return (
     <header className="bg-white border-b border-zinc-200 select-none z-20 shrink-0">
       {/* Top Editorial Ticker */}
-      <div className="h-7 border-b border-zinc-100 px-3 sm:px-6 flex items-center justify-between text-[11px] font-mono tracking-widest text-zinc-400 uppercase overflow-hidden">
+      <div className="h-7 border-b border-zinc-100 px-3 sm:px-6 flex items-center justify-between text-[11px] font-mono tracking-widest text-zinc-400 uppercase overflow-hidden [@media(max-height:500px)]:hidden">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <span className="text-zinc-500 font-semibold truncate">SILSILAH KELUARGA</span>
           <span className="text-zinc-300 shrink-0">—</span>
@@ -50,7 +50,7 @@ export default function Navbar({
       </div>
 
       {/* Main Navbar Bar */}
-      <div className="h-14 sm:h-16 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="h-14 sm:h-16 [@media(max-height:500px)]:!h-10 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand Emblem & Multi-Universe Dropdown */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Brand Logo Nexus Emblem */}
@@ -60,7 +60,7 @@ export default function Navbar({
               alt="Logo Silsilah"
               className="w-8 h-8 object-contain"
             />
-            <div className="hidden sm:block">
+            <div className="hidden sm:block [@media(max-height:500px)]:hidden">
               <h1 className="font-black text-zinc-900 text-base leading-none tracking-tight">
                 Silsilah<span className="font-black"> Keluarga Indonesia</span>
               </h1>
