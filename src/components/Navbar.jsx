@@ -124,7 +124,7 @@ export default function Navbar({
         </div>
 
         {/* Center: Capacity & Metrics Widget (Directly inspired by reference status bars) */}
-        <div className="hidden md:flex items-center gap-4 bg-zinc-50 border border-zinc-200 px-3.5 py-1.5 rounded-md">
+        <div className="hidden md:flex [@media(max-height:500px)]:!hidden items-center gap-4 bg-zinc-50 border border-zinc-200 px-3.5 py-1.5 rounded-md">
           <div className="flex items-center gap-3">
             <div>
               <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
@@ -208,7 +208,7 @@ export default function Navbar({
             <button
               type="button"
               onClick={onOpenCollaborators}
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-3 py-1.5 rounded-md transition-all shadow-2xs"
+              className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-3 py-1.5 rounded-md transition-all shadow-2xs"
               title="Kelola & Undang Kolaborator"
             >
               <Users className="w-3.5 h-3.5 text-zinc-600" />
@@ -220,7 +220,7 @@ export default function Navbar({
           <button
             type="button"
             onClick={onOpenGuide}
-            className="hidden sm:flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
+            className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
             title="Buku Panduan & Alur Kerja Aplikasi"
           >
             <span className="w-4 h-4 rounded-xs bg-[#f7e043] text-black text-[10px] font-bold flex items-center justify-center">
@@ -233,7 +233,7 @@ export default function Navbar({
           <button
             type="button"
             onClick={onOpenAboutFaq}
-            className="hidden sm:flex items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
+            className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors"
             title="Tentang Platform, Matriks Hak Akses & FAQ"
           >
             <HelpCircle className="w-3.5 h-3.5 text-zinc-500" />

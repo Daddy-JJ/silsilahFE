@@ -14,7 +14,7 @@ export default function MobileQuickFab({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-2 sm:hidden select-none">
+    <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-2 sm:hidden [@media(max-height:500px)]:!flex select-none">
       {/* Sub-actions Menu */}
       {expanded && (
         <div className="flex flex-col items-end gap-2 mb-1 animate-in slide-in-from-bottom-3 duration-150">
