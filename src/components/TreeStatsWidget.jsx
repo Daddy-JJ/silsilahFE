@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Users, ChevronDown, ChevronUp, Layers, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Users, ChevronDown, ChevronUp, Layers, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function TreeStatsWidget({
   treeName = 'Semesta Pohon',
   members = [],
   pendingCount = 0,
   maxMembers = 30,
+  onOpenUpgrade,
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -156,6 +157,20 @@ export default function TreeStatsWidget({
                 <span>Sisa Kuota ({remaining})</span>
               </div>
             </div>
+
+            {onOpenUpgrade && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={onOpenUpgrade}
+                  className="w-full py-1.5 px-2 bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-[10px] font-black uppercase tracking-wider rounded border border-yellow-500 shadow-2xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  title="Tingkatkan kuota anggota silsilah dengan Duitku Sandbox"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>Upgrade Kuota Silsilah</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

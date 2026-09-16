@@ -11,6 +11,11 @@ import {
   Lock,
   Download,
   HelpCircle,
+  Phone,
+  Mail,
+  MapPin,
+  CreditCard,
+  Zap,
 } from 'lucide-react';
 import logoApp from '../assets/logo-nexus.svg';
 
@@ -46,7 +51,15 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a
+            href="#harga"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded transition-colors"
+          >
+            <CreditCard className="w-3.5 h-3.5 text-zinc-500" />
+            <span>Paket & Harga</span>
+          </a>
+
           <button
             type="button"
             onClick={onOpenAboutFaq}
@@ -407,6 +420,246 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           </div>
         </section>
 
+        {/* Seksi Paket Layanan & Harga (Pricing) */}
+        <section id="harga" className="px-6 py-20 bg-white border-b border-zinc-200">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-[#f7e043] text-black border border-yellow-400 shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>PILIHAN PAKET & INVESTASI WARISAN</span>
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-black text-zinc-900 tracking-tight uppercase">
+                Transparan, Fleksibel, & Terjangkau
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                Pilih paket yang paling tepat untuk merawat silsilah keluarga besar Anda. Seluruh data keluarga dijamin aman, privat, dan terenkripsi.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+              {/* 1. Paket Dasar (Gratis) */}
+              <div className="flex flex-col justify-between p-6 sm:p-8 rounded-xl border border-zinc-200 bg-zinc-50/60 hover:bg-white hover:border-zinc-400 transition-all shadow-2xs">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-zinc-200 text-zinc-700">
+                      PAKET DASAR
+                    </span>
+                    <span className="text-[10px] font-mono text-zinc-400 font-semibold">
+                      GRATIS SELAMANYA
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-zinc-900 uppercase">
+                    Dasar
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-1 mb-6 leading-relaxed">
+                    Cocok untuk keluarga inti yang baru mulai mendokumentasikan pohon silsilah.
+                  </p>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl sm:text-4xl font-black text-zinc-900 font-mono">
+                        Rp 0
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-zinc-400 block mt-1">
+                      Akses selamanya tanpa biaya bulanan
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 pt-6 border-t border-zinc-200/80 text-xs">
+                    <div className="flex items-start gap-2.5 text-zinc-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>Maks. 30 anggota</strong> keluarga per pohon</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>1 semesta</strong> silsilah keluarga</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Kolaborasi dasar (1 kolaborator)</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Bagan silsilah visual interaktif & responsif</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Akses privat selamanya</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8">
+                  <button
+                    type="button"
+                    onClick={() => onOpenAuth(true)}
+                    className="w-full py-3 px-4 rounded-lg bg-zinc-900 hover:bg-black text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xs"
+                  >
+                    Mulai Gratis Sekarang
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. Paket Keluarga Besar (Populer) */}
+              <div className="relative flex flex-col justify-between p-6 sm:p-8 rounded-xl border-2 border-zinc-900 bg-white shadow-xl ring-2 ring-[#f7e043]">
+                {/* Popular Badge */}
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#f7e043] text-black font-mono font-black text-[10px] tracking-wider uppercase px-3 py-1 rounded-full border border-yellow-500 shadow-xs flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>PALING POPULER</span>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-4 mt-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-zinc-900 text-[#f7e043]">
+                      KELUARGA BESAR
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                      HEMAT TAHUNAN
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-zinc-900 uppercase">
+                    Keluarga Besar
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-1 mb-6 leading-relaxed">
+                    Pilihan ideal untuk keluarga besar multi-generasi dengan kerabat yang banyak.
+                  </p>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl sm:text-4xl font-black text-zinc-900 font-mono">
+                        Rp 67.000
+                      </span>
+                      <span className="text-xs font-mono text-zinc-500 font-bold">
+                        / tahun
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-zinc-500 block mt-1">
+                      Setara hanya Rp 5.580 / bulan
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 pt-6 border-t border-zinc-200 text-xs">
+                    <div className="flex items-start gap-2.5 text-zinc-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>Maks. 100 anggota</strong> tiap semesta</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Hingga <strong>2 semesta silsilah</strong> keluarga</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Kolaborator <strong>maks. 3 orang</strong></span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>Ekspor bagan resolusi tinggi</strong> (PNG 2x & HTML)</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>Alur usulan & persetujuan perubahan aman</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8">
+                  <button
+                    type="button"
+                    onClick={() => onOpenAuth(true)}
+                    className="w-full py-3.5 px-4 rounded-lg bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-98 cursor-pointer"
+                  >
+                    Pilih Paket Keluarga Besar
+                  </button>
+                </div>
+              </div>
+
+              {/* 3. Paket Dinasti (Terlengkap) */}
+              <div className="flex flex-col justify-between p-6 sm:p-8 rounded-xl border border-zinc-300 bg-zinc-900 text-white hover:border-zinc-500 transition-all shadow-md">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-zinc-800 text-yellow-400 border border-zinc-700">
+                      PAKET DINASTI
+                    </span>
+                    <span className="text-[10px] font-mono text-zinc-400 font-semibold">
+                      TERLENGKAP • VIP
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black text-white uppercase">
+                    Dinasti
+                  </h3>
+                  <p className="text-xs text-zinc-400 mt-1 mb-6 leading-relaxed">
+                    Solusi komprehensif trah leluhur besar, marga, atau keturunan turun-temurun.
+                  </p>
+
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl sm:text-4xl font-black text-white font-mono">
+                        Rp 99.000
+                      </span>
+                      <span className="text-xs font-mono text-zinc-400 font-bold">
+                        / tahun
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-zinc-400 block mt-1">
+                      Setara hanya Rp 8.250 / bulan
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 pt-6 border-t border-zinc-800 text-xs">
+                    <div className="flex items-start gap-2.5 text-zinc-200">
+                      <CheckCircle2 className="w-4 h-4 text-[#f7e043] shrink-0 mt-0.5" />
+                      <span><strong>Maks. 200 anggota</strong> tiap semesta</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-200">
+                      <CheckCircle2 className="w-4 h-4 text-[#f7e043] shrink-0 mt-0.5" />
+                      <span>Hingga <strong>4 semesta silsilah</strong> keluarga</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-200">
+                      <CheckCircle2 className="w-4 h-4 text-[#f7e043] shrink-0 mt-0.5" />
+                      <span>Kolaborator <strong>maks. 5 orang</strong></span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-200">
+                      <CheckCircle2 className="w-4 h-4 text-[#f7e043] shrink-0 mt-0.5" />
+                      <span><strong>Dukungan pelanggan prioritas</strong> (CS VIP)</span>
+                    </div>
+                    <div className="flex items-start gap-2.5 text-zinc-200">
+                      <CheckCircle2 className="w-4 h-4 text-[#f7e043] shrink-0 mt-0.5" />
+                      <span>Ekspor cetak resolusi tinggi tanpa batas</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8">
+                  <button
+                    type="button"
+                    onClick={() => onOpenAuth(true)}
+                    className="w-full py-3 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all border border-zinc-700 cursor-pointer"
+                  >
+                    Pilih Paket Dinasti
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Trust & Guarantee Banner */}
+            <div className="p-4 sm:p-5 rounded-lg border border-zinc-200 bg-zinc-50/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-600">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-zinc-800 shrink-0" />
+                <span>Pembayaran Resmi & Berizin Bank Indonesia via Duitku</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>Keanggotaan langsung aktif otomatis setelah verifikasi</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-zinc-800 shrink-0" />
+                <span>Garansi privasi 100% — Tanpa Iklan</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Banner */}
         <section className="px-6 py-16 bg-zinc-900 text-white text-center">
           <div className="max-w-3xl mx-auto space-y-5">
@@ -430,21 +683,116 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-8 bg-zinc-50 border-t border-zinc-200 text-center text-xs text-zinc-500 font-mono">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-zinc-800 uppercase">Silsilah Keluarga</span>
-            <span>•</span>
-            <span>Hak Cipta © 2026</span>
+      <footer className="px-6 py-12 bg-zinc-50 border-t border-zinc-200 text-xs text-zinc-600 font-mono">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Main Footer Row: Brand, Links, & Official Support */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Col 1: Brand & Kepatuhan */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <img src={logoApp} alt="Logo Silsilah" className="w-7 h-7 object-contain" />
+                <span className="font-black text-zinc-900 text-sm uppercase tracking-tight font-sans">
+                  Silsilah Keluarga Indonesia
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 leading-relaxed font-sans">
+                Platform digital modern untuk merawat, memvisualisasikan, dan mendokumentasikan silsilah pohon keluarga besar secara privat dan aman lintas generasi.
+              </p>
+              <div className="p-3 rounded bg-amber-50/90 border border-amber-200 text-[11px] text-amber-900 leading-snug">
+                <span className="font-bold">⚡ Informasi Produk:</span> Produk digital keanggotaan langsung aktif setelah pembayaran terverifikasi secara otomatis.
+              </div>
+            </div>
+
+            {/* Col 2: Kontak Support Resmi */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-zinc-900 uppercase text-xs tracking-wider">
+                Layanan Pelanggan Resmi
+              </h4>
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-start gap-2">
+                  <Mail className="w-3.5 h-3.5 text-zinc-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[10px] text-zinc-400 uppercase">Email Support:</div>
+                    <a
+                      href="mailto:support@silsilahkeluarga.id"
+                      className="font-bold text-zinc-800 hover:text-black underline"
+                    >
+                      support@silsilahkeluarga.id
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Phone className="w-3.5 h-3.5 text-zinc-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[10px] text-zinc-400 uppercase">WhatsApp / Telepon CS:</div>
+                    <a
+                      href="https://wa.me/6281328219697"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-zinc-800 hover:text-black underline"
+                    >
+                      0813 2821 9697
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-zinc-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[10px] text-zinc-400 uppercase">Alamat Usaha:</div>
+                    <p className="text-zinc-700 leading-snug font-sans text-xs">
+                      Apt. Sentra Timur Residence O19 12B, Jl. Sentra Primer Timur, Cakung, Jakarta Timur. 13950, Indonesia
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Col 3: Pembayaran & Navigasi */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-zinc-900 uppercase text-xs tracking-wider">
+                Metode Pembayaran Resmi
+              </h4>
+              <p className="text-xs text-zinc-500 leading-relaxed font-sans">
+                Didukung oleh <strong>Duitku Payment Gateway</strong> — Berlisensi resmi & diawasi oleh <strong>Bank Indonesia</strong>.
+              </p>
+              <div className="flex flex-wrap gap-1.5 text-[10px] font-mono text-zinc-600 pt-1">
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">QRIS</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">GoPay</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">OVO</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">DANA</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">ShopeePay</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">BCA VA</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">Mandiri VA</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">BNI VA</span>
+                <span className="px-2 py-1 bg-white border border-zinc-300 rounded font-bold">BRI VA</span>
+              </div>
+
+              <div className="pt-2 flex flex-wrap gap-3 text-[11px]">
+                <a href="#harga" className="hover:text-zinc-900 underline">
+                  Paket & Harga
+                </a>
+                <button type="button" onClick={onOpenAboutFaq} className="hover:text-zinc-900 underline">
+                  Matriks Hak Akses & FAQ
+                </button>
+                <button type="button" onClick={() => onOpenAuth(false)} className="hover:text-zinc-900 underline">
+                  Masuk ke Akun
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px]">
-            <button type="button" onClick={onOpenAboutFaq} className="hover:text-zinc-900 underline">
-              Matriks Hak Akses & FAQ
-            </button>
-            <button type="button" onClick={() => onOpenAuth(false)} className="hover:text-zinc-900 underline">
-              Masuk ke Akun
-            </button>
+          {/* Bottom Copyright */}
+          <div className="pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-zinc-400 text-[11px]">
+            <div>
+              Hak Cipta © 2026 Silsilah Keluarga Indonesia. Hak cipta dilindungi undang-undang.
+            </div>
+            <div className="flex items-center gap-3">
+              <span>Keamanan SSL 256-Bit</span>
+              <span>•</span>
+              <span>Duitku Sandbox Verified</span>
+            </div>
           </div>
         </div>
       </footer>

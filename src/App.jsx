@@ -44,6 +44,7 @@ import AboutFaqModal from './components/AboutFaqModal';
 import FeatureLimitModal from './components/FeatureLimitModal';
 import SuperAdminModal from './components/SuperAdminModal';
 import RenameTreeModal from './components/RenameTreeModal';
+import UpgradePlanModal from './components/UpgradePlanModal';
 import JumpEdge from './components/edges/JumpEdge';
 import KnotNode from './components/KnotNode';
 import { NODE_WIDTH, NODE_HEIGHT } from './utils/layout';
@@ -101,6 +102,7 @@ export default function App() {
   const [resetPasswordData, setResetPasswordData] = useState({ token: '', email: '' });
   const [authInitialRegister, setAuthInitialRegister] = useState(false);
   const [authInitialEmail, setAuthInitialEmail] = useState('');
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
 
   // Profile Drawer State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -659,6 +661,31 @@ export default function App() {
     }
   };
 
+  // Handler Sukses Pembayaran Upgrade via Duitku Pop
+  const handleUpgradeSuccess = async (paymentResult) => {
+    if (!currentTree) return;
+    try {
+      const res = await api.trees.getTreeById(currentTree.id);
+      if (res.success && res.data) {
+        setCurrentTree(res.data);
+      }
+      await loadTrees();
+    } catch (err) {
+      console.error('Gagal menyinkronkan data pohon setelah upgrade:', err);
+    }
+    // Optimistic fallback update jika backend webhook masih memproses
+    if (paymentResult?.targetMaxMembers) {
+      setCurrentTree((prev) =>
+        prev ? { ...prev, max_members: paymentResult.targetMaxMembers } : prev
+      );
+      setTrees((prev) =>
+        prev.map((t) =>
+          t.id === currentTree.id ? { ...t, max_members: paymentResult.targetMaxMembers } : t
+        )
+      );
+    }
+  };
+
   // Jika belum login, tampilkan Landing Page Publik
   if (!currentUser) {
     return (
@@ -740,6 +767,7 @@ export default function App() {
         onOpenLimitModal={openLimitModal}
         onOpenSuperAdmin={() => setIsSuperAdminOpen(true)}
         onOpenUserPanel={() => setIsUserPanelOpen(true)}
+        onOpenUpgrade={() => setIsUpgradeOpen(true)}
       />
 
       {/* Area Canvas Interaktif React Flow */}
@@ -752,6 +780,7 @@ export default function App() {
               members={membersList}
               pendingCount={approvalsList.length}
               maxMembers={currentTree.max_members || 30}
+              onOpenUpgrade={() => setIsUpgradeOpen(true)}
             />
           </div>
         )}
@@ -892,6 +921,7 @@ export default function App() {
           onOpenGuide={() => setIsGuideOpen(true)}
           onOpenCollaborators={() => setIsCollaboratorsOpen(true)}
           onOpenAboutFaq={() => setIsAboutFaqOpen(true)}
+          onOpenUpgrade={() => setIsUpgradeOpen(true)}
           pendingCount={approvalsList.length}
         />
       </main>
@@ -1082,6 +1112,16 @@ export default function App() {
         onClose={closeLimitModal}
         limitType={limitModalConfig.limitType}
         customMessage={limitModalConfig.customMessage}
+        onOpenUpgrade={() => setIsUpgradeOpen(true)}
+      />
+
+      {/* Modal Upgrade Kuota & Paket Silsilah (Duitku Pop Sandbox) */}
+      <UpgradePlanModal
+        isOpen={isUpgradeOpen}
+        onClose={() => setIsUpgradeOpen(false)}
+        currentTree={currentTree}
+        onUpgradeSuccess={handleUpgradeSuccess}
+        showNotification={showNotification}
       />
     </div>
   );

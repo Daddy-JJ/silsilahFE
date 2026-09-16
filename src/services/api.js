@@ -160,4 +160,10 @@ export const api = {
   admin: {
     getStats: () => fetchWithAuth('/admin/stats'),
   },
+  payments: {
+    getPlans: () => fetchWithAuth('/payments/plans'),
+    inquiry: (data) => fetchWithAuth('/payments/inquiry', { method: 'POST', body: data }),
+    getTransactionStatus: (merchantOrderId) =>
+      fetchWithAuth(`/payments/transactions/${merchantOrderId}`),
+  },
 };

@@ -6,6 +6,7 @@ export default function FeatureLimitModal({
   onClose,
   limitType = 'TREE_LIMIT',
   customMessage = '',
+  onOpenUpgrade,
 }) {
   if (!isOpen) return null;
 
@@ -130,23 +131,39 @@ export default function FeatureLimitModal({
               <div className="px-3 py-2.5 bg-emerald-50/60 flex items-center justify-between">
                 <span className="text-emerald-900 font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  Fase Berikutnya (Pro)
+                  Paket Upgrade (100 - 200 Anggota)
                 </span>
                 <span className="font-mono font-bold text-emerald-800 uppercase text-[10px] bg-emerald-100 px-2 py-0.5 rounded">
-                  Segera Hadir
+                  Tersedia via Duitku
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Tombol Tutup */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full py-2.5 bg-zinc-900 hover:bg-black text-white font-mono text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md active:scale-98 cursor-pointer"
-          >
-            Mengerti & Kembali
-          </button>
+          {/* Tombol Aksi */}
+          <div className="space-y-2 pt-1">
+            {onOpenUpgrade && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenUpgrade();
+                }}
+                className="w-full py-3 bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-xs font-black uppercase tracking-wider rounded-md transition-all shadow-md active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Upgrade Kuota Sekarang</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-mono text-xs font-bold uppercase tracking-wider rounded-md transition-all cursor-pointer"
+            >
+              Nanti Saja
+            </button>
+          </div>
         </div>
       </div>
     </div>

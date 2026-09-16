@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3, Settings } from 'lucide-react';
+import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3, Settings, Sparkles } from 'lucide-react';
 import logoApp from '../assets/logo-nexus.svg';
 
 export default function Navbar({
@@ -21,6 +21,7 @@ export default function Navbar({
   onOpenLimitModal,
   onOpenSuperAdmin,
   onOpenUserPanel,
+  onOpenUpgrade,
 }) {
   const remainingNodes = Math.max(0, maxMembers - memberCount);
   const percentUsed = Math.min(100, Math.round((memberCount / maxMembers) * 100));
@@ -146,7 +147,7 @@ export default function Navbar({
           </div>
 
           {/* Minimalist Dual-tone Bar (Black for Used, Yellow for Remaining) */}
-          <div className="w-28 flex flex-col gap-1">
+          <div className="w-24 flex flex-col gap-1">
             <div className="w-full h-2 rounded-xs bg-zinc-200 overflow-hidden flex">
               <div
                 className="h-full bg-zinc-900 transition-all duration-300"
@@ -164,6 +165,18 @@ export default function Navbar({
               <span>MAX {maxMembers}</span>
             </div>
           </div>
+
+          {onOpenUpgrade && currentTree?.role === 'ADMIN_UTAMA' && (
+            <button
+              type="button"
+              onClick={onOpenUpgrade}
+              className="flex items-center gap-1 text-[10px] font-mono font-black uppercase px-2 py-1 bg-[#f7e043] hover:bg-yellow-400 text-black rounded transition-all shadow-2xs border border-yellow-500 cursor-pointer"
+              title="Upgrade Kuota & Paket Silsilah (Duitku Sandbox)"
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Upgrade</span>
+            </button>
+          )}
         </div>
 
         {/* Right: Action Buttons & User Menu */}
