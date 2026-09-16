@@ -27,6 +27,7 @@ export default function UserControlPanelModal({
   onSelectTree,
   onUserUpdated,
   onLogout,
+  onOpenFeedback,
 }) {
   const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'security', 'invitations', 'trees'
 
@@ -702,13 +703,27 @@ export default function UserControlPanelModal({
 
         {/* Footer */}
         <div className="p-3 sm:p-4 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between">
-          <div className="text-[10px] font-mono text-zinc-400">
-            Silsilah Keluarga v2.0 • Sesi Akun Aman
+          <div className="flex items-center gap-2">
+            {onOpenFeedback && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenFeedback();
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-zinc-700 hover:text-black hover:underline px-2 py-1 transition-colors cursor-pointer"
+              >
+                <span>💬 Beri Masukan & Saran</span>
+              </button>
+            )}
+            <span className="text-[10px] font-mono text-zinc-400 hidden sm:inline">
+              • Silsilah Keluarga v2.0
+            </span>
           </div>
           <button
             type="button"
             onClick={onLogout}
-            className="text-xs font-mono font-bold text-rose-600 hover:text-rose-800 hover:underline px-2 py-1 transition-colors"
+            className="text-xs font-mono font-bold text-rose-600 hover:text-rose-800 hover:underline px-2 py-1 transition-colors cursor-pointer"
           >
             Keluar dari Akun (Logout)
           </button>

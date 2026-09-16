@@ -166,4 +166,7 @@ export const api = {
     getTransactionStatus: (merchantOrderId) =>
       fetchWithAuth(`/payments/transactions/${merchantOrderId}`),
   },
+  feedback: {
+    send: (data) => fetchWithAuth('/feedback', { method: 'POST', body: data }),
+  },
 };

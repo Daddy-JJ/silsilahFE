@@ -144,6 +144,15 @@ export default function UpgradePlanModal({
           successEvent: function (result) {
             console.log('[Duitku Checkout Success]', result);
             setIsLoading(false);
+            const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+            if (currentTree?.id) {
+              try {
+                localStorage.setItem(`silsilah_sub_${currentTree.id}`, oneYearLater);
+                localStorage.setItem(`silsilah_plan_${currentTree.id}`, activePlan.nama_paket);
+              } catch (e) {
+                console.warn('Gagal menyimpan masa aktif ke localStorage:', e);
+              }
+            }
             if (showNotification) {
               showNotification(
                 'Pembayaran berhasil diverifikasi! Kuota silsilah Anda telah resmi ditingkatkan.'
@@ -153,6 +162,8 @@ export default function UpgradePlanModal({
               onUpgradeSuccess({
                 ...result,
                 targetMaxMembers: activePlan.target_max_members,
+                planName: activePlan.nama_paket,
+                subscriptionExpiresAt: oneYearLater,
                 merchantOrderId,
               });
             }

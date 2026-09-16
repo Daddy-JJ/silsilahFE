@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, Layers, CheckSquare, BookOpen, UserPlus, Users, HelpCircle, Sparkles } from 'lucide-react';
+import { Plus, X, Layers, CheckSquare, BookOpen, UserPlus, Users, HelpCircle, Sparkles, MessageSquarePlus } from 'lucide-react';
 
 export default function MobileQuickFab({
   onAddMember,
@@ -9,6 +9,7 @@ export default function MobileQuickFab({
   onOpenCollaborators,
   onOpenAboutFaq,
   onOpenUpgrade,
+  onOpenFeedback,
   pendingCount = 0,
   canAdd = true,
 }) {
@@ -19,6 +20,22 @@ export default function MobileQuickFab({
       {/* Sub-actions Menu */}
       {expanded && (
         <div className="flex flex-col items-end gap-2 mb-1 animate-in slide-in-from-bottom-3 duration-150">
+          {/* Action: Beri Masukan & Saran */}
+          {onOpenFeedback && (
+            <button
+              type="button"
+              onClick={() => {
+                setExpanded(false);
+                onOpenFeedback();
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-zinc-300 text-zinc-800 text-xs font-mono font-bold uppercase shadow-md active:scale-95 transition-all"
+            >
+              <span>Beri Masukan</span>
+              <div className="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center">
+                <MessageSquarePlus className="w-3.5 h-3.5 text-amber-600" />
+              </div>
+            </button>
+          )}
           {/* Action: Upgrade Paket */}
           {onOpenUpgrade && (
             <button

@@ -45,6 +45,7 @@ import FeatureLimitModal from './components/FeatureLimitModal';
 import SuperAdminModal from './components/SuperAdminModal';
 import RenameTreeModal from './components/RenameTreeModal';
 import UpgradePlanModal from './components/UpgradePlanModal';
+import FeedbackModal from './components/FeedbackModal';
 import JumpEdge from './components/edges/JumpEdge';
 import KnotNode from './components/KnotNode';
 import { NODE_WIDTH, NODE_HEIGHT } from './utils/layout';
@@ -103,6 +104,20 @@ export default function App() {
   const [authInitialRegister, setAuthInitialRegister] = useState(false);
   const [authInitialEmail, setAuthInitialEmail] = useState('');
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
+  // Status Kedaluwarsa Membership Tahunan
+  const isPaidPlan = (currentTree?.max_members || 30) > 30;
+  const subExpiresStr =
+    currentTree?.subscription_expires_at ||
+    (typeof window !== 'undefined' && currentTree?.id
+      ? localStorage.getItem(`silsilah_sub_${currentTree.id}`)
+      : null);
+  const isExpired = useMemo(() => {
+    if (!isPaidPlan || !subExpiresStr) return false;
+    const expDate = new Date(subExpiresStr);
+    return !isNaN(expDate.getTime()) && expDate.getTime() < Date.now();
+  }, [isPaidPlan, subExpiresStr]);
 
   // Profile Drawer State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -675,12 +690,33 @@ export default function App() {
     }
     // Optimistic fallback update jika backend webhook masih memproses
     if (paymentResult?.targetMaxMembers) {
+      const expiresAt =
+        paymentResult.subscriptionExpiresAt ||
+        new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+      const planName =
+        paymentResult.planName ||
+        (paymentResult.targetMaxMembers >= 200 ? 'Paket Dinasti' : 'Paket Keluarga Besar');
+
       setCurrentTree((prev) =>
-        prev ? { ...prev, max_members: paymentResult.targetMaxMembers } : prev
+        prev
+          ? {
+              ...prev,
+              max_members: paymentResult.targetMaxMembers,
+              subscription_expires_at: expiresAt,
+              plan_name: planName,
+            }
+          : prev
       );
       setTrees((prev) =>
         prev.map((t) =>
-          t.id === currentTree.id ? { ...t, max_members: paymentResult.targetMaxMembers } : t
+          t.id === currentTree.id
+            ? {
+                ...t,
+                max_members: paymentResult.targetMaxMembers,
+                subscription_expires_at: expiresAt,
+                plan_name: planName,
+              }
+            : t
         )
       );
     }
@@ -750,6 +786,14 @@ export default function App() {
         }}
         onOpenCreateTree={() => setIsCreateTreeOpen(true)}
         onOpenAddMember={() => {
+          if (isExpired) {
+            showNotification(
+              'Masa aktif langganan tahunan telah berakhir. Silakan perpanjang untuk menambah anggota baru.',
+              'error'
+            );
+            setIsUpgradeOpen(true);
+            return;
+          }
           setAddModalPrefill({});
           setAddModalMode('default');
           setIsAddModalOpen(true);
@@ -768,7 +812,29 @@ export default function App() {
         onOpenSuperAdmin={() => setIsSuperAdminOpen(true)}
         onOpenUserPanel={() => setIsUserPanelOpen(true)}
         onOpenUpgrade={() => setIsUpgradeOpen(true)}
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
+
+      {/* Banner Peringatan Langganan Tahunan Kedaluwarsa */}
+      {isExpired && (
+        <div className="bg-amber-400 text-black px-4 py-2 border-b border-amber-500 flex items-center justify-between text-xs font-mono font-bold z-20 shrink-0 shadow-xs">
+          <div className="flex items-center gap-2 truncate">
+            <span className="text-base">⚠️</span>
+            <span className="truncate">
+              Masa aktif langganan tahunan pohon ini telah kedaluwarsa. Fitur penambahan anggota baru dialihkan sementara ke mode lihat (read-only).
+            </span>
+          </div>
+          {currentTree?.role === 'ADMIN_UTAMA' && (
+            <button
+              type="button"
+              onClick={() => setIsUpgradeOpen(true)}
+              className="ml-3 px-3 py-1 bg-zinc-900 hover:bg-black text-[#f7e043] rounded uppercase text-[10px] font-black tracking-wider transition-all shrink-0 cursor-pointer shadow-xs"
+            >
+              Perpanjang Langganan
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Area Canvas Interaktif React Flow */}
       <main className="flex-1 w-full h-full relative min-h-0">
@@ -910,8 +976,20 @@ export default function App() {
 
         {/* Mobile Floating Action Button (FAB) */}
         <MobileQuickFab
-          canAdd={['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) && membersList.length < (currentTree?.max_members || 30)}
+          canAdd={
+            !isExpired &&
+            ['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) &&
+            membersList.length < (currentTree?.max_members || 30)
+          }
           onAddMember={() => {
+            if (isExpired) {
+              showNotification(
+                'Masa aktif langganan tahunan telah berakhir. Silakan perpanjang untuk menambah anggota baru.',
+                'error'
+              );
+              setIsUpgradeOpen(true);
+              return;
+            }
             setAddModalPrefill({});
             setAddModalMode('default');
             setIsAddModalOpen(true);
@@ -922,6 +1000,7 @@ export default function App() {
           onOpenCollaborators={() => setIsCollaboratorsOpen(true)}
           onOpenAboutFaq={() => setIsAboutFaqOpen(true)}
           onOpenUpgrade={() => setIsUpgradeOpen(true)}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
           pendingCount={approvalsList.length}
         />
       </main>
@@ -1090,6 +1169,7 @@ export default function App() {
           showNotification('Profil akun berhasil diperbarui!');
         }}
         onLogout={handleLogout}
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
       />
 
       <ResetPasswordModal
@@ -1121,6 +1201,14 @@ export default function App() {
         onClose={() => setIsUpgradeOpen(false)}
         currentTree={currentTree}
         onUpgradeSuccess={handleUpgradeSuccess}
+        showNotification={showNotification}
+      />
+
+      {/* Modal Beri Masukan & Usulan Fitur Pengguna */}
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+        user={currentUser}
         showNotification={showNotification}
       />
     </div>

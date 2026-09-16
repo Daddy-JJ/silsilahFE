@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   GitBranch,
   Shield,
@@ -18,8 +18,10 @@ import {
   Zap,
 } from 'lucide-react';
 import logoApp from '../assets/logo-nexus.svg';
+import ComplianceModal from './ComplianceModal';
 
 export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
+  const [complianceModal, setComplianceModal] = useState({ isOpen: false, tab: 'refund' });
   return (
     <div className="w-full h-full min-h-screen overflow-y-auto overflow-x-hidden bg-[#fafafa] text-zinc-900 font-sans flex flex-col selection:bg-[#f7e043] selection:text-black">
       {/* Top Editorial Ticker */}
@@ -773,11 +775,34 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                 <a href="#harga" className="hover:text-zinc-900 underline">
                   Paket & Harga
                 </a>
-                <button type="button" onClick={onOpenAboutFaq} className="hover:text-zinc-900 underline">
+                <button type="button" onClick={onOpenAboutFaq} className="hover:text-zinc-900 underline cursor-pointer">
                   Matriks Hak Akses & FAQ
                 </button>
-                <button type="button" onClick={() => onOpenAuth(false)} className="hover:text-zinc-900 underline">
+                <button type="button" onClick={() => onOpenAuth(false)} className="hover:text-zinc-900 underline cursor-pointer">
                   Masuk ke Akun
+                </button>
+              </div>
+
+              {/* Compliance & Policy Links (Duitku Sandbox Verified) */}
+              <div className="pt-3 border-t border-zinc-200/80 flex flex-col gap-1.5 text-[11px]">
+                <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">
+                  Kepatuhan & Kebijakan Resmi:
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setComplianceModal({ isOpen: true, tab: 'refund' })}
+                  className="text-left text-zinc-700 hover:text-black hover:underline cursor-pointer flex items-center gap-1.5 group"
+                >
+                  <span className="text-amber-600 group-hover:scale-110 transition-transform">⚖️</span>
+                  <span>Kebijakan Pengembalian Dana (Refund)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setComplianceModal({ isOpen: true, tab: 'privacy' })}
+                  className="text-left text-zinc-700 hover:text-black hover:underline cursor-pointer flex items-center gap-1.5 group"
+                >
+                  <span className="text-emerald-600 group-hover:scale-110 transition-transform">🔒</span>
+                  <span>Kebijakan Privasi</span>
                 </button>
               </div>
             </div>
@@ -796,6 +821,13 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           </div>
         </div>
       </footer>
+
+      {/* Official Compliance Modal (Refund & Privacy) */}
+      <ComplianceModal
+        isOpen={complianceModal.isOpen}
+        onClose={() => setComplianceModal((prev) => ({ ...prev, isOpen: false }))}
+        initialTab={complianceModal.tab}
+      />
     </div>
   );
 }

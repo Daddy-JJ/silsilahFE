@@ -1,5 +1,19 @@
 import React from 'react';
-import { Plus, CheckSquare, LogOut, Shield, ChevronDown, Users, HelpCircle, Edit3, Settings, Sparkles } from 'lucide-react';
+import {
+  Plus,
+  CheckSquare,
+  LogOut,
+  Shield,
+  ChevronDown,
+  Users,
+  HelpCircle,
+  Edit3,
+  Settings,
+  Sparkles,
+  MessageSquarePlus,
+  Clock,
+  AlertTriangle,
+} from 'lucide-react';
 import logoApp from '../assets/logo-nexus.svg';
 
 export default function Navbar({
@@ -22,9 +36,66 @@ export default function Navbar({
   onOpenSuperAdmin,
   onOpenUserPanel,
   onOpenUpgrade,
+  onOpenFeedback,
 }) {
   const remainingNodes = Math.max(0, maxMembers - memberCount);
   const percentUsed = Math.min(100, Math.round((memberCount / maxMembers) * 100));
+
+  // Kalkulasi Status & Countdown Membership Tahunan
+  const expiresAtStr =
+    currentTree?.subscription_expires_at ||
+    (typeof window !== 'undefined' && currentTree?.id
+      ? localStorage.getItem(`silsilah_sub_${currentTree.id}`)
+      : null);
+
+  const isPaidPlan = maxMembers > 30;
+  let membershipInfo = {
+    isPaid: false,
+    planName: 'Paket Dasar (Gratis)',
+    diffDays: null,
+    formattedDate: 'Akses Selamanya',
+    isExpired: false,
+    isExpiringSoon: false,
+  };
+
+  if (isPaidPlan) {
+    const planName =
+      currentTree?.plan_name ||
+      (typeof window !== 'undefined' && currentTree?.id
+        ? localStorage.getItem(`silsilah_plan_${currentTree.id}`)
+        : null) ||
+      (maxMembers >= 200 ? 'Paket Dinasti' : 'Paket Keluarga Besar');
+
+    let diffDays = 365;
+    let formattedDate = '1 Tahun';
+    let isExpired = false;
+    let isExpiringSoon = false;
+
+    if (expiresAtStr) {
+      const expDate = new Date(expiresAtStr);
+      if (!isNaN(expDate.getTime())) {
+        const now = new Date();
+        const diffMs = expDate.getTime() - now.getTime();
+        diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        formattedDate = expDate.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        isExpired = diffDays <= 0;
+        isExpiringSoon = diffDays > 0 && diffDays <= 30;
+      }
+    }
+
+    membershipInfo = {
+      isPaid: true,
+      planName,
+      diffDays,
+      formattedDate,
+      isExpired,
+      isExpiringSoon,
+    };
+  }
 
   return (
     <header className="bg-white border-b border-zinc-200 select-none z-20 shrink-0">
@@ -44,7 +115,15 @@ export default function Navbar({
         </div>
 
         <div className="hidden sm:flex items-center gap-2 shrink-0">
-          <span className="text-zinc-500">KUOTA 30 ANGGOTA (GRATIS)</span>
+          <span className="text-zinc-500 font-medium">
+            {membershipInfo.isPaid
+              ? `${membershipInfo.planName.toUpperCase()} • ${
+                  membershipInfo.isExpired
+                    ? 'KEDALUWARSA'
+                    : `AKTIF HINGGA ${membershipInfo.formattedDate} (${membershipInfo.diffDays} HARI LAGI)`
+                }`
+              : `KUOTA ${maxMembers} ANGGOTA (PAKET DASAR)`}
+          </span>
           <span className="text-zinc-300">•</span>
           <span className="font-semibold text-zinc-700">PRIVAT & AMAN</span>
         </div>
@@ -120,6 +199,54 @@ export default function Navbar({
             <span className="hidden lg:inline-flex items-center gap-1 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-sm uppercase bg-zinc-100 border border-zinc-200 text-zinc-700">
               <Shield className="w-2.5 h-2.5" />
               {currentTree.role}
+            </span>
+          )}
+
+          {/* Lencana & Timer Membership Tahunan */}
+          {membershipInfo.isPaid ? (
+            membershipInfo.isExpired ? (
+              <div className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-300 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="font-bold uppercase">{membershipInfo.planName} • Kedaluwarsa</span>
+                {onOpenUpgrade && currentTree?.role === 'ADMIN_UTAMA' && (
+                  <button
+                    type="button"
+                    onClick={onOpenUpgrade}
+                    className="ml-1 px-1.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-[9px] uppercase tracking-wider cursor-pointer"
+                  >
+                    Perpanjang
+                  </button>
+                )}
+              </div>
+            ) : membershipInfo.isExpiringSoon ? (
+              <div className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                <span className="font-bold">{membershipInfo.planName}</span>
+                <span className="text-amber-700 font-semibold">• Sisa {membershipInfo.diffDays} hari</span>
+                {onOpenUpgrade && currentTree?.role === 'ADMIN_UTAMA' && (
+                  <button
+                    type="button"
+                    onClick={onOpenUpgrade}
+                    className="ml-1 px-1.5 py-0.5 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded text-[9px] uppercase tracking-wider cursor-pointer"
+                  >
+                    Perpanjang
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="hidden xl:inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-0.5 rounded bg-zinc-900 text-white border border-zinc-800 shadow-2xs">
+                <Sparkles className="w-3 h-3 text-[#f7e043]" />
+                <span className="font-bold text-[#f7e043]">{membershipInfo.planName}</span>
+                <span className="text-zinc-400">•</span>
+                <span className="text-zinc-300">
+                  Aktif s/d {membershipInfo.formattedDate} ({membershipInfo.diffDays} hari lagi)
+                </span>
+              </div>
+            )
+          ) : (
+            <span className="hidden 2xl:inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-sm uppercase bg-zinc-100 border border-zinc-200 text-zinc-600">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Paket Dasar (Akses Selamanya)
             </span>
           )}
         </div>
@@ -252,6 +379,19 @@ export default function Navbar({
             <HelpCircle className="w-3.5 h-3.5 text-zinc-500" />
             <span className="hidden xl:inline">About</span>
           </button>
+
+          {/* Tombol Beri Masukan & Saran */}
+          {onOpenFeedback && (
+            <button
+              type="button"
+              onClick={onOpenFeedback}
+              className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-mono font-bold uppercase px-2.5 py-1.5 rounded-md border border-zinc-200 hover:bg-zinc-100 text-zinc-700 transition-colors cursor-pointer"
+              title="Kirim Masukan, Laporan Masalah, atau Usulan Fitur"
+            >
+              <MessageSquarePlus className="w-3.5 h-3.5 text-amber-500" />
+              <span className="hidden xl:inline">Beri Masukan</span>
+            </button>
+          )}
 
           {/* Super Admin Panel */}
           {user?.system_role === 'SUPER_ADMIN' && (
