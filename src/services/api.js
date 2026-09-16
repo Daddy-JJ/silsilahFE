@@ -159,6 +159,19 @@ export const api = {
   },
   admin: {
     getStats: () => fetchWithAuth('/admin/stats'),
+    getTrees: () => fetchWithAuth('/admin/trees'),
+    getUsers: () => fetchWithAuth('/admin/users'),
+    updateUserRole: (id, system_role) =>
+      fetchWithAuth(`/admin/users/${id}`, { method: 'PUT', body: { system_role } }),
+    deleteUser: (id) => fetchWithAuth(`/admin/users/${id}`, { method: 'DELETE' }),
+    getPlans: () => fetchWithAuth('/admin/plans'),
+    createPlan: (data) => fetchWithAuth('/admin/plans', { method: 'POST', body: data }),
+    updatePlan: (id, data) => fetchWithAuth(`/admin/plans/${id}`, { method: 'PUT', body: data }),
+    deletePlan: (id) => fetchWithAuth(`/admin/plans/${id}`, { method: 'DELETE' }),
+    getSettings: () => fetchWithAuth('/admin/settings'),
+    updateSettings: (data) => fetchWithAuth('/admin/settings', { method: 'PUT', body: data }),
+    getTransactions: (limit = 50, offset = 0) =>
+      fetchWithAuth(`/admin/transactions?limit=${limit}&offset=${offset}`),
   },
   payments: {
     getPlans: () => fetchWithAuth('/payments/plans'),

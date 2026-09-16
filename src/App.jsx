@@ -1152,6 +1152,8 @@ export default function App() {
       <SuperAdminModal
         isOpen={isSuperAdminOpen}
         onClose={() => setIsSuperAdminOpen(false)}
+        currentUser={currentUser}
+        showNotification={showNotification}
       />
 
       <UserControlPanelModal
