@@ -52,6 +52,15 @@ export default function SuperAdminModal({
   // 2. Trees Directory State
   const [trees, setTrees] = useState([]);
   const [treeSearch, setTreeSearch] = useState('');
+  const [editingTreeMembership, setEditingTreeMembership] = useState(null);
+  const [membershipForm, setMembershipForm] = useState({
+    membership_plan: 'KELUARGA_BESAR',
+    max_members: 100,
+    membership_status: 'ACTIVE',
+    duration_preset: '12',
+    custom_expires_at: '',
+  });
+  const [savingMembership, setSavingMembership] = useState(false);
 
   // 3. Users Management State
   const [users, setUsers] = useState([]);
@@ -167,6 +176,106 @@ export default function SuperAdminModal({
       }
     } catch (err) {
       setErrorMessage(err.message || 'Gagal menghapus pengguna.');
+    }
+  };
+
+  // --- Handlers: Tree Membership (Manual Upgrade) ---
+  const handleOpenUpgradeTree = (tree) => {
+    setEditingTreeMembership(tree);
+    const plan =
+      tree.membership_plan ||
+      (tree.max_members >= 200
+        ? 'DINASTI'
+        : tree.max_members >= 100
+        ? 'KELUARGA_BESAR'
+        : 'FREE');
+    setMembershipForm({
+      membership_plan: plan,
+      max_members: tree.max_members || 30,
+      membership_status: tree.membership_status || 'ACTIVE',
+      duration_preset: tree.membership_status === 'LIFETIME' ? 'lifetime' : '12',
+      custom_expires_at: tree.membership_expires_at
+        ? new Date(tree.membership_expires_at).toISOString().slice(0, 10)
+        : '',
+    });
+  };
+
+  const handleSelectPlanPreset = (planCode) => {
+    if (planCode === 'FREE') {
+      setMembershipForm((prev) => ({
+        ...prev,
+        membership_plan: 'FREE',
+        max_members: 30,
+      }));
+    } else if (planCode === 'KELUARGA_BESAR') {
+      setMembershipForm((prev) => ({
+        ...prev,
+        membership_plan: 'KELUARGA_BESAR',
+        max_members: 100,
+      }));
+    } else if (planCode === 'DINASTI') {
+      setMembershipForm((prev) => ({
+        ...prev,
+        membership_plan: 'DINASTI',
+        max_members: 200,
+      }));
+    }
+  };
+
+  const handleSaveTreeMembership = async (e) => {
+    e.preventDefault();
+    if (!editingTreeMembership) return;
+    setSavingMembership(true);
+    setErrorMessage('');
+    try {
+      const payload = {
+        membership_plan: membershipForm.membership_plan,
+        max_members: Number(membershipForm.max_members),
+        membership_status:
+          membershipForm.duration_preset === 'lifetime'
+            ? 'LIFETIME'
+            : membershipForm.membership_status,
+      };
+
+      if (membershipForm.duration_preset === 'lifetime') {
+        payload.membership_status = 'LIFETIME';
+        payload.membership_expires_at = null;
+      } else if (
+        membershipForm.duration_preset === 'custom' &&
+        membershipForm.custom_expires_at
+      ) {
+        payload.membership_expires_at = `${membershipForm.custom_expires_at} 23:59:59`;
+      } else {
+        payload.duration_months = Number(membershipForm.duration_preset) || 12;
+      }
+
+      const res = await api.admin.updateTreeMembership(
+        editingTreeMembership.id,
+        payload
+      );
+      if (res?.data) {
+        setTrees((prev) =>
+          prev.map((t) =>
+            t.id === editingTreeMembership.id ? { ...t, ...res.data } : t
+          )
+        );
+      }
+      setSuccessMessage(
+        `Paket semesta "${editingTreeMembership.nama_silsilah}" berhasil diperbarui ke ${membershipForm.membership_plan}!`
+      );
+      setEditingTreeMembership(null);
+      if (showNotification) {
+        showNotification(
+          `Paket semesta "${editingTreeMembership.nama_silsilah}" berhasil diperbarui!`,
+          'success'
+        );
+      }
+    } catch (err) {
+      setErrorMessage(
+        err.message || 'Gagal memperbarui paket keanggotaan semesta.'
+      );
+    } finally {
+      setSavingMembership(false);
     }
   };
 
@@ -524,12 +633,13 @@ export default function SuperAdminModal({
                         <th className="p-3">Paket Keanggotaan</th>
                         <th className="p-3">Masa Aktif</th>
                         <th className="p-3">Dibuat Pada</th>
+                        <th className="p-3 text-right">Aksi</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-200">
                       {filteredTrees.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="p-8 text-center text-zinc-400 font-mono">
+                          <td colSpan={7} className="p-8 text-center text-zinc-400 font-mono">
                             Tidak ada data pohon silsilah yang cocok.
                           </td>
                         </tr>
@@ -573,12 +683,25 @@ export default function SuperAdminModal({
                                 </span>
                               </td>
                               <td className="p-3 font-mono text-[11px] text-zinc-600">
-                                {tree.membership_expires_at
+                                {tree.membership_status === 'LIFETIME'
+                                  ? 'Akses Selamanya (LIFETIME)'
+                                  : tree.membership_expires_at
                                   ? new Date(tree.membership_expires_at).toLocaleDateString('id-ID')
                                   : 'Akses Selamanya'}
                               </td>
                               <td className="p-3 font-mono text-[11px] text-zinc-500">
                                 {new Date(tree.created_at).toLocaleDateString('id-ID')}
+                              </td>
+                              <td className="p-3 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenUpgradeTree(tree)}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-900 hover:bg-black text-white rounded text-[11px] font-mono font-bold transition-colors cursor-pointer shadow-xs"
+                                  title="Ubah Paket & Kuota"
+                                >
+                                  <Sparkles className="w-3 h-3 text-yellow-400" />
+                                  <span>Ubah Paket</span>
+                                </button>
                               </td>
                             </tr>
                           );
@@ -587,6 +710,172 @@ export default function SuperAdminModal({
                     </tbody>
                   </table>
                 </div>
+
+                {/* Edit Tree Membership Panel */}
+                {editingTreeMembership && (
+                  <div className="p-5 rounded-xl border border-zinc-300 bg-zinc-50 space-y-4 animate-in fade-in shadow-xs">
+                    <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+                      <div>
+                        <div className="font-bold text-xs font-mono uppercase text-zinc-900 flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-amber-500" />
+                          <span>Pengangkatan / Perubahan Paket Semesta: {editingTreeMembership.nama_silsilah}</span>
+                        </div>
+                        <div className="text-[11px] font-mono text-zinc-500 mt-0.5">
+                          Pemilik: <strong>{editingTreeMembership.creator_name || 'User'}</strong> ({editingTreeMembership.creator_email}) • ID: {editingTreeMembership.id}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setEditingTreeMembership(null)}
+                        className="text-zinc-400 hover:text-zinc-800 font-bold p-1 cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleSaveTreeMembership} className="space-y-4 text-xs font-mono">
+                      {/* Pilihan Paket Cepat */}
+                      <div>
+                        <label className="block text-zinc-600 font-bold mb-1.5">Pilih Preset Paket Resmi:</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectPlanPreset('FREE')}
+                            className={`py-2 px-3 rounded-lg border text-left cursor-pointer transition-all ${
+                              membershipForm.membership_plan === 'FREE'
+                                ? 'border-zinc-900 bg-zinc-900 text-white shadow-xs'
+                                : 'border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-800'
+                            }`}
+                          >
+                            <div className="font-bold">Paket Dasar (FREE)</div>
+                            <div className="text-[10px] opacity-80 font-sans">Maks. 30 Anggota</div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectPlanPreset('KELUARGA_BESAR')}
+                            className={`py-2 px-3 rounded-lg border text-left cursor-pointer transition-all ${
+                              membershipForm.membership_plan === 'KELUARGA_BESAR'
+                                ? 'border-amber-500 bg-amber-500 text-white shadow-xs'
+                                : 'border-zinc-200 bg-white hover:bg-amber-50/50 text-zinc-800'
+                            }`}
+                          >
+                            <div className="font-bold">Keluarga Besar</div>
+                            <div className="text-[10px] opacity-80 font-sans">Maks. 100 Anggota</div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectPlanPreset('DINASTI')}
+                            className={`py-2 px-3 rounded-lg border text-left cursor-pointer transition-all ${
+                              membershipForm.membership_plan === 'DINASTI'
+                                ? 'border-purple-600 bg-purple-600 text-white shadow-xs'
+                                : 'border-zinc-200 bg-white hover:bg-purple-50/50 text-zinc-800'
+                            }`}
+                          >
+                            <div className="font-bold">Paket Dinasti</div>
+                            <div className="text-[10px] opacity-80 font-sans">Maks. 200 Anggota</div>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div>
+                          <label className="block text-zinc-600 font-bold mb-1">Kode / Nama Paket:</label>
+                          <input
+                            type="text"
+                            value={membershipForm.membership_plan}
+                            onChange={(e) => setMembershipForm({ ...membershipForm, membership_plan: e.target.value })}
+                            className="w-full px-3 py-2 rounded border border-zinc-300 bg-white focus:outline-none focus:border-zinc-900 uppercase"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-zinc-600 font-bold mb-1">Kapasitas Maks. Anggota (Quota):</label>
+                          <input
+                            type="number"
+                            min="1"
+                            value={membershipForm.max_members}
+                            onChange={(e) => setMembershipForm({ ...membershipForm, max_members: e.target.value })}
+                            className="w-full px-3 py-2 rounded border border-zinc-300 bg-white focus:outline-none focus:border-zinc-900"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-zinc-600 font-bold mb-1">Status Keanggotaan:</label>
+                          <select
+                            value={membershipForm.membership_status}
+                            onChange={(e) => setMembershipForm({ ...membershipForm, membership_status: e.target.value })}
+                            className="w-full px-3 py-2 rounded border border-zinc-300 bg-white focus:outline-none focus:border-zinc-900"
+                          >
+                            <option value="ACTIVE">ACTIVE (Aktif)</option>
+                            <option value="LIFETIME">LIFETIME (Selamanya)</option>
+                            <option value="EXPIRED">EXPIRED (Kedaluwarsa)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Durasi / Masa Aktif */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-zinc-200">
+                        <div>
+                          <label className="block text-zinc-600 font-bold mb-1">Masa Perpanjangan / Durasi:</label>
+                          <select
+                            value={membershipForm.duration_preset}
+                            onChange={(e) => setMembershipForm({ ...membershipForm, duration_preset: e.target.value })}
+                            className="w-full px-3 py-2 rounded border border-zinc-300 bg-white focus:outline-none focus:border-zinc-900"
+                          >
+                            <option value="1">+1 Bulan</option>
+                            <option value="3">+3 Bulan</option>
+                            <option value="6">+6 Bulan</option>
+                            <option value="12">+1 Tahun (12 Bulan)</option>
+                            <option value="24">+2 Tahun (24 Bulan)</option>
+                            <option value="lifetime">Akses Selamanya (LIFETIME)</option>
+                            <option value="custom">Pilih Tanggal Kedaluwarsa Kustom</option>
+                          </select>
+                        </div>
+
+                        {membershipForm.duration_preset === 'custom' && (
+                          <div>
+                            <label className="block text-zinc-600 font-bold mb-1">Pilih Tanggal Kedaluwarsa:</label>
+                            <input
+                              type="date"
+                              value={membershipForm.custom_expires_at}
+                              onChange={(e) => setMembershipForm({ ...membershipForm, custom_expires_at: e.target.value })}
+                              className="w-full px-3 py-2 rounded border border-zinc-300 bg-white focus:outline-none focus:border-zinc-900"
+                              required
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-200">
+                        <button
+                          type="button"
+                          onClick={() => setEditingTreeMembership(null)}
+                          className="px-4 py-2 border border-zinc-300 rounded hover:bg-zinc-100 cursor-pointer font-bold"
+                        >
+                          Batal
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={savingMembership}
+                          className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-bold rounded flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        >
+                          {savingMembership ? (
+                            <>
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              <span>Menyimpan...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Simpan & Terapkan Perubahan</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             )}
 

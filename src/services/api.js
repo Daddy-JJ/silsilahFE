@@ -160,6 +160,8 @@ export const api = {
   admin: {
     getStats: () => fetchWithAuth('/admin/stats'),
     getTrees: () => fetchWithAuth('/admin/trees'),
+    updateTreeMembership: (id, data) =>
+      fetchWithAuth(`/admin/trees/${id}/membership`, { method: 'PUT', body: data }),
     getUsers: () => fetchWithAuth('/admin/users'),
     updateUserRole: (id, system_role) =>
       fetchWithAuth(`/admin/users/${id}`, { method: 'PUT', body: { system_role } }),
