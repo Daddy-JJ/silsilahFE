@@ -1,4 +1,9 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? '/api/v1'
+    : 'https://api.silsilahkeluarga.id/api/v1');
 
 function getToken() {
   return localStorage.getItem('silsilah_token');

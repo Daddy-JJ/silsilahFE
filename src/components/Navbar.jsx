@@ -42,15 +42,28 @@ export default function Navbar({
   const percentUsed = Math.min(100, Math.round((memberCount / maxMembers) * 100));
 
   // Kalkulasi Status & Countdown Membership Tahunan
+  const planCode =
+    currentTree?.membership_plan ||
+    (maxMembers >= 200 ? 'DINASTI' : maxMembers >= 100 ? 'KELUARGA_BESAR' : 'FREE');
+  const membershipStatus =
+    currentTree?.membership_status || (planCode === 'FREE' ? 'LIFETIME' : 'ACTIVE');
   const expiresAtStr =
+    currentTree?.membership_expires_at ||
     currentTree?.subscription_expires_at ||
     (typeof window !== 'undefined' && currentTree?.id
       ? localStorage.getItem(`silsilah_sub_${currentTree.id}`)
       : null);
 
-  const isPaidPlan = maxMembers > 30;
+  const PLAN_NAMES = {
+    FREE: 'Paket Dasar (Gratis)',
+    KELUARGA_BESAR: 'Paket Keluarga Besar',
+    DINASTI: 'Paket Dinasti',
+  };
+
+  const isPaidPlan = planCode !== 'FREE' && maxMembers > 30;
   let membershipInfo = {
     isPaid: false,
+    planCode,
     planName: 'Paket Dasar (Gratis)',
     diffDays: null,
     formattedDate: 'Akses Selamanya',
@@ -60,6 +73,7 @@ export default function Navbar({
 
   if (isPaidPlan) {
     const planName =
+      PLAN_NAMES[planCode] ||
       currentTree?.plan_name ||
       (typeof window !== 'undefined' && currentTree?.id
         ? localStorage.getItem(`silsilah_plan_${currentTree.id}`)
@@ -68,7 +82,7 @@ export default function Navbar({
 
     let diffDays = 365;
     let formattedDate = '1 Tahun';
-    let isExpired = false;
+    let isExpired = membershipStatus === 'EXPIRED';
     let isExpiringSoon = false;
 
     if (expiresAtStr) {
@@ -82,13 +96,14 @@ export default function Navbar({
           month: 'short',
           year: 'numeric',
         });
-        isExpired = diffDays <= 0;
-        isExpiringSoon = diffDays > 0 && diffDays <= 30;
+        isExpired = membershipStatus === 'EXPIRED' || diffDays <= 0;
+        isExpiringSoon = !isExpired && diffDays > 0 && diffDays <= 30;
       }
     }
 
     membershipInfo = {
       isPaid: true,
+      planCode,
       planName,
       diffDays,
       formattedDate,

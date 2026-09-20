@@ -107,17 +107,21 @@ export default function App() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Status Kedaluwarsa Membership Tahunan
-  const isPaidPlan = (currentTree?.max_members || 30) > 30;
+  const isPaidPlan = (currentTree?.max_members || 30) > 30 || currentTree?.membership_plan !== 'FREE';
   const subExpiresStr =
+    currentTree?.membership_expires_at ||
     currentTree?.subscription_expires_at ||
     (typeof window !== 'undefined' && currentTree?.id
       ? localStorage.getItem(`silsilah_sub_${currentTree.id}`)
       : null);
   const isExpired = useMemo(() => {
+    if (!currentTree) return false;
+    if (currentTree.membership_status === 'EXPIRED') return true;
+    if (currentTree.membership_status === 'LIFETIME' || currentTree.membership_plan === 'FREE') return false;
     if (!isPaidPlan || !subExpiresStr) return false;
     const expDate = new Date(subExpiresStr);
     return !isNaN(expDate.getTime()) && expDate.getTime() < Date.now();
-  }, [isPaidPlan, subExpiresStr]);
+  }, [currentTree, isPaidPlan, subExpiresStr]);
 
   // Profile Drawer State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -693,17 +697,27 @@ export default function App() {
       const expiresAt =
         paymentResult.subscriptionExpiresAt ||
         new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+      const planCode =
+        paymentResult.planCode ||
+        (paymentResult.targetMaxMembers >= 200 ? 'DINASTI' : 'KELUARGA_BESAR');
       const planName =
         paymentResult.planName ||
         (paymentResult.targetMaxMembers >= 200 ? 'Paket Dinasti' : 'Paket Keluarga Besar');
+
+      const updatedFields = {
+        max_members: paymentResult.targetMaxMembers,
+        membership_plan: planCode,
+        membership_status: 'ACTIVE',
+        membership_expires_at: expiresAt,
+        subscription_expires_at: expiresAt,
+        plan_name: planName,
+      };
 
       setCurrentTree((prev) =>
         prev
           ? {
               ...prev,
-              max_members: paymentResult.targetMaxMembers,
-              subscription_expires_at: expiresAt,
-              plan_name: planName,
+              ...updatedFields,
             }
           : prev
       );
@@ -712,9 +726,7 @@ export default function App() {
           t.id === currentTree.id
             ? {
                 ...t,
-                max_members: paymentResult.targetMaxMembers,
-                subscription_expires_at: expiresAt,
-                plan_name: planName,
+                ...updatedFields,
               }
             : t
         )
@@ -842,6 +854,7 @@ export default function App() {
         {currentTree && (
           <div className="[@media(max-height:500px)]:hidden">
             <TreeStatsWidget
+              currentTree={currentTree}
               treeName={currentTree.nama_silsilah}
               members={membersList}
               pendingCount={approvalsList.length}

@@ -128,6 +128,7 @@ export default function UpgradePlanModal({
         treeId: currentTree.id,
         planId: activePlan.id || activePlan.kode_paket, // Fallback jika ID database belum sinkron
         paymentMethod: paymentMethod || 'SP',
+        returnUrl: typeof window !== 'undefined' ? window.location.origin : 'https://silsilahkeluarga.id',
       };
 
       const res = await api.payments.inquiry(payload);
@@ -138,62 +139,72 @@ export default function UpgradePlanModal({
 
       const { reference, paymentUrl, merchantOrderId } = res.data;
 
-      // 2. Jalankan Duitku Pop JS jika tersedia di window
-      if (typeof window !== 'undefined' && window.checkout && reference) {
-        window.checkout.process(reference, {
-          successEvent: function (result) {
-            console.log('[Duitku Checkout Success]', result);
-            setIsLoading(false);
-            const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-            if (currentTree?.id) {
-              try {
-                localStorage.setItem(`silsilah_sub_${currentTree.id}`, oneYearLater);
-                localStorage.setItem(`silsilah_plan_${currentTree.id}`, activePlan.nama_paket);
-              } catch (e) {
-                console.warn('Gagal menyimpan masa aktif ke localStorage:', e);
-              }
+      // 2. Jalankan Duitku Pop SDK (prioritaskan window.duitku.run atau window.checkout.process)
+      const checkoutHandlers = {
+        successEvent: function (result) {
+          console.log('[Duitku Checkout Success]', result);
+          setIsLoading(false);
+          const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+          if (currentTree?.id) {
+            try {
+              localStorage.setItem(`silsilah_sub_${currentTree.id}`, oneYearLater);
+              localStorage.setItem(`silsilah_plan_${currentTree.id}`, activePlan.nama_paket);
+            } catch (e) {
+              console.warn('Gagal menyimpan masa aktif ke localStorage:', e);
             }
-            if (showNotification) {
-              showNotification(
-                'Pembayaran berhasil diverifikasi! Kuota silsilah Anda telah resmi ditingkatkan.'
-              );
-            }
-            if (onUpgradeSuccess) {
-              onUpgradeSuccess({
-                ...result,
-                targetMaxMembers: activePlan.target_max_members,
-                planName: activePlan.nama_paket,
-                subscriptionExpiresAt: oneYearLater,
-                merchantOrderId,
-              });
-            }
-            onClose();
-          },
-          pendingEvent: function (result) {
-            console.log('[Duitku Checkout Pending]', result);
-            setIsLoading(false);
-            if (showNotification) {
-              showNotification(
-                'Transaksi pembayaran telah dibuat. Silakan selesaikan pembayaran Anda.',
-                'info'
-              );
-            }
-          },
-          errorEvent: function (result) {
-            console.error('[Duitku Checkout Error]', result);
-            setIsLoading(false);
-            setErrorMessage(
-              result?.statusMessage || 'Pembayaran gagal diproses. Silakan coba kembali.'
+          }
+          if (showNotification) {
+            showNotification(
+              'Pembayaran berhasil diverifikasi! Kuota silsilah Anda telah resmi ditingkatkan.'
             );
-            if (showNotification) {
-              showNotification('Gagal memproses pembayaran Duitku.', 'error');
-            }
-          },
-          closeEvent: function () {
-            console.log('[Duitku Checkout Closed]');
-            setIsLoading(false);
-          },
-        });
+          }
+          if (onUpgradeSuccess) {
+            onUpgradeSuccess({
+              ...result,
+              targetMaxMembers: activePlan.target_max_members,
+              planCode: activePlan.kode_paket,
+              planName: activePlan.nama_paket,
+              subscriptionExpiresAt: oneYearLater,
+              merchantOrderId,
+            });
+          }
+          onClose();
+        },
+        pendingEvent: function (result) {
+          console.log('[Duitku Checkout Pending]', result);
+          setIsLoading(false);
+          if (showNotification) {
+            showNotification(
+              'Transaksi pembayaran telah dibuat. Silakan selesaikan pembayaran Anda.',
+              'info'
+            );
+          }
+        },
+        errorEvent: function (result) {
+          console.error('[Duitku Checkout Error]', result);
+          setIsLoading(false);
+          setErrorMessage(
+            result?.statusMessage || 'Pembayaran gagal diproses. Silakan coba kembali.'
+          );
+          if (showNotification) {
+            showNotification('Gagal memproses pembayaran Duitku.', 'error');
+          }
+        },
+        closeEvent: function () {
+          console.log('[Duitku Checkout Closed]');
+          setIsLoading(false);
+        },
+      };
+
+      if (typeof window !== 'undefined' && window.duitku && typeof window.duitku.run === 'function' && reference) {
+        setIsLoading(false);
+        try {
+          window.duitku.run(reference, checkoutHandlers);
+        } catch {
+          window.duitku.run(reference);
+        }
+      } else if (typeof window !== 'undefined' && window.checkout && reference) {
+        window.checkout.process(reference, checkoutHandlers);
       } else if (paymentUrl) {
         // Fallback: Jika pop JS gagal dimuat / diblokir ekstensi browser, buka paymentUrl di tab baru
         setIsLoading(false);

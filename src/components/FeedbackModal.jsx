@@ -1,8 +1,31 @@
 import React, { useState } from 'react';
-import { X, Send, MessageSquarePlus, Lightbulb, Bug, MessageCircle, CheckCircle2 } from 'lucide-react';
+import {
+  X,
+  Send,
+  MessageSquarePlus,
+  Lightbulb,
+  Bug,
+  MessageCircle,
+  Sparkles,
+  CreditCard,
+} from 'lucide-react';
 import { api } from '../services/api';
 
 const CATEGORIES = [
+  {
+    id: 'GENERAL_INQUIRY',
+    label: 'Pertanyaan & Saran Umum',
+    description: 'Pertanyaan umum, masukan pelayanan, atau aspirasi',
+    icon: MessageCircle,
+    color: 'text-sky-500',
+  },
+  {
+    id: 'BUG_REPORT',
+    label: 'Laporan Kendala / Eror',
+    description: 'Gangguan teknis, eror sistem, atau masalah data',
+    icon: Bug,
+    color: 'text-rose-500',
+  },
   {
     id: 'FEATURE_REQUEST',
     label: 'Usulan Fitur Baru',
@@ -11,18 +34,18 @@ const CATEGORIES = [
     color: 'text-amber-500',
   },
   {
-    id: 'BUG_REPORT',
-    label: 'Laporan Kendala',
-    description: 'Gangguan teknis, eror, atau masalah tampilan',
-    icon: Bug,
-    color: 'text-rose-500',
+    id: 'UI_UX_FEEDBACK',
+    label: 'Tampilan & Antarmuka',
+    description: 'Kritik atau saran visual antarmuka & kenyamanan',
+    icon: Sparkles,
+    color: 'text-purple-500',
   },
   {
-    id: 'GENERAL_FEEDBACK',
-    label: 'Saran Umum',
-    description: 'Kesan, saran pelayanan, atau aspirasi pengguna',
-    icon: MessageCircle,
-    color: 'text-sky-500',
+    id: 'BILLING_ISSUE',
+    label: 'Langganan & Pembayaran',
+    description: 'Kendala seputar paket, pembayaran, atau kuota',
+    icon: CreditCard,
+    color: 'text-emerald-500',
   },
 ];
 
@@ -32,7 +55,7 @@ export default function FeedbackModal({
   user,
   showNotification,
 }) {
-  const [category, setCategory] = useState('FEATURE_REQUEST');
+  const [category, setCategory] = useState('GENERAL_INQUIRY');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -41,8 +64,8 @@ export default function FeedbackModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim() || message.trim().length < 5) {
-      setErrorMessage('Mohon tuliskan pesan atau saran Anda minimal 5 karakter.');
+    if (!message.trim() || message.trim().length < 3) {
+      setErrorMessage('Mohon tuliskan pesan atau saran Anda minimal 3 karakter.');
       return;
     }
 
@@ -53,24 +76,21 @@ export default function FeedbackModal({
       const payload = {
         category,
         message: message.trim(),
-        user_email: user?.email || '',
-        user_name: user?.nama_lengkap || '',
       };
 
-      try {
-        await api.feedback.send(payload);
-      } catch (apiErr) {
-        console.warn('[Feedback API] Fallback logged locally:', apiErr.message);
+      const res = await api.feedback.send(payload);
+      if (res && res.success === false) {
+        throw new Error(res.message || 'Gagal mengirim masukan.');
       }
 
       if (showNotification) {
         showNotification(
-          'Terima kasih! Masukan Anda telah berhasil dikirim ke tim support kami.'
+          'Terima kasih! Masukan Anda telah berhasil dikirim ke tim pengembang.'
         );
       }
 
       setMessage('');
-      setCategory('FEATURE_REQUEST');
+      setCategory('GENERAL_INQUIRY');
       onClose();
     } catch (err) {
       console.error('[Feedback Submit Error]', err);
@@ -128,28 +148,40 @@ export default function FeedbackModal({
             <label className="block text-xs font-mono font-bold uppercase text-zinc-700 mb-2">
               Kategori Masukan:
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {CATEGORIES.map((cat) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {CATEGORIES.map((cat, idx) => {
                 const Icon = cat.icon;
                 const isSelected = category === cat.id;
+                const isLast = idx === CATEGORIES.length - 1;
                 return (
                   <button
                     key={cat.id}
                     type="button"
                     onClick={() => setCategory(cat.id)}
-                    className={`flex flex-col items-center sm:items-start p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                    className={`flex items-start gap-2.5 p-2.5 sm:p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      isLast ? 'sm:col-span-2' : ''
+                    } ${
                       isSelected
                         ? 'border-zinc-900 bg-zinc-900 text-white shadow-xs'
                         : 'border-zinc-200 bg-zinc-50/70 hover:bg-zinc-100/70 text-zinc-700'
                     }`}
                   >
                     <Icon
-                      className={`w-4 h-4 mb-1.5 ${
+                      className={`w-4 h-4 shrink-0 mt-0.5 ${
                         isSelected ? 'text-[#f7e043]' : cat.color
                       }`}
                     />
-                    <div className="font-bold text-xs font-sans leading-tight">
-                      {cat.label}
+                    <div className="min-w-0">
+                      <div className="font-bold text-xs font-sans leading-tight">
+                        {cat.label}
+                      </div>
+                      <div
+                        className={`text-[10px] line-clamp-1 mt-0.5 ${
+                          isSelected ? 'text-zinc-300' : 'text-zinc-400'
+                        }`}
+                      >
+                        {cat.description}
+                      </div>
                     </div>
                   </button>
                 );
@@ -166,12 +198,12 @@ export default function FeedbackModal({
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ceritakan kendala yang Anda alami, atau jelaskan ide fitur menarik yang ingin Anda tambahkan di aplikasi silsilah ini..."
+              placeholder="Ceritakan pertanyaan, kendala yang Anda alami, atau jelaskan ide fitur yang ingin Anda usulkan untuk aplikasi silsilah ini..."
               className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-300 focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 text-xs sm:text-sm text-zinc-800 placeholder:text-zinc-400 font-sans transition-all resize-none outline-none"
               disabled={isSubmitting}
             />
             <div className="flex justify-between items-center text-[10px] font-mono text-zinc-400 mt-1">
-              <span>Minimal 5 karakter</span>
+              <span>Minimal 3 karakter</span>
               <span>{message.length} karakter</span>
             </div>
           </div>

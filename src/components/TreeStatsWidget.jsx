@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Users, ChevronDown, ChevronUp, Layers, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function TreeStatsWidget({
+  currentTree,
   treeName = 'Semesta Pohon',
   members = [],
   pendingCount = 0,
@@ -10,10 +11,26 @@ export default function TreeStatsWidget({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
+  const effectiveMaxMembers = currentTree?.max_members || maxMembers;
   const total = members.length;
   const maleCount = members.filter((m) => m.jenis_kelamin === 'L').length;
   const femaleCount = members.filter((m) => m.jenis_kelamin === 'P').length;
-  const remaining = Math.max(0, maxMembers - total);
+  const remaining = Math.max(0, effectiveMaxMembers - total);
+
+  const planCode =
+    currentTree?.membership_plan ||
+    (effectiveMaxMembers >= 200 ? 'DINASTI' : effectiveMaxMembers >= 100 ? 'KELUARGA_BESAR' : 'FREE');
+  const membershipStatus = currentTree?.membership_status || (planCode === 'FREE' ? 'LIFETIME' : 'ACTIVE');
+  const isExpired = membershipStatus === 'EXPIRED';
+
+  const PLAN_LABELS = {
+    FREE: 'Paket Dasar',
+    KELUARGA_BESAR: 'Paket Keluarga Besar',
+    DINASTI: 'Paket Dinasti',
+  };
+  const planLabel =
+    PLAN_LABELS[planCode] ||
+    (effectiveMaxMembers >= 200 ? 'Paket Dinasti' : effectiveMaxMembers >= 100 ? 'Paket Keluarga Besar' : 'Paket Dasar');
 
   // Hitung jumlah generasi
   const depthMap = new Map();
@@ -33,7 +50,7 @@ export default function TreeStatsWidget({
   members.forEach((m) => getDepth(m.id));
   const maxDepth = members.length > 0 ? Math.max(...Array.from(depthMap.values()), 0) + 1 : 0;
 
-  const percentTotal = Math.min(100, Math.round((total / maxMembers) * 100));
+  const percentTotal = Math.min(100, Math.round((total / effectiveMaxMembers) * 100));
 
   return (
     <div className="absolute top-4 left-4 z-10 w-80 bg-white/95 backdrop-blur-md rounded-lg border border-zinc-200 shadow-md overflow-hidden transition-all duration-300 select-none">
@@ -125,11 +142,22 @@ export default function TreeStatsWidget({
           {/* Quota Status (Inspired by "Units per Status" in reference) */}
           <div className="pt-2 border-t border-zinc-100 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
-                Kapasitas Sandbox (Max {maxMembers})
-              </span>
-              <span className="text-[11px] font-mono font-bold text-zinc-900">
-                {total} / {maxMembers}
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-600 font-bold truncate">
+                  {planLabel} (Max {effectiveMaxMembers})
+                </span>
+                {isExpired ? (
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 border border-rose-200">
+                    Kedaluwarsa
+                  </span>
+                ) : planCode !== 'FREE' ? (
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200">
+                    Aktif
+                  </span>
+                ) : null}
+              </div>
+              <span className="text-[11px] font-mono font-bold text-zinc-900 shrink-0">
+                {total} / {effectiveMaxMembers}
               </span>
             </div>
 
@@ -158,8 +186,15 @@ export default function TreeStatsWidget({
               </div>
             </div>
 
+            {isExpired && (
+              <div className="p-2 bg-rose-50 border border-rose-200 rounded text-rose-800 text-[10px] font-mono font-bold flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-600" />
+                <span>Masa aktif paket telah kedaluwarsa.</span>
+              </div>
+            )}
+
             {onOpenUpgrade && (
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="button"
                   onClick={onOpenUpgrade}
@@ -167,7 +202,7 @@ export default function TreeStatsWidget({
                   title="Tingkatkan kuota anggota silsilah dengan Duitku Sandbox"
                 >
                   <Sparkles className="w-3 h-3" />
-                  <span>Upgrade Kuota Silsilah</span>
+                  <span>{isExpired ? 'Perpanjang Langganan' : 'Upgrade Kuota Silsilah'}</span>
                 </button>
               </div>
             )}
