@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Plus,
+  Check,
   CheckSquare,
   LogOut,
   Shield,
@@ -66,15 +67,20 @@ export default function Navbar({
   const remainingNodes = Math.max(0, maxMembers - memberCount);
   const percentUsed = Math.min(100, Math.round((memberCount / maxMembers) * 100));
 
-  // ── User Dropdown state ──────────────────────────────────────────────────────
+  // ── User & Tree Dropdowns state ──────────────────────────────────────────────
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isTreeMenuOpen, setIsTreeMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
+  const treeMenuRef = useRef(null);
 
   // Close on click-outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
         setIsUserMenuOpen(false);
+      }
+      if (treeMenuRef.current && !treeMenuRef.current.contains(e.target)) {
+        setIsTreeMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -84,7 +90,10 @@ export default function Navbar({
   // Close on ESC key
   useEffect(() => {
     function handleKeyDown(e) {
-      if (e.key === 'Escape') setIsUserMenuOpen(false);
+      if (e.key === 'Escape') {
+        setIsUserMenuOpen(false);
+        setIsTreeMenuOpen(false);
+      }
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
@@ -92,6 +101,7 @@ export default function Navbar({
 
   const closeMenu = (callback) => {
     setIsUserMenuOpen(false);
+    setIsTreeMenuOpen(false);
     if (callback) callback();
   };
 
@@ -207,8 +217,8 @@ export default function Navbar({
       {/* ── Main Navbar Bar ──────────────────────────────────────────────────── */}
       <div className="h-14 sm:h-16 [@media(max-height:500px)]:!h-10 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
 
-        {/* LEFT: Brand + Universe Dropdown ─────────────────────────────────── */}
-        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+        {/* LEFT: Brand + Unified Universe Switcher ─────────────────────────── */}
+        <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
           {/* Brand Logo */}
           <div className="flex items-center gap-2.5 shrink-0">
             <img src={logoApp} alt="Logo Silsilah" className="w-8 h-8 object-contain" />
@@ -221,48 +231,129 @@ export default function Navbar({
 
           <div className="h-6 w-px bg-zinc-200 hidden sm:block shrink-0" />
 
-          {/* Universe Selector + Rename */}
-          <div className="flex items-center gap-1.5 min-w-0">
-            <div className="relative min-w-0">
-              <select
-                value={currentTree?.id || ''}
-                onChange={(e) => {
-                  if (e.target.value === '__new__') {
-                    const ownedTrees = (trees || []).filter(
-                      (t) => t.role === 'ADMIN_UTAMA' || t.created_by_user_id === user?.id
-                    );
-                    if (ownedTrees.length >= 1) {
-                      if (onOpenLimitModal) onOpenLimitModal('TREE_LIMIT');
-                    } else {
-                      onOpenCreateTree();
-                    }
-                  } else {
-                    const selected = trees.find((t) => t.id === e.target.value);
-                    if (selected) onSelectTree(selected);
-                  }
-                }}
-                className="appearance-none bg-zinc-50 hover:bg-zinc-100 border border-zinc-300 text-zinc-900 font-bold text-xs sm:text-sm rounded-md py-1.5 pl-3 pr-8 focus:outline-none focus:ring-1 focus:ring-zinc-900 cursor-pointer transition-colors max-w-[140px] sm:max-w-[200px] truncate"
-              >
-                {trees.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.nama_silsilah}
-                  </option>
-                ))}
-                <option value="__new__">+ Buat Semesta Baru...</option>
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+          {/* Unified Universe (Tree) Switcher & Actions (Pola A) */}
+          <div ref={treeMenuRef} className="relative shrink-0">
+            {/* Trigger Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsTreeMenuOpen((prev) => !prev);
+                setIsUserMenuOpen(false);
+              }}
+              aria-haspopup="menu"
+              aria-expanded={isTreeMenuOpen}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-zinc-300 hover:border-zinc-400 bg-zinc-50 hover:bg-zinc-100 text-zinc-900 transition-all cursor-pointer max-w-[150px] sm:max-w-[220px]"
+              title={`Semesta Aktif: ${currentTree?.nama_silsilah || 'Pilih Semesta'}`}
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span className="font-bold text-xs sm:text-sm truncate">
+                {currentTree?.nama_silsilah || 'Pilih Semesta'}
+              </span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform duration-200 ${
+                  isTreeMenuOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
 
-            {/* Rename Button — ADMIN_UTAMA only */}
-            {currentTree?.role === 'ADMIN_UTAMA' && (
-              <button
-                type="button"
-                onClick={onOpenRenameTree}
-                className="p-1.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-300 hover:border-zinc-400 text-zinc-600 hover:text-zinc-900 rounded-md transition-colors shadow-2xs flex items-center justify-center shrink-0"
-                title={`Ubah nama semesta "${currentTree?.nama_silsilah}"`}
+            {/* Dropdown Menu Panel */}
+            {isTreeMenuOpen && (
+              <div
+                role="menu"
+                className="absolute left-0 top-full mt-2 w-64 z-50 bg-white border border-zinc-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
               >
-                <Edit3 className="w-3.5 h-3.5" />
-              </button>
+                {/* Header Info */}
+                <div className="px-3.5 py-2 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                    Semesta Silsilah ({trees.length})
+                  </span>
+                  {currentTree?.role && (
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700 uppercase">
+                      {currentTree.role}
+                    </span>
+                  )}
+                </div>
+
+                {/* Tree List */}
+                <div className="max-h-60 overflow-y-auto py-1 divide-y divide-zinc-50">
+                  {trees.map((t) => {
+                    const isSelected = t.id === currentTree?.id;
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => {
+                          setIsTreeMenuOpen(false);
+                          if (onSelectTree) onSelectTree(t);
+                        }}
+                        className={`w-full flex items-center justify-between px-3.5 py-2 text-left text-xs transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-amber-50/70 text-zinc-900 font-bold'
+                            : 'hover:bg-zinc-50 text-zinc-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0 pr-2">
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                              isSelected ? 'bg-[#f7e043] ring-2 ring-black' : 'bg-zinc-300'
+                            }`}
+                          />
+                          <span className="truncate">{t.nama_silsilah}</span>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {t.role && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-zinc-100 text-zinc-500 uppercase">
+                              {t.role === 'ADMIN_UTAMA' ? 'ADMIN' : t.role}
+                            </span>
+                          )}
+                          {isSelected && <Check className="w-3.5 h-3.5 text-zinc-900 ml-1" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Action: Ubah Nama Semesta (khusus ADMIN_UTAMA) */}
+                {currentTree?.role === 'ADMIN_UTAMA' && (
+                  <div className="p-1 border-t border-zinc-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsTreeMenuOpen(false);
+                        if (onOpenRenameTree) onOpenRenameTree();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      <Edit3 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                      <span className="truncate">Ubah Nama Semesta</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Action: Buat Semesta Baru */}
+                <div className="p-1 border-t border-zinc-100">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsTreeMenuOpen(false);
+                      const ownedTrees = (trees || []).filter(
+                        (t) => t.role === 'ADMIN_UTAMA' || t.created_by_user_id === user?.id
+                      );
+                      if (ownedTrees.length >= 1) {
+                        if (onOpenLimitModal) onOpenLimitModal('TREE_LIMIT');
+                      } else {
+                        onOpenCreateTree();
+                      }
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-zinc-900 hover:bg-[#f7e043]/30 rounded-lg transition-colors cursor-pointer text-left"
+                  >
+                    <div className="w-4 h-4 rounded-full bg-zinc-900 text-[#f7e043] flex items-center justify-center font-bold text-xs shrink-0">
+                      +
+                    </div>
+                    <span>Buat Semesta Baru...</span>
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
@@ -430,7 +521,10 @@ export default function Navbar({
             {/* Trigger */}
             <button
               type="button"
-              onClick={() => setIsUserMenuOpen((prev) => !prev)}
+              onClick={() => {
+                setIsUserMenuOpen((prev) => !prev);
+                setIsTreeMenuOpen(false);
+              }}
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
               className="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1.5 rounded-md border border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all text-left group cursor-pointer"
@@ -451,7 +545,7 @@ export default function Navbar({
               </div>
               {/* Chevron — sm+ */}
               <ChevronDown
-                className={`w-3 h-3 text-zinc-400 hidden sm:block transition-transform duration-200 ${
+                className={`w-3.5 h-3.5 text-zinc-400 hidden sm:block transition-transform duration-200 ${
                   isUserMenuOpen ? 'rotate-180' : ''
                 }`}
               />
