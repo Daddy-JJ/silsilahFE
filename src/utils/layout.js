@@ -98,7 +98,7 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
       
       const groupId = `group_${groupMembers.map(m => m.id).join('_')}`;
       // Gunakan jarak 80px jika multi-marriage agar jalur busbar & simpul knot leluasa
-      const intraGroupSep = isMultiMarriage ? 80 : 60;
+      const intraGroupSep = isMultiMarriage ? 40 : 60;
       const groupObj = {
         id: groupId,
         members: orderedMembers,
