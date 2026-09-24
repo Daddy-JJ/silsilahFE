@@ -371,7 +371,7 @@ export default function App() {
               const anchorId = anchorNode.id;
               const partnerId = partnerNode.id;
 
-              const intraGroupSep = 40;
+              const intraGroupSep = 50;
               const midX = partnerNode.position.x - intraGroupSep / 2;
               knotX = midX - KNOT_SIZE / 2;
               // Simpul diletakkan sejajar vertikal dengan bagian tengah kartu istri
@@ -467,7 +467,7 @@ export default function App() {
 
             // Dinamis Color Coding & Bus Staggering
             const lineColor = LINEAGE_COLORS[knotIndex % LINEAGE_COLORS.length];
-            const baseBusOffset = isMultiMarriage ? 80 : 20; // 80px drop for multiMarriage to avoid wife card
+            const baseBusOffset = isMultiMarriage ? 88 : 20; // 88px drop for multiMarriage to avoid wife card
             const busOffset = baseBusOffset + (knotIndex % 4) * 8; 
             knotIndex++;
 

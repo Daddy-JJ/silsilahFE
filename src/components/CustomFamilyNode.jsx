@@ -10,7 +10,7 @@ const CustomFamilyNode = ({ data }) => {
       onClick={() => {
         if (data.onSelect) data.onSelect(data);
       }}
-      className={`relative w-64 bg-white rounded-lg border shadow-sm transition-all duration-200 group select-none cursor-pointer ${
+      className={`relative w-64 h-[160px] bg-white rounded-lg border shadow-sm transition-all duration-200 group select-none cursor-pointer flex flex-col justify-between ${
         data.isSelected
           ? 'border-zinc-900 ring-2 ring-[#f7e043] shadow-md'
           : 'border-zinc-200 hover:border-zinc-900 hover:shadow-md'
