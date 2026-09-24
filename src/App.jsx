@@ -374,9 +374,9 @@ export default function App() {
               const intraGroupSep = 40;
               const midX = partnerNode.position.x - intraGroupSep / 2;
               knotX = midX - KNOT_SIZE / 2;
-              // Simpul diletakkan di bawah celah (gap), sejajar dengan bagian Bawah kartu istri
-              // agar garis anak tidak melintasi bagian belakang kartu
-              knotY = partnerNode.position.y + NODE_HEIGHT + 16;
+              // Simpul diletakkan sejajar vertikal dengan bagian tengah kartu istri
+              // agar garis busbar ke istri lurus
+              knotY = partnerNode.position.y + NODE_HEIGHT / 2 - KNOT_SIZE / 2;
 
               knotNodes.push({
                 id: knotId,
@@ -467,7 +467,8 @@ export default function App() {
 
             // Dinamis Color Coding & Bus Staggering
             const lineColor = LINEAGE_COLORS[knotIndex % LINEAGE_COLORS.length];
-            const busOffset = 20 + (knotIndex % 4) * 8; // Offset vertikal: 20px, 28px, 36px, 44px
+            const baseBusOffset = isMultiMarriage ? 80 : 20; // 80px drop for multiMarriage to avoid wife card
+            const busOffset = baseBusOffset + (knotIndex % 4) * 8; 
             knotIndex++;
 
             // 3. Garis dari Bawah Knot -> setiap anak (warna dinamis ke handle atas anak)
