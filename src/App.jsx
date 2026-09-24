@@ -494,6 +494,72 @@ export default function App() {
           // Buat marriage edges HANYA untuk pasangan yang TIDAK punya anak bersama
           // (yang sudah punya anak ditangani oleh knot V-arms di atas)
           const marriagePairs = getAllUniqueMarriagePairs(rawMembers, dbMarriages);
+
+          // =====================================================================
+          // UNIVERSAL MULTI-MARRIAGE KNOT: Istri tanpa anak juga harus pakai knot
+          // =====================================================================
+          // Untuk setiap pasangan tanpa anak yang merupakan bagian dari multi-marriage,
+          // buat simpul (knot) agar garisnya tetap siku-siku (bukan diagonal).
+          marriagePairs.forEach(({ spouseA, spouseB }) => {
+            // Lewati kalau sudah ditangani oleh coupleChildrenMap
+            if (knotPairs.has(`${spouseA.id}_${spouseB.id}`) || knotPairs.has(`${spouseB.id}_${spouseA.id}`)) return;
+
+            const spouseASpouses = getAllSpouses(spouseA.id, rawMembers, dbMarriages);
+            const spouseBSpouses = getAllSpouses(spouseB.id, rawMembers, dbMarriages);
+            const isAMulti = spouseASpouses.length >= 3;
+            const isBMulti = spouseBSpouses.length >= 3;
+            const isMulti = isAMulti || isBMulti;
+
+            if (!isMulti) return; // Monogami / 2 pasangan → biarkan pakai garis langsung
+
+            const anchorNodeData = isAMulti ? spouseA : spouseB;
+            const partnerNodeData = isAMulti ? spouseB : spouseA;
+            const anchorLayoutNode = layouted.nodes.find((n) => n.id === anchorNodeData.id);
+            const partnerLayoutNode = layouted.nodes.find((n) => n.id === partnerNodeData.id);
+            if (!anchorLayoutNode || !partnerLayoutNode) return;
+
+            const knotId = `knot_${anchorNodeData.id}_${partnerNodeData.id}`;
+            const intraGroupSep = 50;
+            const midX = partnerLayoutNode.position.x - intraGroupSep / 2;
+            const knotXPos = midX - KNOT_SIZE / 2;
+            const knotYPos = partnerLayoutNode.position.y + NODE_HEIGHT / 2 - KNOT_SIZE / 2;
+
+            knotNodes.push({
+              id: knotId,
+              type: 'knotNode',
+              position: { x: knotXPos, y: knotYPos },
+              data: { ayahId: anchorNodeData.id, ibuId: partnerNodeData.id },
+              draggable: true,
+              selectable: true,
+            });
+
+            // 1. Busbar dari Anchor (Suami) -> knot-top
+            knotEdges.push({
+              id: `marriage-anchor-${knotId}`,
+              source: anchorNodeData.id,
+              sourceHandle: 'spouse-right',
+              target: knotId,
+              targetHandle: 'knot-top',
+              type: 'jumpEdge',
+              style: { stroke: '#f59e0b', strokeWidth: 2 },
+            });
+
+            // 2. Garis Horizontal dari Knot -> Istri
+            knotEdges.push({
+              id: `marriage-partner-${knotId}`,
+              source: knotId,
+              sourceHandle: 'knot-right',
+              target: partnerNodeData.id,
+              targetHandle: 'spouse-left',
+              type: 'jumpEdge',
+              style: { stroke: '#f59e0b', strokeWidth: 2 },
+            });
+
+            // Tandai agar tidak dibuat lagi sebagai direct marriage edge
+            knotPairs.add(`${anchorNodeData.id}_${partnerNodeData.id}`);
+            knotPairs.add(`${partnerNodeData.id}_${anchorNodeData.id}`);
+          });
+
           const marriageEdges = marriagePairs
             .filter(({ spouseA, spouseB }) => {
               return (
