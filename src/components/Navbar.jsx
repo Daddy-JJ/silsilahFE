@@ -220,7 +220,7 @@ export default function Navbar({
           {/* Lencana & Timer Membership Tahunan */}
           {membershipInfo.isPaid ? (
             membershipInfo.isExpired ? (
-              <div className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-300 shadow-2xs">
+              <div className="hidden lg:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-300 shadow-2xs shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                 <span className="font-bold uppercase">{membershipInfo.planName} • Kedaluwarsa</span>
                 {onOpenUpgrade && currentTree?.role === 'ADMIN_UTAMA' && (
@@ -234,7 +234,7 @@ export default function Navbar({
                 )}
               </div>
             ) : membershipInfo.isExpiringSoon ? (
-              <div className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">
+              <div className="hidden lg:inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs shrink-0">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                 <span className="font-bold">{membershipInfo.planName}</span>
                 <span className="text-amber-700 font-semibold">• Sisa {membershipInfo.diffDays} hari</span>
@@ -258,16 +258,12 @@ export default function Navbar({
                 </span>
               </div>
             )
-          ) : (
-            <span className="hidden 2xl:inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-sm uppercase bg-zinc-100 border border-zinc-200 text-zinc-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Paket Dasar (Akses Selamanya)
-            </span>
-          )}
+          ) : null}
+
         </div>
 
         {/* Center: Capacity & Metrics Widget (Directly inspired by reference status bars) */}
-        <div className="hidden md:flex [@media(max-height:500px)]:!hidden items-center gap-4 bg-zinc-50 border border-zinc-200 px-3.5 py-1.5 rounded-md">
+        <div className="hidden xl:flex [@media(max-height:500px)]:!hidden items-center gap-4 bg-zinc-50 border border-zinc-200 px-3.5 py-1.5 rounded-md shrink-0">
           <div className="flex items-center gap-3">
             <div>
               <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
