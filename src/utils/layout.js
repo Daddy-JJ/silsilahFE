@@ -65,29 +65,48 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
       }
       
       // Tentukan urutan internal dalam group
-      // Untuk poligami: Istri 1 - Suami - Istri 2
       const males = groupMembers.filter(m => m.data?.jenis_kelamin === 'L');
       const females = groupMembers.filter(m => m.data?.jenis_kelamin === 'P');
       const unknowns = groupMembers.filter(m => m.data?.jenis_kelamin !== 'L' && m.data?.jenis_kelamin !== 'P');
       
       let orderedMembers;
-      if (males.length === 1 && females.length === 2) {
-        // Poligami: Istri 1 - Suami - Istri 2
+      let isMultiMarriage = false;
+      let anchorId = null;
+
+      if (males.length === 1 && females.length >= 3) {
+        // Poligami multi-istri (>= 3 istri): Busbar Pattern
+        // Anchor (Suami) di kiri, diikuti istri-istri berurutan
+        isMultiMarriage = true;
+        anchorId = males[0].id;
+        orderedMembers = [males[0], ...females, ...unknowns];
+      } else if (females.length === 1 && males.length >= 3) {
+        // Poliandri multi-suami (>= 3 suami): Busbar Pattern
+        // Anchor (Istri) di kiri, diikuti suami-suami berurutan
+        isMultiMarriage = true;
+        anchorId = females[0].id;
+        orderedMembers = [females[0], ...males, ...unknowns];
+      } else if (males.length === 1 && females.length === 2) {
+        // Poligami 2 pasangan: Istri 1 - Suami - Istri 2 (Simetris)
         orderedMembers = [females[0], males[0], females[1], ...unknowns];
+      } else if (females.length === 1 && males.length === 2) {
+        // Poliandri 2 pasangan: Suami 1 - Istri - Suami 2 (Simetris)
+        orderedMembers = [males[0], females[0], males[1], ...unknowns];
       } else {
         // Default: Laki-laki di kiri, Perempuan di kanan
         orderedMembers = [...males, ...females, ...unknowns];
       }
       
       const groupId = `group_${groupMembers.map(m => m.id).join('_')}`;
-      // Gunakan jarak 60px antar pasangan agar simpul knot (24px) leluasa di tengah
-      const intraGroupSep = 60;
+      // Gunakan jarak 80px jika multi-marriage agar jalur busbar & simpul knot leluasa
+      const intraGroupSep = isMultiMarriage ? 80 : 60;
       const groupObj = {
         id: groupId,
         members: orderedMembers,
         width: orderedMembers.length * NODE_WIDTH + (orderedMembers.length - 1) * intraGroupSep,
-        height: NODE_HEIGHT,
+        height: isMultiMarriage ? NODE_HEIGHT + 90 : NODE_HEIGHT,
         intraGroupSep,
+        isMultiMarriage,
+        anchorId,
       };
       
       spouseGroups.push(groupObj);
@@ -96,15 +115,15 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
   });
 
   // --- 2. Buat Dagre Graph Virtual ---
+  const hasMultiMarriage = spouseGroups.some(g => g.isMultiMarriage);
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({
     rankdir: direction,
     nodesep: NODE_SEP,
-    ranksep: RANK_SEP,
+    ranksep: hasMultiMarriage ? RANK_SEP + 60 : RANK_SEP,
     marginx: 60,
     marginy: 60,
-    // Pastikan setiap node mendapat cukup ruang
     acyclicer: 'greedy',
     ranker: 'network-simplex',
   });
@@ -152,8 +171,32 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
       });
 
       const childrenNodes = groupsWithTargetChild.map(g => g.actualChild);
-      const firstParentId = parentGroup.members[0].id;
-      const sortedChildrenNodes = sortChildrenByOrder(childrenNodes, treeId, firstParentId);
+      let sortedChildrenNodes;
+      if (parentGroup.isMultiMarriage) {
+        // Kelompokkan anak berdasarkan urutan pasangannya di group (Istri 1, Istri 2, Istri 3)
+        // agar anak-anak berjejer persis di bawah simpul ibu mereka masing-masing
+        const partnerOrder = parentGroup.members.filter(m => m.id !== parentGroup.anchorId).map(m => m.id);
+        
+        const getChildPartnerId = (childNode) => {
+          const cData = childNode.data || {};
+          return partnerOrder.includes(cData.ayah_id) ? cData.ayah_id : cData.ibu_id;
+        };
+
+        sortedChildrenNodes = [...childrenNodes].sort((a, b) => {
+          const partnerA = getChildPartnerId(a);
+          const partnerB = getChildPartnerId(b);
+          const idxA = partnerOrder.indexOf(partnerA);
+          const idxB = partnerOrder.indexOf(partnerB);
+          
+          if (idxA !== idxB) {
+            return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+          }
+          return 0;
+        });
+      } else {
+        const firstParentId = parentGroup.members[0].id;
+        sortedChildrenNodes = sortChildrenByOrder(childrenNodes, treeId, firstParentId);
+      }
 
       const sortedGroups = sortedChildrenNodes.map(childNode =>
         groupsWithTargetChild.find(g => g.actualChild.id === childNode.id)?.group
@@ -275,11 +318,23 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
     let startX = centerX - group.width / 2 + NODE_WIDTH / 2;
 
     group.members.forEach(member => {
+      let nodeY = centerY - NODE_HEIGHT / 2;
+      
+      if (group.isMultiMarriage) {
+        if (member.id === group.anchorId) {
+          // Anchor diangkat ke atas untuk koridor busbar overhead (90px lebih tinggi dari para istri)
+          nodeY = centerY - (group.height / 2);
+        } else {
+          // Para pasangan di level bawah
+          nodeY = centerY + (group.height / 2) - NODE_HEIGHT;
+        }
+      }
+
       layoutedNodes.push({
         ...member,
         position: {
           x: startX - NODE_WIDTH / 2, // React Flow: X dari sisi kiri node
-          y: centerY - NODE_HEIGHT / 2, // React Flow: Y dari sisi atas node
+          y: nodeY,
         },
       });
       startX += NODE_WIDTH + group.intraGroupSep;

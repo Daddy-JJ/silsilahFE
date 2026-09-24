@@ -20,6 +20,7 @@ import {
 import {
   hasSpouseRelation,
   getAllUniqueMarriagePairs,
+  getAllSpouses,
 } from './utils/marriageUtils';
 import { exportTreeAsHTML } from './utils/exportHtml';
 import { downloadImage } from './utils/exportImage';
@@ -350,55 +351,117 @@ export default function App() {
 
             const knotId = `knot_${ayahId}_${ibuId}`;
 
-            // Tentukan pasangan yang berada di kiri dan di kanan berdasarkan posisi X
-            const isAyahLeft = ayahLayoutNode.position.x <= ibuLayoutNode.position.x;
-            const leftNode = isAyahLeft ? ayahLayoutNode : ibuLayoutNode;
-            const rightNode = isAyahLeft ? ibuLayoutNode : ayahLayoutNode;
-            const leftId = isAyahLeft ? ayahId : ibuId;
-            const rightId = isAyahLeft ? ibuId : ayahId;
+            // Periksa apakah pasangan ini adalah bagian dari multi-marriage (>= 3 pasangan)
+            const ayahSpouses = getAllSpouses(ayahId, rawMembers, dbMarriages);
+            const ibuSpouses = getAllSpouses(ibuId, rawMembers, dbMarriages);
+            const isAyahMulti = ayahSpouses.length >= 3;
+            const isIbuMulti = ibuSpouses.length >= 3;
+            const isMultiMarriage = isAyahMulti || isIbuMulti;
 
-            // Posisi knot: Tepat di tengah celah horizontal antar pasangan, sedikit di bawah kotak nama
-            const leftEdgeRight = leftNode.position.x + NODE_WIDTH;
-            const rightEdgeLeft = rightNode.position.x;
-            const midX = (leftEdgeRight + rightEdgeLeft) / 2;
-            const parentBottomY = Math.max(leftNode.position.y, rightNode.position.y) + NODE_HEIGHT;
+            let knotX, knotY;
 
-            const knotX = midX - KNOT_SIZE / 2;
-            const knotY = parentBottomY + 8; // Sedikit di bawah kotak nama agar garis silsilah tidak melintas di belakang kartu
+            if (isMultiMarriage) {
+              // =====================================================================
+              // BUSBAR ROUTING PATTERN (Standar Genealogi Poligami / Multi-Pernikahan)
+              // =====================================================================
+              // Anchor (Suami) berada di kiri atas, partner (Istri) berjejer di sampingnya.
+              // Simpul knot diletakkan tepat di celah sisi kiri partner masing-masing.
+              const anchorNode = isAyahMulti ? ayahLayoutNode : ibuLayoutNode;
+              const partnerNode = isAyahMulti ? ibuLayoutNode : ayahLayoutNode;
+              const anchorId = anchorNode.id;
+              const partnerId = partnerNode.id;
 
-            knotNodes.push({
-              id: knotId,
-              type: 'knotNode',
-              position: { x: knotX, y: knotY },
-              data: {
-                ayahId,
-                ibuId,
-              },
-              draggable: true, // Simpul knot bebas digeser oleh pengguna
-              selectable: true,
-            });
+              const intraGroupSep = 80;
+              const midX = partnerNode.position.x - intraGroupSep / 2;
+              knotX = midX - KNOT_SIZE / 2;
+              knotY = partnerNode.position.y + NODE_HEIGHT / 2 - KNOT_SIZE / 2;
 
-            // 1. Garis dari pasangan Kiri -> Sisi Atas Knot (satu lekukan 90 derajat rapi)
-            knotEdges.push({
-              id: `marriage-left-${knotId}`,
-              source: leftId,
-              sourceHandle: 'spouse-right',
-              target: knotId,
-              targetHandle: 'knot-top',
-              type: 'jumpEdge',
-              style: { stroke: '#f59e0b', strokeWidth: 2 },
-            });
+              knotNodes.push({
+                id: knotId,
+                type: 'knotNode',
+                position: { x: knotX, y: knotY },
+                data: {
+                  ayahId,
+                  ibuId,
+                },
+                draggable: true,
+                selectable: true,
+              });
 
-            // 2. Garis dari pasangan Kanan -> Sisi Atas Knot (satu lekukan 90 derajat simetris)
-            knotEdges.push({
-              id: `marriage-right-${knotId}`,
-              source: rightId,
-              sourceHandle: 'spouse-left-src',
-              target: knotId,
-              targetHandle: 'knot-top',
-              type: 'jumpEdge',
-              style: { stroke: '#f59e0b', strokeWidth: 2 },
-            });
+              // 1. Garis Busbar Overhead dari Anchor (Suami) -> knot-top (sisi atas simpul)
+              knotEdges.push({
+                id: `marriage-anchor-${knotId}`,
+                source: anchorId,
+                sourceHandle: 'spouse-right',
+                target: knotId,
+                targetHandle: 'knot-top',
+                type: 'jumpEdge',
+                style: { stroke: '#f59e0b', strokeWidth: 2 },
+              });
+
+              // 2. Garis Horizontal dari Pasangan (Istri) -> knot-right (sisi kanan simpul)
+              knotEdges.push({
+                id: `marriage-partner-${knotId}`,
+                source: partnerId,
+                sourceHandle: 'spouse-left-src',
+                target: knotId,
+                targetHandle: 'knot-right',
+                type: 'jumpEdge',
+                style: { stroke: '#f59e0b', strokeWidth: 2 },
+              });
+            } else {
+              // =====================================================================
+              // STANDARD MONOGAMY / 2-SPOUSE PATTERN (TIDAK BERUBAH)
+              // =====================================================================
+              const isAyahLeft = ayahLayoutNode.position.x <= ibuLayoutNode.position.x;
+              const leftNode = isAyahLeft ? ayahLayoutNode : ibuLayoutNode;
+              const rightNode = isAyahLeft ? ibuLayoutNode : ayahLayoutNode;
+              const leftId = isAyahLeft ? ayahId : ibuId;
+              const rightId = isAyahLeft ? ibuId : ayahId;
+
+              // Posisi knot: Tepat di tengah celah horizontal antar pasangan, sedikit di bawah kotak nama
+              const leftEdgeRight = leftNode.position.x + NODE_WIDTH;
+              const rightEdgeLeft = rightNode.position.x;
+              const midX = (leftEdgeRight + rightEdgeLeft) / 2;
+              const parentBottomY = Math.max(leftNode.position.y, rightNode.position.y) + NODE_HEIGHT;
+
+              knotX = midX - KNOT_SIZE / 2;
+              knotY = parentBottomY + 8; // Sedikit di bawah kotak nama agar garis silsilah tidak melintas di belakang kartu
+
+              knotNodes.push({
+                id: knotId,
+                type: 'knotNode',
+                position: { x: knotX, y: knotY },
+                data: {
+                  ayahId,
+                  ibuId,
+                },
+                draggable: true, // Simpul knot bebas digeser oleh pengguna
+                selectable: true,
+              });
+
+              // 1. Garis dari pasangan Kiri -> Sisi Atas Knot (satu lekukan 90 derajat rapi)
+              knotEdges.push({
+                id: `marriage-left-${knotId}`,
+                source: leftId,
+                sourceHandle: 'spouse-right',
+                target: knotId,
+                targetHandle: 'knot-top',
+                type: 'jumpEdge',
+                style: { stroke: '#f59e0b', strokeWidth: 2 },
+              });
+
+              // 2. Garis dari pasangan Kanan -> Sisi Atas Knot (satu lekukan 90 derajat simetris)
+              knotEdges.push({
+                id: `marriage-right-${knotId}`,
+                source: rightId,
+                sourceHandle: 'spouse-left-src',
+                target: knotId,
+                targetHandle: 'knot-top',
+                type: 'jumpEdge',
+                style: { stroke: '#f59e0b', strokeWidth: 2 },
+              });
+            }
 
             // Dinamis Color Coding & Bus Staggering
             const lineColor = LINEAGE_COLORS[knotIndex % LINEAGE_COLORS.length];
