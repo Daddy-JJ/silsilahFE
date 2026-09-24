@@ -3,7 +3,7 @@ import { sortChildrenByOrder } from './orderUtils';
 import { getAllSpouses } from './marriageUtils';
 
 export const NODE_WIDTH = 260;
-export const NODE_HEIGHT = 140;
+export const NODE_HEIGHT = 160;
 export const NODE_SEP = 60;   // Increased horizontal gap between nodes
 export const RANK_SEP = 100;  // Increased vertical gap between generations
 
@@ -97,8 +97,8 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
       }
       
       const groupId = `group_${groupMembers.map(m => m.id).join('_')}`;
-      // Gunakan jarak 80px jika multi-marriage agar jalur busbar & simpul knot leluasa
-      const intraGroupSep = isMultiMarriage ? 40 : 60;
+      // Gunakan jarak 50px jika multi-marriage agar jalur busbar & simpul knot leluasa
+      const intraGroupSep = isMultiMarriage ? 50 : 60;
       const groupObj = {
         id: groupId,
         members: orderedMembers,
@@ -254,7 +254,12 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
       if (index > 0) childrenTotalWidth += NODE_SEP;
     });
     
-    const width = Math.max(group.width, childrenTotalWidth);
+    let width = Math.max(group.width, childrenTotalWidth);
+    if (group?.isMultiMarriage) {
+      // Berikan ruang ekstra di kiri untuk anchor (suami) agar tidak tertabrak subtree anak
+      const anchorReserve = NODE_WIDTH + group.intraGroupSep;
+      width = Math.max(group.width, anchorReserve + childrenTotalWidth);
+    }
     subtreeWidths.set(groupId, width);
     return width;
   }
@@ -264,6 +269,7 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
   function assignXCoordinates(groupId, startX) {
     const sWidth = subtreeWidths.get(groupId) || 0;
     const children = treeChildren.get(groupId) || [];
+    const group = spouseGroups.find(g => g.id === groupId);
     
     const centerX = startX + sWidth / 2;
     const dNode = dagreGraph.node(groupId);
@@ -276,6 +282,11 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
     });
     
     let childStartX = centerX - (childrenTotalWidth / 2);
+    if (group?.isMultiMarriage) {
+      // Geser titik pusat anak ke kanan agar sejajar dengan rentang para istri (di sebelah kanan suami)
+      const wivesShift = (NODE_WIDTH + group.intraGroupSep) / 2;
+      childStartX = (centerX + wivesShift) - (childrenTotalWidth / 2);
+    }
     
     children.forEach(child => {
       assignXCoordinates(child.id, childStartX);
