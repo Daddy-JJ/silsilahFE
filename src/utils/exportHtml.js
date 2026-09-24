@@ -47,9 +47,6 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
            <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #18181b; font-weight: 800; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${n.data?.nama_lengkap || '-'}</h4>
            <div style="font-size: 11px; color: #71717a; font-family: monospace;">Lahir: ${tl}</div>
         </div>
-        <div style="padding: 6px 14px; background: #fafafa; border-top: 1px solid #f4f4f5; display: flex; align-items: center; gap: 6px; font-size: 10px; color: #71717a; font-family: monospace;">
-           <span>ID: ${n.id}</span>
-        </div>
       </div>
     `;
     })
@@ -89,13 +86,17 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
         return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
       }
 
-      // B. Knot -> Istri (Partner) (Multi-Marriage: Garis Lurus Horizontal)
+      // B. Knot -> Istri (Partner) (Multi-Marriage: Garis Horizontal Lurus)
       if (e.id.startsWith('marriage-partner-')) {
         const x1 = sourceNode.position.x + offsetX + 24;
         const y1 = sourceNode.position.y + offsetY + 12;
         const x2 = targetNode.position.x + offsetX;
         const y2 = targetNode.position.y + offsetY + 80;
-        return `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
+        // Garis horizontal lurus pada ketinggian simpul, lalu siku ke handle istri jika beda Y
+        if (Math.abs(y1 - y2) < 3) {
+          return `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
+        }
+        return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
       }
 
       // C. Monogamy Pasangan Kiri -> Knot (Siku Lurus)
