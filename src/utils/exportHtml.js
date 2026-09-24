@@ -1,7 +1,7 @@
 export function exportTreeAsHTML(nodes, edges, treeName) {
   if (nodes.length === 0) return;
 
-  // 1. Calculate bounding box of the tree to set document size
+  // 1. Hitung Bounding Box kanvas berdasarkan node & simpul
   let minX = Infinity,
     minY = Infinity,
     maxX = -Infinity,
@@ -10,96 +10,138 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
   nodes.forEach((n) => {
     if (n.position.x < minX) minX = n.position.x;
     if (n.position.y < minY) minY = n.position.y;
-    // Approximate node dimensions
-    if (n.position.x + 256 > maxX) maxX = n.position.x + 256; 
-    if (n.position.y + 120 > maxY) maxY = n.position.y + 120;
+    // Dimensi: 256x160 untuk familyNode, 24x24 untuk knotNode
+    const w = n.type === 'knotNode' ? 24 : 256;
+    const h = n.type === 'knotNode' ? 24 : 160;
+    if (n.position.x + w > maxX) maxX = n.position.x + w;
+    if (n.position.y + h > maxY) maxY = n.position.y + h;
   });
 
   const padding = 100;
-  const width = maxX - minX + padding * 2;
+  const width = Math.max(1200, maxX - minX + padding * 2);
   const height = maxY - minY + padding * 2;
   const offsetX = -minX + padding;
   const offsetY = -minY + padding;
 
-  // 2. Generate Nodes HTML (Absolute positioned divs)
-  const nodesHtml = nodes
+  // 2. Generate Regular Nodes HTML (Kartu Anggota Keluarga)
+  const regularNodesHtml = nodes
     .filter((n) => n.type !== 'knotNode')
     .map((n) => {
       const isMale = n.data?.jenis_kelamin === 'L';
       const left = n.position.x + offsetX;
       const top = n.position.y + offsetY;
       const genderLabel = isMale ? 'L' : 'P';
-      const color = isMale ? '#18181b' : '#27272a'; // charcoal
-      
+      const color = isMale ? '#18181b' : '#27272a';
       const tl = n.data?.tanggal_lahir ? n.data.tanggal_lahir.split('T')[0] : 'Tidak diketahui';
 
       return `
-      <div style="position: absolute; left: ${left}px; top: ${top}px; width: 256px; background: #ffffff; border: 2px solid ${color}; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: ui-sans-serif, system-ui, sans-serif; overflow: hidden; z-index: 10;">
-        <div style="background: #f4f4f5; padding: 8px 12px; border-bottom: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: space-between;">
+      <div style="position: absolute; left: ${left}px; top: ${top}px; width: 256px; height: 160px; background: #ffffff; border: 2px solid ${color}; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: ui-sans-serif, system-ui, sans-serif; overflow: hidden; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+        <div style="background: #f4f4f5; padding: 6px 12px; border-bottom: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: space-between;">
            <div style="display: flex; align-items: center; gap: 8px;">
              <span style="background: #f7e043; color: black; font-weight: 900; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 11px; font-family: monospace;">${genderLabel}</span>
              <span style="font-size: 10px; color: #71717a; font-weight: bold; text-transform: uppercase;">${isMale ? 'Laki-Laki' : 'Perempuan'}</span>
            </div>
            <span style="font-size: 10px; color: #a1a1aa; font-family: monospace;">v${n.data?.version || 1}</span>
         </div>
-        <div style="padding: 14px;">
-           <h4 style="margin: 0 0 6px 0; font-size: 14px; color: #18181b; font-weight: 800; text-transform: capitalize;">${n.data?.nama_lengkap}</h4>
-           <div style="font-size: 11px; color: #71717a;">Lahir: ${tl}</div>
+        <div style="padding: 12px 14px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+           <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #18181b; font-weight: 800; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${n.data?.nama_lengkap || '-'}</h4>
+           <div style="font-size: 11px; color: #71717a; font-family: monospace;">Lahir: ${tl}</div>
+        </div>
+        <div style="padding: 6px 14px; background: #fafafa; border-top: 1px solid #f4f4f5; display: flex; align-items: center; gap: 6px; font-size: 10px; color: #71717a; font-family: monospace;">
+           <span>ID: ${n.id}</span>
         </div>
       </div>
     `;
     })
     .join('');
 
-  // 3. Generate Edges SVG (Bezier curves)
+  // 2.1 Generate Knot Nodes HTML (Titik Simpul Pernikahan Persis seperti di Web)
+  const knotsHtml = nodes
+    .filter((n) => n.type === 'knotNode')
+    .map((n) => {
+      const left = n.position.x + offsetX;
+      const top = n.position.y + offsetY;
+      return `
+      <div style="position: absolute; left: ${left}px; top: ${top}px; width: 24px; height: 24px; border-radius: 50%; background: #fef3c7; border: 2px solid #f59e0b; box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; font-size: 11px; z-index: 15; user-select: none; box-sizing: border-box;" title="Simpul Silsilah">
+        💍
+      </div>
+    `;
+    })
+    .join('');
+
+  // 3. Generate Edges SVG (Orthogonal Busbar / Smoothstep Siku Sempurna)
   const edgesHtml = edges
     .map((e) => {
       const sourceNode = nodes.find((n) => n.id === e.source);
       const targetNode = nodes.find((n) => n.id === e.target);
       if (!sourceNode || !targetNode) return '';
 
-      // Garis Pasangan Kiri -> Knot
+      const strokeColor = e.style?.stroke || '#18181b';
+      const strokeWidth = e.style?.strokeWidth || 2;
+      const strokeDash = e.style?.strokeDasharray || 'none';
+
+      // A. Busbar Suami (Anchor) -> Knot (Multi-Marriage: Siku Tegak Lurus)
+      if (e.id.startsWith('marriage-anchor-')) {
+        const x1 = sourceNode.position.x + offsetX + 256;
+        const y1 = sourceNode.position.y + offsetY + 80;
+        const x2 = targetNode.position.x + offsetX + 12;
+        const y2 = targetNode.position.y + offsetY;
+        return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
+      }
+
+      // B. Knot -> Istri (Partner) (Multi-Marriage: Garis Lurus Horizontal)
+      if (e.id.startsWith('marriage-partner-')) {
+        const x1 = sourceNode.position.x + offsetX + 24;
+        const y1 = sourceNode.position.y + offsetY + 12;
+        const x2 = targetNode.position.x + offsetX;
+        const y2 = targetNode.position.y + offsetY + 80;
+        return `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
+      }
+
+      // C. Monogamy Pasangan Kiri -> Knot (Siku Lurus)
       if (e.id.startsWith('marriage-left-')) {
         const x1 = sourceNode.position.x + offsetX + 256;
-        const y1 = sourceNode.position.y + offsetY + 60;
+        const y1 = sourceNode.position.y + offsetY + 80;
         const x2 = targetNode.position.x + offsetX + 12;
         const y2 = targetNode.position.y + offsetY;
-        return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="#f59e0b" stroke-width="2.5" />`;
+        return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
       }
 
-      // Garis Pasangan Kanan -> Knot
+      // D. Monogamy Pasangan Kanan -> Knot (Siku Lurus)
       if (e.id.startsWith('marriage-right-')) {
         const x1 = sourceNode.position.x + offsetX;
-        const y1 = sourceNode.position.y + offsetY + 60;
+        const y1 = sourceNode.position.y + offsetY + 80;
         const x2 = targetNode.position.x + offsetX + 12;
         const y2 = targetNode.position.y + offsetY;
-        return `
-          <path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="#f59e0b" stroke-width="2.5" />
-          <circle cx="${x2}" cy="${y2 + 12}" r="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
-          <text x="${x2}" y="${y2 + 16}" font-size="11" text-anchor="middle">💍</text>
-        `;
+        return `<path d="M ${x1} ${y1} L ${x2} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
       }
 
-      // Garis dari Knot -> Anak
+      // E. Garis dari Knot -> Anak (Orthogonal Step Busbar Siku dengan busOffset)
       if (sourceNode.type === 'knotNode') {
         const x1 = sourceNode.position.x + offsetX + 12;
-        const y1 = sourceNode.position.y + offsetY + 12;
+        const y1 = sourceNode.position.y + offsetY + 24;
         const x2 = targetNode.position.x + offsetX + 128;
         const y2 = targetNode.position.y + offsetY;
-        const cy = y1 + (y2 - y1) / 2;
-        return `<path d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}" fill="none" stroke="#18181b" stroke-width="2" />`;
+
+        const busOffset = e.data?.busOffset || 24;
+        const midY = y1 + busOffset;
+
+        if (Math.abs(x1 - x2) < 2) {
+          return `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}" />`;
+        }
+        return `<path d="M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}" />`;
       }
 
-      // Garis Pernikahan Langsung (Pasangan tanpa anak)
+      // F. Garis Pernikahan Langsung (Pasangan tanpa anak)
       if (e.id.startsWith('marriage-') || e.label === '💍') {
         const isSourceLeft = sourceNode.position.x <= targetNode.position.x;
         const leftNode = isSourceLeft ? sourceNode : targetNode;
         const rightNode = isSourceLeft ? targetNode : sourceNode;
 
         const x1 = leftNode.position.x + offsetX + 256;
-        const y1 = leftNode.position.y + offsetY + 60;
+        const y1 = leftNode.position.y + offsetY + 80;
         const x2 = rightNode.position.x + offsetX;
-        const y2 = rightNode.position.y + offsetY + 60;
+        const y2 = rightNode.position.y + offsetY + 80;
         const midX = (x1 + x2) / 2;
 
         return `
@@ -109,18 +151,17 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
         `;
       }
 
-      // Garis Single Parent ke Anak
+      // G. Garis Single Parent ke Anak (Orthogonal Step)
       const x1 = sourceNode.position.x + offsetX + 128;
-      const y1 = sourceNode.position.y + offsetY + 110;
+      const y1 = sourceNode.position.y + offsetY + 160;
       const x2 = targetNode.position.x + offsetX + 128;
       const y2 = targetNode.position.y + offsetY;
+      const midY = y1 + (y2 - y1) / 2;
 
-      const isAyah = sourceNode.data?.jenis_kelamin === 'L';
-      const strokeColor = isAyah ? '#18181b' : '#a1a1aa';
-      const strokeDash = isAyah ? 'none' : '6,6';
-      const cy = y1 + (y2 - y1) / 2;
-
-      return `<path d="M ${x1} ${y1} C ${x1} ${cy}, ${x2} ${cy}, ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-dasharray="${strokeDash}" />`;
+      if (Math.abs(x1 - x2) < 2) {
+        return `<path d="M ${x1} ${y1} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}" />`;
+      }
+      return `<path d="M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDash}" />`;
     })
     .join('');
 
@@ -217,7 +258,8 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
       ${edgesHtml}
     </svg>
     <div class="nodes-layer">
-      ${nodesHtml}
+      ${regularNodesHtml}
+      ${knotsHtml}
     </div>
   </div>
 </body>
