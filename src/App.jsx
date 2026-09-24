@@ -371,10 +371,12 @@ export default function App() {
               const anchorId = anchorNode.id;
               const partnerId = partnerNode.id;
 
-              const intraGroupSep = 80;
+              const intraGroupSep = 40;
               const midX = partnerNode.position.x - intraGroupSep / 2;
               knotX = midX - KNOT_SIZE / 2;
-              knotY = partnerNode.position.y + NODE_HEIGHT / 2 - KNOT_SIZE / 2;
+              // Simpul diletakkan di bawah celah (gap), sejajar dengan bagian Bawah kartu istri
+              // agar garis anak tidak melintasi bagian belakang kartu
+              knotY = partnerNode.position.y + NODE_HEIGHT + 16;
 
               knotNodes.push({
                 id: knotId,
