@@ -29,7 +29,7 @@ export default function AboutFaqModal({ isOpen, onClose }) {
     },
     {
       q: 'Bagaimana cara menggeser dan memperbesar diagram silsilah di laptop?',
-      a: 'Gunakan gestur dua jari pada trackpad (geser 2 jari untuk menggeser kanvas ke segala arah, dan cubit untuk memperbesar/memperkecil). Anda juga bisa mengklik tombol sentral "Rapikan Layout (TB)" kapan saja untuk menata posisi simpul keluarga secara matematis simetris ideal.',
+      a: 'Gunakan gestur dua jari pada trackpad (geser 2 jari untuk menggeser kanvas ke segala arah, dan cubit untuk memperbesar/memperkecil). Anda juga bisa mengklik tombol sentral "Rapikan Layout" kapan saja untuk menata posisi simpul keluarga secara matematis simetris ideal.',
     },
   ];
 

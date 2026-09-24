@@ -219,7 +219,7 @@ export default function UserGuideModal({ isOpen, onClose }) {
                   3. Simpul Perkawinan Interaktif & "Rapikan Layout"
                 </h4>
                 <p>
-                  Titik temu antara sepasang suami-istri ditandai dengan lingkaran simpul (*Knot Node*). Simpul ini dapat <strong>digeser bebas (*draggable*)</strong> oleh pengguna jika ingin menata posisi garis secara manual. Jika ingin merapikan kembali ke posisi simetris ideal secara otomatis, cukup klik tombol <strong>Rapikan Layout (TB)</strong> di tengah bilah atas.
+                  Titik temu antara sepasang suami-istri ditandai dengan lingkaran simpul (*Knot Node*). Simpul ini dapat <strong>digeser bebas (*draggable*)</strong> oleh pengguna jika ingin menata posisi garis secara manual. Jika ingin merapikan kembali ke posisi simetris ideal secara otomatis, cukup klik tombol <strong>Rapikan Layout</strong> di tengah bilah atas.
                 </p>
               </div>
             </div>

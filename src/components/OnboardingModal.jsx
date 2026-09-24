@@ -447,7 +447,7 @@ export default function OnboardingModal({
                       ⚡
                     </span>
                     <span>
-                      Gunakan <strong>scroll 2 jari</strong> pada trackpad untuk menggeser kanvas, serta tombol <strong>Rapikan Layout (TB)</strong> untuk menata garis secara simetris otomatis.
+                      Gunakan <strong>scroll 2 jari</strong> pada trackpad untuk menggeser kanvas, serta tombol <strong>Rapikan Layout</strong> untuk menata garis secara simetris otomatis.
                     </span>
                   </li>
                 </ul>

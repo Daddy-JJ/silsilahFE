@@ -399,13 +399,13 @@ export default function App() {
                 style: { stroke: '#f59e0b', strokeWidth: 2 },
               });
 
-              // 2. Garis Horizontal dari Pasangan (Istri) -> knot-right (sisi kanan simpul)
+              // 2. Garis Horizontal dari Simpul (Knot) -> Pasangan (Istri)
               knotEdges.push({
                 id: `marriage-partner-${knotId}`,
-                source: partnerId,
-                sourceHandle: 'spouse-left-src',
-                target: knotId,
-                targetHandle: 'knot-right',
+                source: knotId,
+                sourceHandle: 'knot-right',
+                target: partnerId,
+                targetHandle: 'spouse-left',
                 type: 'jumpEdge',
                 style: { stroke: '#f59e0b', strokeWidth: 2 },
               });
@@ -937,7 +937,7 @@ export default function App() {
               title="Susun ulang diagram silsilah dari atas ke bawah secara otomatis"
             >
               <Layers className="w-3.5 h-3.5 text-zinc-600" />
-              <span>Rapikan Layout (TB)</span>
+              <span>Rapikan Layout</span>
             </button>
           </div>
         )}
