@@ -51,7 +51,7 @@ const CustomFamilyNode = ({ data }) => {
       />
 
       {/* Top Accent Strip with Yellow Highlight */}
-      <div className="flex items-center justify-between px-3.5 py-2 border-b border-zinc-100 bg-zinc-50/70">
+      <div className="flex items-center justify-between px-3.5 py-1.5 border-b border-zinc-100 bg-zinc-50/70">
         <div className="flex items-center gap-2">
           {/* Yellow square emblem reminiscent of the reference UI */}
           <div className="w-5 h-5 rounded-xs bg-[#f7e043] text-black font-mono font-black text-[10px] flex items-center justify-center shadow-xs">
@@ -94,45 +94,47 @@ const CustomFamilyNode = ({ data }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="p-3.5">
-        <div className="flex items-center gap-3 mb-1">
-          {data.foto_profil ? (
-            <div className="w-10 h-10 rounded-full bg-zinc-200 shrink-0 overflow-hidden border border-zinc-200">
-              <img src={data.foto_profil} alt={data.nama_lengkap} className="w-full h-full object-cover" />
+      <div className="px-3.5 pt-2 pb-2.5 flex-1 flex flex-col justify-between">
+        <div>
+          <div className="flex items-center gap-2.5 mb-1">
+            {data.foto_profil ? (
+              <div className="w-9 h-9 rounded-full bg-zinc-200 shrink-0 overflow-hidden border border-zinc-200">
+                <img src={data.foto_profil} alt={data.nama_lengkap} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-zinc-100 text-zinc-400 border border-zinc-200 flex items-center justify-center shrink-0">
+                <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h4
+                className="font-extrabold text-zinc-900 text-sm leading-snug truncate tracking-tight"
+                title={data.nama_lengkap}
+              >
+                {data.nama_lengkap}
+              </h4>
             </div>
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-zinc-100 text-zinc-400 border border-zinc-200 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <h4
-              className="font-extrabold text-zinc-900 text-sm leading-snug truncate tracking-tight"
-              title={data.nama_lengkap}
-            >
-              {data.nama_lengkap}
-            </h4>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+            <Calendar className="w-3 h-3 text-zinc-400" />
+            <span className="font-mono text-[11px]">
+              {data.tanggal_lahir ? data.tanggal_lahir.split('T')[0] : 'Tgl tdk tercatat'}
+            </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 mb-3">
-          <Calendar className="w-3 h-3 text-zinc-400" />
-          <span className="font-mono text-[11px]">
-            {data.tanggal_lahir ? data.tanggal_lahir.split('T')[0] : 'Tgl tdk tercatat'}
-          </span>
-        </div>
-
         {/* Minimalist Architectural Action Buttons — 3 columns */}
-        <div className="flex items-center gap-1.5 pt-2 border-t border-zinc-100">
+        <div className="flex items-center gap-1.5 pt-1.5 border-t border-zinc-100">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               if (data.onEdit) data.onEdit(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
             title="Edit / Usulkan Perubahan"
           >
             <Edit3 className="w-3 h-3 text-zinc-500" />
@@ -145,7 +147,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddSpouse) data.onAddSpouse(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
             title="Tambah Pasangan (Suami/Istri)"
           >
             <Heart className="w-3 h-3 text-pink-500 fill-pink-500/20" />
@@ -158,7 +160,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddChild) data.onAddChild(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
             title="Tambah Anak Baru"
           >
             <Plus className="w-3 h-3 text-zinc-500" />
