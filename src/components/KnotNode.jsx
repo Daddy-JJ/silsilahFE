@@ -31,7 +31,7 @@ const KnotNode = ({ selected }) => {
         💍
       </span>
 
-      {/* Handle Kiri: Menerima garis pasangan dari kiri */}
+      {/* Handle Kiri: Menerima/meneruskan garis pasangan dari kiri */}
       <Handle
         type="target"
         position={Position.Left}
@@ -45,12 +45,38 @@ const KnotNode = ({ selected }) => {
           top: '50%',
         }}
       />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="knot-left-src"
+        style={{
+          width: 2,
+          height: 2,
+          background: 'transparent',
+          border: 'none',
+          left: -1,
+          top: '50%',
+        }}
+      />
 
-      {/* Handle Kanan: Meneruskan garis pasangan ke kanan */}
+      {/* Handle Kanan: Meneruskan/menerima garis pasangan ke kanan */}
       <Handle
         type="source"
         position={Position.Right}
         id="knot-right"
+        style={{
+          width: 2,
+          height: 2,
+          background: 'transparent',
+          border: 'none',
+          right: -1,
+          top: '50%',
+        }}
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="knot-right-tgt"
         style={{
           width: 2,
           height: 2,
