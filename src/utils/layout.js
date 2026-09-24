@@ -121,7 +121,7 @@ export function getLayoutedElements(nodes, edges, direction = 'TB', treeId = nul
   dagreGraph.setGraph({
     rankdir: direction,
     nodesep: NODE_SEP,
-    ranksep: hasMultiMarriage ? RANK_SEP + 60 : RANK_SEP,
+    ranksep: RANK_SEP,
     marginx: 60,
     marginy: 60,
     acyclicer: 'greedy',
