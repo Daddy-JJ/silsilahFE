@@ -178,6 +178,72 @@ export default function App() {
     }
   }, []);
 
+  // Global ESC key: Menutup modal atau drawer yang sedang aktif untuk navigasi yang responsif & seamless
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if (e.key !== 'Escape') return;
+
+      if (limitModalConfig.isOpen) {
+        closeLimitModal();
+      } else if (isEditModalOpen) {
+        setIsEditModalOpen(false);
+      } else if (isAddModalOpen) {
+        setIsAddModalOpen(false);
+      } else if (isApprovalsOpen) {
+        setIsApprovalsOpen(false);
+      } else if (isCreateTreeOpen) {
+        setIsCreateTreeOpen(false);
+      } else if (isRenameTreeOpen) {
+        setIsRenameTreeOpen(false);
+      } else if (isCollaboratorsOpen) {
+        setIsCollaboratorsOpen(false);
+      } else if (isUpgradeOpen) {
+        setIsUpgradeOpen(false);
+      } else if (isFeedbackOpen) {
+        setIsFeedbackOpen(false);
+      } else if (isUserPanelOpen) {
+        setIsUserPanelOpen(false);
+      } else if (isAboutFaqOpen) {
+        setIsAboutFaqOpen(false);
+      } else if (isGuideOpen) {
+        setIsGuideOpen(false);
+      } else if (isSuperAdminOpen) {
+        setIsSuperAdminOpen(false);
+      } else if (isOnboardingOpen) {
+        setIsOnboardingOpen(false);
+      } else if (isResetPasswordOpen) {
+        setIsResetPasswordOpen(false);
+      } else if (isAuthOpen) {
+        setIsAuthOpen(false);
+      } else if (isDrawerOpen) {
+        setIsDrawerOpen(false);
+        setActiveMemberProfile(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [
+    limitModalConfig.isOpen,
+    closeLimitModal,
+    isEditModalOpen,
+    isAddModalOpen,
+    isApprovalsOpen,
+    isCreateTreeOpen,
+    isRenameTreeOpen,
+    isCollaboratorsOpen,
+    isUpgradeOpen,
+    isFeedbackOpen,
+    isUserPanelOpen,
+    isAboutFaqOpen,
+    isGuideOpen,
+    isSuperAdminOpen,
+    isOnboardingOpen,
+    isResetPasswordOpen,
+    isAuthOpen,
+    isDrawerOpen,
+  ]);
+
   // 1. Cek sesi otentikasi awal (Jangan auto-buka modal agar landing page bersih)
   useEffect(() => {
     const checkAuth = async () => {

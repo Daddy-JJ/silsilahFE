@@ -199,12 +199,13 @@ export default function FeedbackModal({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ceritakan pertanyaan, kendala yang Anda alami, atau jelaskan ide fitur yang ingin Anda usulkan untuk aplikasi silsilah ini..."
+              maxLength={2000}
               className="w-full px-3.5 py-2.5 rounded-lg border border-zinc-300 focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 text-xs sm:text-sm text-zinc-800 placeholder:text-zinc-400 font-sans transition-all resize-none outline-none"
               disabled={isSubmitting}
             />
             <div className="flex justify-between items-center text-[10px] font-mono text-zinc-400 mt-1">
               <span>Minimal 3 karakter</span>
-              <span>{message.length} karakter</span>
+              <span>{message.length}/2000 karakter</span>
             </div>
           </div>
 

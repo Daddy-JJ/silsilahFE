@@ -304,6 +304,8 @@ export default function AuthModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@email.com"
+                    maxLength={254}
+                    autoComplete="email"
                     className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                   />
                 </div>
@@ -378,6 +380,8 @@ export default function AuthModal({
                       value={namaLengkap}
                       onChange={(e) => setNamaLengkap(e.target.value)}
                       placeholder="Contoh: Budi Santoso"
+                      maxLength={100}
+                      autoComplete="name"
                       className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                     />
                   </div>
@@ -393,6 +397,8 @@ export default function AuthModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@email.com"
+                    maxLength={254}
+                    autoComplete="email"
                     className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                   />
                 </div>
@@ -422,6 +428,8 @@ export default function AuthModal({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimal 6 karakter"
+                    maxLength={128}
+                    autoComplete={isRegister ? 'new-password' : 'current-password'}
                     className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                   />
                 </div>

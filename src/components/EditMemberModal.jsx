@@ -174,8 +174,14 @@ export default function EditMemberModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden border border-zinc-200">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden border border-zinc-200 cursor-default"
+      >
         {/* Header */}
         <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
           <div className="flex items-center gap-2">
@@ -280,6 +286,8 @@ export default function EditMemberModal({
               disabled={!canEdit}
               value={namaLengkap}
               onChange={(e) => setNamaLengkap(e.target.value)}
+              maxLength={100}
+              autoComplete="off"
               className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 outline-none disabled:bg-zinc-100 transition-colors"
             />
           </div>
