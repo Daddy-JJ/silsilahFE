@@ -80,6 +80,11 @@ async function fetchWithAuth(endpoint, options = {}) {
   }
 
   if (!response.ok) {
+    // Jika token kadaluwarsa atau di-blacklist, bersihkan otomatis agar
+    // aplikasi kembali ke kondisi tamu (tidak ada half-authenticated state)
+    if (response.status === 401) {
+      setToken(null);
+    }
     const error = new Error(resJson.message || 'Terjadi kesalahan pada permintaan');
     error.status = response.status;
     error.data = resJson;

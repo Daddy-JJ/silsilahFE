@@ -1016,12 +1016,12 @@ export default function App() {
           <div className="hidden sm:flex absolute top-2 [@media(min-height:501px)]:top-4 right-4 z-10 items-center gap-2">
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 try {
-                  downloadImage(getNodesBounds, getViewportForBounds, nodes, 'png', currentTree?.nama_silsilah || 'Keluarga');
+                  await downloadImage(getNodesBounds, getViewportForBounds, nodes, 'png', currentTree?.nama_silsilah || 'Keluarga');
                   showNotification('Mengekspor gambar beresolusi tinggi...');
                 } catch (e) {
-                  showNotification(e.message, 'error');
+                  showNotification(e.message || 'Gagal mengekspor gambar.', 'error');
                 }
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/95 backdrop-blur-xs border border-zinc-300 hover:border-zinc-900 hover:bg-white text-zinc-800 text-xs font-mono font-bold uppercase tracking-wider shadow-xs transition-all"

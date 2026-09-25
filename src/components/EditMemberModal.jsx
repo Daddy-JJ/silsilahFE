@@ -49,8 +49,29 @@ export default function EditMemberModal({
   const isContributor = userRole === 'KONTRIBUTOR';
   const canEdit = isAdmin || isContributor;
 
-  const maleMembers = members.filter((m) => m.jenis_kelamin === 'L' && m.id !== member.id);
-  const femaleMembers = members.filter((m) => m.jenis_kelamin === 'P' && m.id !== member.id);
+  /**
+   * Kumpulkan seluruh ID keturunan (anak, cucu, dst) dari anggota ini secara rekursif.
+   * Digunakan untuk mencegah siklus silsilah (A sebagai orang tua dari B, B sebagai orang tua dari A).
+   * Siklus menyebabkan Dagre crash karena DAG tidak boleh memiliki siklus.
+   */
+  function getDescendantIds(memberId, allMembers, visited = new Set()) {
+    if (visited.has(memberId)) return visited;
+    visited.add(memberId);
+    allMembers
+      .filter((m) => m.ayah_id === memberId || m.ibu_id === memberId)
+      .forEach((child) => getDescendantIds(child.id, allMembers, visited));
+    return visited;
+  }
+
+  const descendantIds = getDescendantIds(member.id, members);
+
+  // Filter parent candidates: exclude diri sendiri DAN seluruh keturunannya
+  const maleMembers = members.filter(
+    (m) => m.jenis_kelamin === 'L' && !descendantIds.has(m.id)
+  );
+  const femaleMembers = members.filter(
+    (m) => m.jenis_kelamin === 'P' && !descendantIds.has(m.id)
+  );
 
   const handleFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
