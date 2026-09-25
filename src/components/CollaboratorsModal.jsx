@@ -69,7 +69,9 @@ export default function CollaboratorsModal({
     (c) => c.role !== 'ADMIN_UTAMA' || c.user_id !== currentTree.created_by_user_id
   );
   const totalOccupiedSlots = invitedCollaborators.length + pendingInvitations.length;
-  const isLimitReached = totalOccupiedSlots >= 1;
+  // Baca batas kolaborator dinamis dari paket aktif (FREE=1, KELUARGA_BESAR=3, DINASTI=5)
+  const maxCollaborators = currentTree?.max_collaborators ?? 1;
+  const isLimitReached = totalOccupiedSlots >= maxCollaborators;
 
   const handleInvite = async (e) => {
     e.preventDefault();
@@ -206,15 +208,15 @@ export default function CollaboratorsModal({
                     <span>Undang Kerabat ke Pohon Ini</span>
                   </div>
                   <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                    {totalOccupiedSlots}/1 Kuota Terpakai
+                    {totalOccupiedSlots}/{maxCollaborators} Kuota Terpakai
                   </span>
                 </div>
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-900 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-bold">Batas Kolaborator Fase 1 Telah Tercapai</div>
+                    <div className="font-bold">Batas Kolaborator Telah Tercapai</div>
                     <p className="text-[11px] text-amber-800/90 mt-0.5 leading-relaxed">
-                      Pada fase awal ini, setiap semesta dapat mengundang maksimal 1 kolaborator aktif atau pending.
+                      Semesta ini dapat mengundang maksimal {maxCollaborators} kolaborator aktif atau pending.
                       Anda dapat membatalkan undangan tertunda di bawah untuk mengganti alamat email penerima.
                     </p>
                   </div>
@@ -236,7 +238,7 @@ export default function CollaboratorsModal({
                     <span>Undang Kerabat ke Pohon Ini</span>
                   </div>
                   <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-zinc-200 text-zinc-700">
-                    {totalOccupiedSlots}/1 Kuota Terpakai
+                    {totalOccupiedSlots}/{maxCollaborators} Kuota Terpakai
                   </span>
                 </div>
 

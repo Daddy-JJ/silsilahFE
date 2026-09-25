@@ -9,11 +9,13 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  if (!isOpen || !imageSrc) return null;
-
-  const handleCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
+  // PENTING: useCallback harus SELALU dipanggil sebelum early return
+  // agar urutan pemanggilan hooks konsisten di setiap render (Rules of Hooks)
+  const handleCropComplete = useCallback((croppedArea, cap) => {
+    setCroppedAreaPixels(cap);
   }, []);
+
+  if (!isOpen || !imageSrc) return null;
 
   const showCroppedImage = async () => {
     try {

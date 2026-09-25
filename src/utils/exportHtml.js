@@ -1,3 +1,19 @@
+/**
+ * Mencegah XSS: Semua data yang berasal dari pengguna (nama, tanggal, judul)
+ * WAJIB melalui fungsi ini sebelum dimasukkan ke dalam konten HTML statis.
+ * @param {any} str - Nilai yang akan di-escape
+ * @returns {string} String aman bebas HTML entity injection
+ */
+function escapeHtml(str) {
+  const s = str == null ? '' : String(str);
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export function exportTreeAsHTML(nodes, edges, treeName) {
   if (nodes.length === 0) return;
 
@@ -33,6 +49,10 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
       const genderLabel = isMale ? 'L' : 'P';
       const color = isMale ? '#18181b' : '#27272a';
       const tl = n.data?.tanggal_lahir ? n.data.tanggal_lahir.split('T')[0] : 'Tidak diketahui';
+      // Escape semua data user sebelum dimasukkan ke HTML (anti XSS)
+      const safeName = escapeHtml(n.data?.nama_lengkap || '-');
+      const safeTl = escapeHtml(tl);
+      const safeVersion = escapeHtml(n.data?.version || 1);
 
       return `
       <div style="position: absolute; left: ${left}px; top: ${top}px; width: 256px; height: 160px; background: #ffffff; border: 2px solid ${color}; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: ui-sans-serif, system-ui, sans-serif; overflow: hidden; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
@@ -41,11 +61,11 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
              <span style="background: #f7e043; color: black; font-weight: 900; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 11px; font-family: monospace;">${genderLabel}</span>
              <span style="font-size: 10px; color: #71717a; font-weight: bold; text-transform: uppercase;">${isMale ? 'Laki-Laki' : 'Perempuan'}</span>
            </div>
-           <span style="font-size: 10px; color: #a1a1aa; font-family: monospace;">v${n.data?.version || 1}</span>
+           <span style="font-size: 10px; color: #a1a1aa; font-family: monospace;">v${safeVersion}</span>
         </div>
         <div style="padding: 12px 14px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-           <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #18181b; font-weight: 800; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${n.data?.nama_lengkap || '-'}</h4>
-           <div style="font-size: 11px; color: #71717a; font-family: monospace;">Lahir: ${tl}</div>
+           <h4 style="margin: 0 0 4px 0; font-size: 14px; color: #18181b; font-weight: 800; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${safeName}</h4>
+           <div style="font-size: 11px; color: #71717a; font-family: monospace;">Lahir: ${safeTl}</div>
         </div>
       </div>
     `;
@@ -167,12 +187,13 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
     .join('');
 
   // 4. Wrap in valid HTML5
+  const safeTreeName = escapeHtml(treeName);
   const htmlContent = `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Silsilah: ${treeName}</title>
+  <title>Silsilah: ${safeTreeName}</title>
   <style>
     body { 
       background: #fafafa; 
@@ -248,7 +269,7 @@ export function exportTreeAsHTML(nodes, edges, treeName) {
 </head>
 <body>
   <div class="header">
-    <h1>${treeName}</h1>
+    <h1>${safeTreeName}</h1>
     <p>Diekspor pada: ${new Date().toLocaleString('id-ID')}</p>
   </div>
   
