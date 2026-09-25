@@ -111,10 +111,13 @@ export default function EditMemberModal({
       const compressedBase64 = await fileToBase64(compressedFile);
       
       setFotoProfil(compressedBase64);
-    } catch (error) {
+    } catch (_err) {
       setErrorMsg('Gagal mengompres gambar.');
     } finally {
       setLoading(false);
+      // Bebaskan blob URL dari memori browser agar tidak terjadi memory leak
+      // URL.createObjectURL() mencadangkan memori hingga direvokeObjectURL
+      URL.revokeObjectURL(croppedImageBlobUrl);
     }
   };
 

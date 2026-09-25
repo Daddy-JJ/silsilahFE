@@ -722,12 +722,24 @@ export default function App() {
   // Handler Update Langsung (Admin Utama)
   const handleUpdateDirect = async (memberId, currentVersion, patchData) => {
     if (!currentTree) return;
-    const res = await api.members.updateDirect(currentTree.id, memberId, currentVersion, patchData);
-    if (res.success) {
-      showNotification('Data anggota berhasil diperbarui.');
-      await loadTreeData(currentTree.id);
-      if (activeMemberProfile?.id === memberId) {
-        setActiveMemberProfile(res.data);
+    try {
+      const res = await api.members.updateDirect(currentTree.id, memberId, currentVersion, patchData);
+      if (res.success) {
+        showNotification('Data anggota berhasil diperbarui.');
+        await loadTreeData(currentTree.id);
+        if (activeMemberProfile?.id === memberId) {
+          setActiveMemberProfile(res.data);
+        }
+      }
+    } catch (err) {
+      // 409 = Konflik versi (Optimistic Locking): data sudah diubah oleh kolaborator lain
+      if (err.status === 409) {
+        showNotification(
+          'Konflik versi: Data anggota ini sudah diubah oleh pengguna lain. Silakan muat ulang pohon silsilah dan coba lagi.',
+          'error'
+        );
+      } else {
+        showNotification(err.message || 'Gagal memperbarui data anggota.', 'error');
       }
     }
   };
@@ -735,36 +747,48 @@ export default function App() {
   // Handler Usulan Perubahan (Kontributor)
   const handleProposeChange = async (proposalData) => {
     if (!currentTree) return;
-    const res = await api.approvals.propose(currentTree.id, proposalData);
-    if (res.success) {
-      showNotification('Usulan perubahan berhasil dikirimkan ke Admin Utama.');
-      await loadTreeData(currentTree.id);
+    try {
+      const res = await api.approvals.propose(currentTree.id, proposalData);
+      if (res.success) {
+        showNotification('Usulan perubahan berhasil dikirimkan ke Admin Utama.');
+        await loadTreeData(currentTree.id);
+      }
+    } catch (err) {
+      showNotification(err.message || 'Gagal mengirimkan usulan perubahan.', 'error');
     }
   };
 
   // Handler Hapus Anggota
   const handleDeleteMember = async (memberId) => {
     if (!currentTree) return;
-    const res = await api.members.deleteMember(currentTree.id, memberId);
-    if (res.success) {
-      showNotification('Anggota silsilah berhasil dihapus.');
-      setIsDrawerOpen(false);
-      setActiveMemberProfile(null);
-      await loadTreeData(currentTree.id);
+    try {
+      const res = await api.members.deleteMember(currentTree.id, memberId);
+      if (res.success) {
+        showNotification('Anggota silsilah berhasil dihapus.');
+        setIsDrawerOpen(false);
+        setActiveMemberProfile(null);
+        await loadTreeData(currentTree.id);
+      }
+    } catch (err) {
+      showNotification(err.message || 'Gagal menghapus anggota.', 'error');
     }
   };
 
   // Handler Resolusi Usulan
   const handleResolveApproval = async (approvalId, action, reviewNotes) => {
     if (!currentTree) return;
-    const res = await api.approvals.resolve(currentTree.id, approvalId, action, reviewNotes);
-    if (res.success) {
-      showNotification(
-        action === 'APPROVED'
-          ? 'Usulan disetujui & versi data dinaikkan.'
-          : 'Usulan perubahan ditolak.'
-      );
-      await loadTreeData(currentTree.id);
+    try {
+      const res = await api.approvals.resolve(currentTree.id, approvalId, action, reviewNotes);
+      if (res.success) {
+        showNotification(
+          action === 'APPROVED'
+            ? 'Usulan disetujui & versi data dinaikkan.'
+            : 'Usulan perubahan ditolak.'
+        );
+        await loadTreeData(currentTree.id);
+      }
+    } catch (err) {
+      showNotification(err.message || 'Gagal memproses usulan.', 'error');
     }
   };
 
