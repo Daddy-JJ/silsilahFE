@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../utils/cropUtils';
-import { X, Check, Loader2 } from 'lucide-react';
+import { X, Check, Loader2, AlertCircle } from 'lucide-react';
 
 export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropComplete }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // PENTING: useCallback harus SELALU dipanggil sebelum early return
   // agar urutan pemanggilan hooks konsisten di setiap render (Rules of Hooks)
@@ -18,6 +19,7 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
   if (!isOpen || !imageSrc) return null;
 
   const showCroppedImage = async () => {
+    setErrorMsg('');
     try {
       setIsProcessing(true);
       const croppedImageBlobUrl = await getCroppedImg(
@@ -29,8 +31,7 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
       // Kirim URL blob hasil crop ke parent
       onCropComplete(croppedImageBlobUrl);
     } catch (e) {
-      console.error(e);
-      alert('Gagal memotong gambar.');
+      setErrorMsg(e?.message || 'Gagal memproses dan memotong gambar. Silakan coba kembali.');
     } finally {
       setIsProcessing(false);
     }
@@ -63,7 +64,13 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
         </div>
 
         {/* Controls */}
-        <div className="p-4 bg-white flex flex-col gap-4">
+        <div className="p-4 bg-white flex flex-col gap-3">
+          {errorMsg && (
+            <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-800 rounded text-xs flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
           <div className="flex items-center gap-4">
             <span className="text-xs font-mono text-zinc-500">ZOOM</span>
             <input

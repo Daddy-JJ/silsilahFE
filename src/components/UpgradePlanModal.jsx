@@ -142,7 +142,6 @@ export default function UpgradePlanModal({
       // 2. Jalankan Duitku Pop SDK (prioritaskan window.duitku.run atau window.checkout.process)
       const checkoutHandlers = {
         successEvent: function (result) {
-          console.log('[Duitku Checkout Success]', result);
           setIsLoading(false);
           const oneYearLater = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
           if (currentTree?.id) {
@@ -171,7 +170,6 @@ export default function UpgradePlanModal({
           onClose();
         },
         pendingEvent: function (result) {
-          console.log('[Duitku Checkout Pending]', result);
           setIsLoading(false);
           if (showNotification) {
             showNotification(
@@ -191,7 +189,6 @@ export default function UpgradePlanModal({
           }
         },
         closeEvent: function () {
-          console.log('[Duitku Checkout Closed]');
           setIsLoading(false);
         },
       };

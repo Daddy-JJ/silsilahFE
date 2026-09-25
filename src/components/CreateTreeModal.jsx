@@ -34,8 +34,14 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden border border-zinc-200">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden border border-zinc-200 cursor-default"
+      >
         <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-xs bg-[#f7e043] text-black font-mono font-bold text-[10px] flex items-center justify-center">
@@ -77,6 +83,8 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
               value={namaSilsilah}
               onChange={(e) => setNamaSilsilah(e.target.value)}
               placeholder="Contoh: Bani Ahmad Dahlan / Semesta Kakek"
+              maxLength={100}
+              autoComplete="off"
               className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 outline-none transition-colors"
             />
           </div>

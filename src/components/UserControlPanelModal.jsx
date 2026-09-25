@@ -355,6 +355,8 @@ export default function UserControlPanelModal({
                     value={namaLengkap}
                     onChange={(e) => setNamaLengkap(e.target.value)}
                     placeholder="Nama Lengkap Anda"
+                    maxLength={100}
+                    autoComplete="name"
                     className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                   />
                 </div>
@@ -369,6 +371,8 @@ export default function UserControlPanelModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@email.com"
+                    maxLength={254}
+                    autoComplete="email"
                     className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                   />
                   <p className="text-[10px] font-mono text-zinc-400 mt-1">
@@ -432,6 +436,8 @@ export default function UserControlPanelModal({
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
                         placeholder="Masukkan kata sandi lama"
+                        maxLength={128}
+                        autoComplete="current-password"
                         className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                       />
                     </div>
@@ -446,6 +452,8 @@ export default function UserControlPanelModal({
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Minimal 6 karakter"
+                        maxLength={128}
+                        autoComplete="new-password"
                         className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                       />
                     </div>
@@ -460,6 +468,8 @@ export default function UserControlPanelModal({
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Ulangi kata sandi baru"
+                        maxLength={128}
+                        autoComplete="new-password"
                         className="w-full text-xs sm:text-sm border border-zinc-300 rounded px-3 py-2 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
                       />
                     </div>

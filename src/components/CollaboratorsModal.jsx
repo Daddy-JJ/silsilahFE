@@ -156,8 +156,14 @@ export default function CollaboratorsModal({
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden border border-zinc-200 flex flex-col max-h-[90vh]">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden border border-zinc-200 flex flex-col max-h-[90vh] cursor-default"
+      >
         {/* Header */}
         <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/70 shrink-0">
           <div className="flex items-center gap-2">
@@ -254,6 +260,8 @@ export default function CollaboratorsModal({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="kerabat@email.com"
+                      maxLength={254}
+                      autoComplete="email"
                       className="w-full text-xs pl-9 pr-3 py-2 border border-zinc-300 rounded outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
                     />
                   </div>
