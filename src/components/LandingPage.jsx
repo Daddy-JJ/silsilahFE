@@ -33,8 +33,6 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           <span>PRIVAT & AMAN</span>
           <span>•</span>
           <span>AKSES BERSAMA KELUARGA</span>
-          <span>•</span>
-          <span className="text-[#f7e043] font-semibold">MULAI GRATIS</span>
         </div>
       </div>
 
