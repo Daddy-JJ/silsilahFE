@@ -55,6 +55,35 @@ const OFFICIAL_PLANS = [
   },
 ];
 
+const loadDuitkuScript = (env = 'production') => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') return resolve(null);
+    const targetSrc =
+      env === 'production'
+        ? 'https://app-prod.duitku.com/lib/js/duitku.js'
+        : 'https://app-sandbox.duitku.com/lib/js/duitku.js';
+
+    const scripts = Array.from(document.querySelectorAll('script'));
+    const existing = scripts.find((s) => s.src && s.src.includes('duitku.js'));
+
+    if (existing && existing.src === targetSrc && window.duitku) {
+      return resolve(window.duitku);
+    }
+
+    if (existing) {
+      existing.remove();
+      delete window.duitku;
+    }
+
+    const script = document.createElement('script');
+    script.src = targetSrc;
+    script.async = true;
+    script.onload = () => resolve(window.duitku);
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+};
+
 export default function UpgradePlanModal({
   isOpen,
   onClose,
@@ -137,7 +166,10 @@ export default function UpgradePlanModal({
         throw new Error(res.message || 'Gagal memulai inquiry pembayaran.');
       }
 
-      const { reference, paymentUrl, merchantOrderId } = res.data;
+      const { reference, paymentUrl, merchantOrderId, environment: env } = res.data;
+
+      // Pastikan modul Duitku Pop SDK (Production / Sandbox) aktif sesuai konfigurasi backend
+      await loadDuitkuScript(env || 'production');
 
       // 2. Jalankan Duitku Pop SDK (prioritaskan window.duitku.run atau window.checkout.process)
       const checkoutHandlers = {
@@ -249,7 +281,7 @@ export default function UpgradePlanModal({
           <div className="flex items-center gap-2 mb-2">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-[#f7e043] text-black shadow-xs">
               <Sparkles className="w-3 h-3" />
-              <span>DUITKU SANDBOX CHECKOUT</span>
+              <span>DUITKU SECURE CHECKOUT</span>
             </span>
             <span className="text-[10px] font-mono text-zinc-400">
               Semesta: <strong className="text-zinc-200">{currentTree?.nama_silsilah || 'Pohon'}</strong>
