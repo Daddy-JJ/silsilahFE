@@ -1406,7 +1406,7 @@ export default function SuperAdminModal({
                       <div>
                         • <strong>Callback URL (Notifikasi Pembayaran):</strong>{' '}
                         <code className="bg-white px-2 py-0.5 rounded border border-zinc-300 text-zinc-900">
-                          https://silsilahkeluarga.id/api/v1/payments/callback
+                          https://api.silsilahkeluarga.id/api/v1/payments/duitku/callback
                         </code>
                       </div>
                       <div>
