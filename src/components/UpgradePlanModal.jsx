@@ -63,22 +63,28 @@ const loadDuitkuScript = (env = 'production') => {
         ? 'https://app-prod.duitku.com/lib/js/duitku.js'
         : 'https://app-sandbox.duitku.com/lib/js/duitku.js';
 
+    const getSdk = () => window.checkout || window.duitku;
     const scripts = Array.from(document.querySelectorAll('script'));
     const existing = scripts.find((s) => s.src && s.src.includes('duitku.js'));
 
-    if (existing && existing.src === targetSrc && window.duitku) {
-      return resolve(window.duitku);
+    if (existing && existing.src === targetSrc && getSdk()) {
+      if (!window.duitku && window.checkout) window.duitku = window.checkout;
+      return resolve(getSdk());
     }
 
     if (existing) {
       existing.remove();
       delete window.duitku;
+      delete window.checkout;
     }
 
     const script = document.createElement('script');
     script.src = targetSrc;
     script.async = true;
-    script.onload = () => resolve(window.duitku);
+    script.onload = () => {
+      if (!window.duitku && window.checkout) window.duitku = window.checkout;
+      resolve(getSdk());
+    };
     script.onerror = () => resolve(null);
     document.head.appendChild(script);
   });
@@ -225,15 +231,16 @@ export default function UpgradePlanModal({
         },
       };
 
-      if (typeof window !== 'undefined' && window.duitku && typeof window.duitku.run === 'function' && reference) {
+      if (typeof window !== 'undefined' && window.checkout && typeof window.checkout.process === 'function' && reference) {
+        setIsLoading(false);
+        window.checkout.process(reference, checkoutHandlers);
+      } else if (typeof window !== 'undefined' && window.duitku && typeof window.duitku.run === 'function' && reference) {
         setIsLoading(false);
         try {
           window.duitku.run(reference, checkoutHandlers);
         } catch {
           window.duitku.run(reference);
         }
-      } else if (typeof window !== 'undefined' && window.checkout && reference) {
-        window.checkout.process(reference, checkoutHandlers);
       } else if (paymentUrl) {
         // Fallback: Jika pop JS gagal dimuat / diblokir ekstensi browser, buka paymentUrl di tab baru
         setIsLoading(false);
