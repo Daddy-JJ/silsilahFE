@@ -330,22 +330,24 @@ export default function UpgradePlanModal({
                 return (
                   <div
                     key={p.kode_paket}
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => setSelectedPlanCode(p.kode_paket)}
-                    className={`relative p-4 sm:p-5 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`relative p-5 rounded-xl border-2 transition-all duration-150 ease-out cursor-pointer flex flex-col justify-between ${
                       isSelected
                         ? 'border-zinc-900 bg-amber-50/20 ring-2 ring-[#f7e043] shadow-md'
-                        : 'border-zinc-200 bg-zinc-50/50 hover:border-zinc-400'
+                        : 'border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-xs'
                     }`}
                   >
                     {p.promo_badge && (
-                      <div className="absolute -top-2.5 right-3 bg-[#f7e043] text-black font-mono font-bold text-[9px] uppercase px-2 py-0.5 rounded-full border border-yellow-500 shadow-2xs">
+                      <div className="absolute -top-3 right-4 bg-[#f7e043] text-zinc-950 font-mono font-bold text-[9px] uppercase px-2.5 py-0.5 rounded-full border border-yellow-500 shadow-2xs">
                         {p.promo_badge}
                       </div>
                     )}
 
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="font-mono text-xs font-bold text-zinc-600 uppercase">
+                        <span className="font-mono text-xs font-bold text-zinc-700 uppercase">
                           {p.nama_paket}
                         </span>
                         {isSelected && (
@@ -354,17 +356,17 @@ export default function UpgradePlanModal({
                       </div>
 
                       <div className="flex items-baseline gap-1 mb-3">
-                        <span className="text-xl sm:text-2xl font-black font-mono text-zinc-900">
+                        <span className="text-2xl font-black font-mono text-zinc-900">
                           Rp {formattedPrice}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-500">/ tahun</span>
+                        <span className="text-[11px] font-mono text-zinc-500">/ tahun</span>
                       </div>
 
-                      <ul className="space-y-1.5 text-[11px] text-zinc-700 font-sans border-t border-zinc-200/80 pt-3">
+                      <ul className="space-y-2 text-xs text-zinc-600 font-sans border-t border-zinc-100 pt-3">
                         {p.features?.map((feat, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="text-emerald-600 font-bold">✓</span>
-                            <span>{feat}</span>
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                            <span className="leading-snug">{feat}</span>
                           </li>
                         ))}
                       </ul>
@@ -384,10 +386,10 @@ export default function UpgradePlanModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label
                 onClick={() => setPaymentMethod('SP')}
-                className={`p-3 rounded-lg border flex items-center gap-3 cursor-pointer transition-all ${
+                className={`p-3.5 rounded-xl border flex items-center gap-3 cursor-pointer transition-all duration-150 ${
                   paymentMethod === 'SP'
-                    ? 'border-zinc-900 bg-zinc-50 font-bold ring-1 ring-zinc-900'
-                    : 'border-zinc-200 hover:border-zinc-300'
+                    ? 'border-zinc-900 bg-zinc-50 shadow-xs ring-1 ring-zinc-900'
+                    : 'border-zinc-200 hover:border-zinc-300 bg-white'
                 }`}
               >
                 <input
@@ -395,12 +397,12 @@ export default function UpgradePlanModal({
                   name="payment_method"
                   checked={paymentMethod === 'SP'}
                   onChange={() => setPaymentMethod('SP')}
-                  className="accent-zinc-900"
+                  className="accent-zinc-900 w-4 h-4"
                 />
-                <QrCode className="w-5 h-5 text-zinc-800" />
+                <QrCode className="w-5 h-5 text-zinc-800 shrink-0" />
                 <div className="text-xs">
                   <div className="text-zinc-900 font-bold">QRIS & E-Wallet</div>
-                  <div className="text-[10px] font-mono text-zinc-500">
+                  <div className="text-[10px] font-mono text-zinc-500 mt-0.5">
                     GoPay, OVO, DANA, ShopeePay
                   </div>
                 </div>
@@ -408,10 +410,10 @@ export default function UpgradePlanModal({
 
               <label
                 onClick={() => setPaymentMethod('VA')}
-                className={`p-3 rounded-lg border flex items-center gap-3 cursor-pointer transition-all ${
+                className={`p-3.5 rounded-xl border flex items-center gap-3 cursor-pointer transition-all duration-150 ${
                   paymentMethod === 'VA'
-                    ? 'border-zinc-900 bg-zinc-50 font-bold ring-1 ring-zinc-900'
-                    : 'border-zinc-200 hover:border-zinc-300'
+                    ? 'border-zinc-900 bg-zinc-50 shadow-xs ring-1 ring-zinc-900'
+                    : 'border-zinc-200 hover:border-zinc-300 bg-white'
                 }`}
               >
                 <input
@@ -419,12 +421,12 @@ export default function UpgradePlanModal({
                   name="payment_method"
                   checked={paymentMethod === 'VA'}
                   onChange={() => setPaymentMethod('VA')}
-                  className="accent-zinc-900"
+                  className="accent-zinc-900 w-4 h-4"
                 />
-                <CreditCard className="w-5 h-5 text-zinc-800" />
+                <CreditCard className="w-5 h-5 text-zinc-800 shrink-0" />
                 <div className="text-xs">
                   <div className="text-zinc-900 font-bold">Virtual Account (VA)</div>
-                  <div className="text-[10px] font-mono text-zinc-500">
+                  <div className="text-[10px] font-mono text-zinc-500 mt-0.5">
                     BCA, Mandiri, BNI, BRI, Permata
                   </div>
                 </div>
@@ -433,7 +435,7 @@ export default function UpgradePlanModal({
           </div>
 
           {/* Duitku Notice & Security */}
-          <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 flex items-start gap-2.5 text-xs text-zinc-600 font-sans">
+          <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 flex items-start gap-2.5 text-xs text-zinc-600 font-sans">
             <Shield className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold text-zinc-800 font-mono text-[11px] uppercase block">
@@ -445,9 +447,9 @@ export default function UpgradePlanModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 bg-zinc-50 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div className="p-4 sm:p-5 bg-zinc-50/90 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
           <div className="text-center sm:text-left">
-            <div className="text-[10px] font-mono uppercase text-zinc-400">Total Pembayaran:</div>
+            <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Total Pembayaran:</div>
             <div className="text-lg font-black font-mono text-zinc-900">
               Rp {Number(activePlan.harga_promo || activePlan.harga_normal).toLocaleString('id-ID')}
             </div>
@@ -458,7 +460,7 @@ export default function UpgradePlanModal({
               type="button"
               onClick={onClose}
               disabled={isLoading}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg border border-zinc-300 hover:bg-zinc-100 text-zinc-700 font-mono text-xs font-bold uppercase transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-zinc-300 hover:bg-zinc-100 text-zinc-700 font-mono text-xs font-bold uppercase transition-colors cursor-pointer"
             >
               Batal
             </button>
@@ -467,7 +469,7 @@ export default function UpgradePlanModal({
               type="button"
               onClick={handleProcessPayment}
               disabled={isLoading}
-              className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-[#f7e043] hover:bg-yellow-400 active:scale-[0.98] text-zinc-950 font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isLoading ? (
                 <>

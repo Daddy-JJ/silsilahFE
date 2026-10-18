@@ -10,10 +10,10 @@ const CustomFamilyNode = ({ data }) => {
       onClick={() => {
         if (data.onSelect) data.onSelect(data);
       }}
-      className={`relative w-64 h-[160px] bg-white rounded-lg border shadow-sm transition-all duration-200 group select-none cursor-pointer flex flex-col justify-between ${
+      className={`relative w-64 h-[160px] bg-white rounded-xl border shadow-xs transition-all duration-200 ease-out group select-none cursor-pointer flex flex-col justify-between ${
         data.isSelected
           ? 'border-zinc-900 ring-2 ring-[#f7e043] shadow-md'
-          : 'border-zinc-200 hover:border-zinc-900 hover:shadow-md'
+          : 'border-zinc-200/90 hover:border-zinc-400 hover:shadow-md'
       }`}
     >
       {/* Target Handle: Garis dari orang tua */}
@@ -21,7 +21,7 @@ const CustomFamilyNode = ({ data }) => {
         type="target"
         position={Position.Top}
         id="child-top"
-        className="!w-2.5 !h-2.5 !bg-zinc-900 !border-2 !border-white !-top-1.5 transition-transform group-hover:scale-125"
+        className="!w-2.5 !h-2.5 !bg-zinc-900 !border-2 !border-white !-top-1.5 transition-transform duration-150 group-hover:scale-125"
       />
 
       {/* Horizontal Handles untuk Relasi Pernikahan / Pasangan */}
@@ -29,13 +29,13 @@ const CustomFamilyNode = ({ data }) => {
         type="target"
         position={Position.Left}
         id="spouse-left"
-        className="!w-2 !h-2 !bg-[#f7e043] !border-2 !border-zinc-900 !-left-1 !top-1/2 opacity-60 hover:opacity-100"
+        className="!w-2 !h-2 !bg-[#f7e043] !border-2 !border-zinc-900 !-left-1 !top-1/2 opacity-70 hover:opacity-100 transition-opacity"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="spouse-right"
-        className="!w-2 !h-2 !bg-[#f7e043] !border-2 !border-zinc-900 !-right-1 !top-1/2 opacity-60 hover:opacity-100"
+        className="!w-2 !h-2 !bg-[#f7e043] !border-2 !border-zinc-900 !-right-1 !top-1/2 opacity-70 hover:opacity-100 transition-opacity"
       />
       <Handle
         type="source"
@@ -51,13 +51,13 @@ const CustomFamilyNode = ({ data }) => {
       />
 
       {/* Top Accent Strip with Yellow Highlight */}
-      <div className="flex items-center justify-between px-3.5 py-1.5 border-b border-zinc-100 bg-zinc-50/70">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-3 py-1.5 border-b border-zinc-100 bg-zinc-50/90 rounded-t-xl">
+        <div className="flex items-center gap-1.5">
           {/* Yellow square emblem reminiscent of the reference UI */}
-          <div className="w-5 h-5 rounded-xs bg-[#f7e043] text-black font-mono font-black text-[10px] flex items-center justify-center shadow-xs">
+          <div className="w-5 h-5 rounded bg-[#f7e043] text-zinc-950 font-mono font-black text-[10px] flex items-center justify-center shadow-2xs">
             {isMale ? 'L' : 'P'}
           </div>
-          <span className="text-[10px] font-bold tracking-wider uppercase text-zinc-500">
+          <span className="text-[10px] font-bold tracking-wider uppercase text-zinc-600">
             {isMale ? 'Laki-laki' : 'Perempuan'}
           </span>
         </div>
@@ -67,7 +67,7 @@ const CustomFamilyNode = ({ data }) => {
           {/* Spouse indicator */}
           {data.hasSpouse && (
             <span
-              className="text-[10px] font-mono px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-500 flex items-center gap-0.5"
+              className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-600 flex items-center gap-1"
               title="Memiliki pasangan (inferred)"
             >
               <Heart className="w-2.5 h-2.5 text-pink-500 fill-pink-500/20" />
@@ -76,7 +76,7 @@ const CustomFamilyNode = ({ data }) => {
           {/* Children count */}
           {data.childrenCount > 0 && (
             <span
-              className="text-[10px] font-mono px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600 flex items-center gap-0.5"
+              className="text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-700 flex items-center gap-1"
               title={`${data.childrenCount} anak`}
             >
               <Users className="w-2.5 h-2.5 text-zinc-400" />
@@ -85,7 +85,7 @@ const CustomFamilyNode = ({ data }) => {
           )}
           {/* Version Badge (Optimistic Locking indicator) */}
           <span
-            className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-700"
+            className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-700"
             title={`Versi data saat ini: v${data.version || 1}`}
           >
             v{data.version || 1}
@@ -94,16 +94,16 @@ const CustomFamilyNode = ({ data }) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="px-3.5 pt-2 pb-2.5 flex-1 flex flex-col justify-between">
+      <div className="px-3.5 pt-2 pb-2 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
             {data.foto_profil ? (
-              <div className="w-9 h-9 rounded-full bg-zinc-200 shrink-0 overflow-hidden border border-zinc-200">
+              <div className="w-9 h-9 rounded-full bg-zinc-100 shrink-0 overflow-hidden border border-zinc-200 shadow-2xs">
                 <img src={data.foto_profil} alt={data.nama_lengkap} className="w-full h-full object-cover" />
               </div>
             ) : (
               <div className="w-9 h-9 rounded-full bg-zinc-100 text-zinc-400 border border-zinc-200 flex items-center justify-center shrink-0">
-                <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -119,7 +119,7 @@ const CustomFamilyNode = ({ data }) => {
           </div>
 
           <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
-            <Calendar className="w-3 h-3 text-zinc-400" />
+            <Calendar className="w-3 h-3 text-zinc-400 shrink-0" />
             <span className="font-mono text-[11px]">
               {data.tanggal_lahir ? data.tanggal_lahir.split('T')[0] : 'Tgl tdk tercatat'}
             </span>
@@ -134,7 +134,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onEdit) data.onEdit(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer"
             title="Edit / Usulkan Perubahan"
           >
             <Edit3 className="w-3 h-3 text-zinc-500" />
@@ -147,7 +147,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddSpouse) data.onAddSpouse(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-pink-50 hover:text-pink-900 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pink-500 cursor-pointer"
             title="Tambah Pasangan (Suami/Istri)"
           >
             <Heart className="w-3 h-3 text-pink-500 fill-pink-500/20" />
@@ -160,7 +160,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddChild) data.onAddChild(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 hover:text-black transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer"
             title="Tambah Anak Baru"
           >
             <Plus className="w-3 h-3 text-zinc-500" />
@@ -174,7 +174,7 @@ const CustomFamilyNode = ({ data }) => {
         type="source"
         position={Position.Bottom}
         id="parent-bottom"
-        className="!w-2.5 !h-2.5 !bg-zinc-900 !border-2 !border-white !-bottom-1.5 transition-transform group-hover:scale-125"
+        className="!w-2.5 !h-2.5 !bg-zinc-900 !border-2 !border-white !-bottom-1.5 transition-transform duration-150 group-hover:scale-125"
       />
     </div>
   );

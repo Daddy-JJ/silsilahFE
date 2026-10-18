@@ -23,15 +23,16 @@ function MenuItem({ icon: Icon, label, onClick, iconColor = 'text-zinc-500', des
   return (
     <button
       type="button"
+      role="menuitem"
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-medium transition-colors text-left cursor-pointer
-        ${destructive
-          ? 'text-rose-600 hover:bg-rose-50 hover:text-rose-700'
-          : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900'
-        }`}
+      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 ${
+        destructive
+          ? 'text-rose-600 hover:bg-rose-50 hover:text-rose-700 active:bg-rose-100'
+          : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 active:bg-zinc-200/60'
+      }`}
     >
       <Icon className={`w-3.5 h-3.5 shrink-0 ${destructive ? 'text-rose-500' : iconColor}`} />
-      <span className="flex-1 leading-none">{label}</span>
+      <span className="flex-1 leading-normal">{label}</span>
       {badge && (
         <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded bg-zinc-900 text-[#f7e043] leading-none">
           {badge}
@@ -242,10 +243,10 @@ export default function Navbar({
               }}
               aria-haspopup="menu"
               aria-expanded={isTreeMenuOpen}
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-zinc-300 hover:border-zinc-400 bg-zinc-50 hover:bg-zinc-100 text-zinc-900 transition-all cursor-pointer max-w-[150px] sm:max-w-[220px]"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.98] text-zinc-900 transition-all cursor-pointer max-w-[150px] sm:max-w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
               title={`Semesta Aktif: ${currentTree?.nama_silsilah || 'Pilih Semesta'}`}
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-100 shrink-0" />
               <span className="font-bold text-xs sm:text-sm truncate">
                 {currentTree?.nama_silsilah || 'Pilih Semesta'}
               </span>
@@ -461,7 +462,7 @@ export default function Navbar({
         </div>
 
         {/* RIGHT: Primary Actions + User Dropdown ──────────────────────────── */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
 
           {/* ① Tambah Anggota — ADMIN_UTAMA & KONTRIBUTOR */}
           {['ADMIN_UTAMA', 'KONTRIBUTOR'].includes(currentTree?.role) && (
@@ -474,10 +475,10 @@ export default function Navbar({
                   onOpenAddMember();
                 }
               }}
-              className="flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-2.5 sm:px-3 py-1.5 rounded-md transition-all shadow-2xs cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold bg-zinc-900 hover:bg-black text-[#f7e043] px-3 py-1.5 rounded-lg transition-all duration-150 active:scale-[0.98] shadow-2xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-1"
               title="Tambah Anggota Keluarga"
             >
-              <Plus className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+              <Plus className="w-3.5 h-3.5 text-[#f7e043] shrink-0" />
               <span className="hidden sm:inline">Tambah Anggota</span>
             </button>
           )}
@@ -487,13 +488,13 @@ export default function Navbar({
             <button
               type="button"
               onClick={onOpenApprovals}
-              className="relative flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-2.5 sm:px-3 py-1.5 rounded-md transition-all shadow-2xs cursor-pointer"
+              className="relative flex items-center gap-1.5 text-xs font-bold bg-white border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.98] text-zinc-800 px-3 py-1.5 rounded-lg transition-all duration-150 shadow-2xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
               title="Tinjau Usulan Perubahan"
             >
               <CheckSquare className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
               <span className="hidden sm:inline">Usulan</span>
               {pendingCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f7e043] text-black border border-yellow-500 leading-none">
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f7e043] text-zinc-950 border border-yellow-500 leading-none">
                   {pendingCount}
                 </span>
               )}
@@ -505,7 +506,7 @@ export default function Navbar({
             <button
               type="button"
               onClick={onOpenCollaborators}
-              className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-bold bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-800 px-2.5 sm:px-3 py-1.5 rounded-md transition-all shadow-2xs cursor-pointer"
+              className="hidden sm:flex [@media(max-height:500px)]:!hidden items-center gap-1.5 text-xs font-bold bg-white border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.98] text-zinc-800 px-3 py-1.5 rounded-lg transition-all duration-150 shadow-2xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
               title="Kelola & Undang Kolaborator"
             >
               <Users className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
@@ -527,11 +528,11 @@ export default function Navbar({
               }}
               aria-haspopup="menu"
               aria-expanded={isUserMenuOpen}
-              className="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1.5 rounded-md border border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all text-left group cursor-pointer"
+              className="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1.5 rounded-lg border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 active:scale-[0.98] transition-all text-left group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
               title={`Menu Akun (${user?.email || 'Pengguna'})`}
             >
               {/* Avatar initial */}
-              <div className="w-7 h-7 rounded-sm bg-zinc-900 text-[#f7e043] flex items-center justify-center font-black text-xs font-mono group-hover:scale-105 transition-transform shadow-2xs shrink-0">
+              <div className="w-7 h-7 rounded-md bg-zinc-900 text-[#f7e043] flex items-center justify-center font-black text-xs font-mono group-hover:scale-105 transition-transform shadow-2xs shrink-0">
                 {userInitial}
               </div>
               {/* Name + role — md+ */}

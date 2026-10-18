@@ -53,29 +53,32 @@ export default function TreeStatsWidget({
   const percentTotal = Math.min(100, Math.round((total / effectiveMaxMembers) * 100));
 
   return (
-    <div className="absolute top-4 left-4 z-10 w-80 bg-white/95 backdrop-blur-md rounded-lg border border-zinc-200 shadow-md overflow-hidden transition-all duration-300 select-none">
+    <aside
+      aria-label="Statistik Silsilah Pohon"
+      className="absolute top-4 left-4 z-10 w-72 sm:w-80 bg-white/95 backdrop-blur-md rounded-xl border border-zinc-200 shadow-md overflow-hidden transition-all duration-300 select-none"
+    >
       {/* Header Bar */}
       <div
         onClick={() => setCollapsed(!collapsed)}
-        className="px-4 py-3 bg-white border-b border-zinc-100 flex items-center justify-between cursor-pointer hover:bg-zinc-50 transition-colors"
+        className="px-4 py-3 bg-white/90 border-b border-zinc-100 flex items-center justify-between cursor-pointer hover:bg-zinc-50/80 transition-colors"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {/* Yellow Geometric Emblem */}
-          <div className="w-5 h-5 rounded-xs bg-[#f7e043] text-black font-mono font-black text-[10px] flex items-center justify-center">
+          <div className="w-5 h-5 rounded bg-[#f7e043] text-zinc-950 font-mono font-black text-[10px] flex items-center justify-center shadow-2xs">
             ✦
           </div>
           <div>
             <h2 className="text-xs font-black uppercase tracking-wider text-zinc-900 leading-none">
               Overview Silsilah
             </h2>
-            <span className="text-[10px] text-zinc-400 font-mono truncate block max-w-[160px]">
+            <span className="text-[10px] text-zinc-400 font-mono truncate block max-w-[160px] mt-0.5">
               {treeName}
             </span>
           </div>
         </div>
         <button
           type="button"
-          className="text-zinc-400 hover:text-zinc-700 p-1"
+          className="text-zinc-400 hover:text-zinc-700 p-1 rounded-md transition-colors"
           aria-label={collapsed ? 'Perluas widget' : 'Ciutkan widget'}
         >
           {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -84,31 +87,31 @@ export default function TreeStatsWidget({
 
       {!collapsed && (
         <div className="p-4 space-y-4">
-          {/* Metric Cards Row (Inspired by Total Sales / Units Sold in reference) */}
+          {/* Metric Cards Row */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="p-2.5 rounded-md bg-zinc-50 border border-zinc-100">
-              <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
+            <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-100/90">
+              <div className="text-[10px] font-mono font-medium uppercase tracking-wider text-zinc-500">
                 Total
               </div>
-              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-0.5">
+              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-1">
                 {total}
               </div>
             </div>
 
-            <div className="p-2.5 rounded-md bg-zinc-50 border border-zinc-100">
-              <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
+            <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-100/90">
+              <div className="text-[10px] font-mono font-medium uppercase tracking-wider text-zinc-500">
                 Generasi
               </div>
-              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-0.5">
+              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-1">
                 {maxDepth}
               </div>
             </div>
 
-            <div className="p-2.5 rounded-md bg-zinc-50 border border-zinc-100">
-              <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">
+            <div className="p-2.5 rounded-lg bg-zinc-50 border border-zinc-100/90">
+              <div className="text-[10px] font-mono font-medium uppercase tracking-wider text-zinc-500">
                 Usulan
               </div>
-              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-0.5 flex items-center gap-1">
+              <div className="text-base font-black font-mono text-zinc-900 leading-tight mt-1 flex items-center gap-1">
                 {pendingCount}
                 {pendingCount > 0 && (
                   <span className="w-2 h-2 rounded-full bg-[#f7e043] animate-ping" />
@@ -125,21 +128,21 @@ export default function TreeStatsWidget({
                 {maleCount} L / {femaleCount} P
               </span>
             </div>
-            <div className="w-full h-2 rounded-xs bg-zinc-100 overflow-hidden flex">
+            <div className="w-full h-2 rounded-full bg-zinc-100 overflow-hidden flex border border-zinc-200/50">
               <div
-                className="bg-zinc-800 transition-all duration-300"
+                className="bg-zinc-800 transition-all duration-300 ease-out"
                 style={{ width: `${total ? (maleCount / total) * 100 : 0}%` }}
                 title={`Laki-laki: ${maleCount}`}
               />
               <div
-                className="bg-zinc-300 transition-all duration-300"
+                className="bg-zinc-300 transition-all duration-300 ease-out"
                 style={{ width: `${total ? (femaleCount / total) * 100 : 0}%` }}
                 title={`Perempuan: ${femaleCount}`}
               />
             </div>
           </div>
 
-          {/* Quota Status (Inspired by "Units per Status" in reference) */}
+          {/* Quota Status */}
           <div className="pt-2 border-t border-zinc-100 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 min-w-0">
@@ -147,11 +150,11 @@ export default function TreeStatsWidget({
                   {planLabel} (Max {effectiveMaxMembers})
                 </span>
                 {isExpired ? (
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 border border-rose-200">
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200">
                     Kedaluwarsa
                   </span>
                 ) : planCode !== 'FREE' ? (
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200">
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200">
                     Aktif
                   </span>
                 ) : null}
@@ -161,15 +164,15 @@ export default function TreeStatsWidget({
               </span>
             </div>
 
-            {/* Reference Multi-segment Bar (Black, Gray, Yellow) */}
-            <div className="w-full h-3 rounded-xs bg-zinc-200 overflow-hidden flex border border-zinc-300/80">
+            {/* Quota Pill Bar */}
+            <div className="w-full h-2.5 rounded-full bg-zinc-200 overflow-hidden flex border border-zinc-200">
               <div
-                className="bg-zinc-900 transition-all duration-300"
+                className="bg-zinc-900 transition-all duration-300 ease-out"
                 style={{ width: `${percentTotal}%` }}
                 title={`Terisi: ${total} anggota`}
               />
               <div
-                className="bg-[#f7e043] transition-all duration-300"
+                className="bg-[#f7e043] transition-all duration-300 ease-out"
                 style={{ width: `${100 - percentTotal}%` }}
                 title={`Sisa Kuota: ${remaining} anggota`}
               />
@@ -177,17 +180,17 @@ export default function TreeStatsWidget({
 
             <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-0.5">
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-2xs bg-zinc-900 inline-block" />
+                <span className="w-2.5 h-2.5 rounded-sm bg-zinc-900 inline-block" />
                 <span>Terpakai ({total})</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-2xs bg-[#f7e043] inline-block border border-yellow-400" />
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#f7e043] inline-block border border-yellow-400" />
                 <span>Sisa Kuota ({remaining})</span>
               </div>
             </div>
 
             {isExpired && (
-              <div className="p-2 bg-rose-50 border border-rose-200 rounded text-rose-800 text-[10px] font-mono font-bold flex items-center gap-1.5">
+              <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-[10px] font-mono font-bold flex items-center gap-1.5">
                 <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-600" />
                 <span>Masa aktif paket telah kedaluwarsa.</span>
               </div>
@@ -198,7 +201,7 @@ export default function TreeStatsWidget({
                 <button
                   type="button"
                   onClick={onOpenUpgrade}
-                  className="w-full py-1.5 px-2 bg-[#f7e043] hover:bg-yellow-400 text-black font-mono text-[10px] font-black uppercase tracking-wider rounded border border-yellow-500 shadow-2xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  className="w-full py-2 px-3 bg-[#f7e043] hover:bg-yellow-400 active:scale-[0.98] text-zinc-950 font-mono text-[10px] font-black uppercase tracking-wider rounded-lg border border-yellow-500 shadow-2xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   title="Tingkatkan kuota anggota silsilah dengan Duitku Sandbox"
                 >
                   <Sparkles className="w-3 h-3" />
@@ -209,6 +212,6 @@ export default function TreeStatsWidget({
           </div>
         </div>
       )}
-    </div>
+    </aside>
   );
 }
