@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { X, AlertCircle } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
   const [namaSilsilah, setNamaSilsilah] = useState('');
   const [maxMembers, setMaxMembers] = useState(30);
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -36,6 +39,9 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-tree-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -48,10 +54,10 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
               🌳
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
+              <h3 id="create-tree-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
                 Buat Semesta Pohon Baru
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 MULTI-UNIVERSE CONFIGURATION
               </div>
             </div>
@@ -59,7 +65,8 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup form buat pohon"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -80,6 +87,7 @@ export default function CreateTreeModal({ isOpen, onClose, onCreateTree }) {
             <input
               type="text"
               required
+              autoFocus
               value={namaSilsilah}
               onChange={(e) => setNamaSilsilah(e.target.value)}
               placeholder="Contoh: Bani Ahmad Dahlan / Semesta Kakek"

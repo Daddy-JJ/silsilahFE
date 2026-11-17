@@ -15,15 +15,21 @@ import {
   MousePointer,
   Sparkles,
 } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function UserGuideModal({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('workflow');
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="user-guide-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -37,10 +43,10 @@ export default function UserGuideModal({ isOpen, onClose }) {
               ?
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
+              <h3 id="user-guide-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
                 Buku Panduan & Alur Kerja Aplikasi (UX Workflow)
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 DOKUMENTASI STANDAR FITUR, NAVIGASI GESTUR & ESTETIKA VISUAL TERKINI
               </div>
             </div>
@@ -48,7 +54,8 @@ export default function UserGuideModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup buku panduan"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

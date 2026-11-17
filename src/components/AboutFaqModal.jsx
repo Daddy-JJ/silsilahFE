@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { X, Shield, HelpCircle, ChevronDown, ChevronUp, Check, AlertTriangle, BookOpen, Layers } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function AboutFaqModal({ isOpen, onClose }) {
   const [activeFaq, setActiveFaq] = useState(null);
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -36,6 +39,9 @@ export default function AboutFaqModal({ isOpen, onClose }) {
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="faq-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -49,10 +55,10 @@ export default function AboutFaqModal({ isOpen, onClose }) {
               ?
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase font-mono">
+              <h3 id="faq-modal-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase font-mono">
                 Tentang Platform & Matriks Hak Akses
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 PANDUAN LENGKAP FITUR, OTORITAS & FAQ CALON PENGGUNA
               </div>
             </div>
@@ -60,7 +66,8 @@ export default function AboutFaqModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup panduan FAQ"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

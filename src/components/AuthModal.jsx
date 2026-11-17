@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2, X, ArrowLeft, Mail } from 'lucide-react';
 import { api } from '../services/api';
 import logoApp from '../assets/logo-nexus.svg';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function AuthModal({
   isOpen,
@@ -18,6 +19,8 @@ export default function AuthModal({
   const [namaLengkap, setNamaLengkap] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   const googleBtnRef = useRef(null);
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -140,6 +143,9 @@ export default function AuthModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -152,6 +158,7 @@ export default function AuthModal({
             <button
               type="button"
               onClick={onClose}
+              aria-label="Tutup modal autentikasi"
               className="absolute right-3 top-3 p-1.5 rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/70 transition-colors"
               title="Tutup"
             >
@@ -190,10 +197,10 @@ export default function AuthModal({
                 alt="Logo Silsilah"
                 className="w-12 h-12 mx-auto object-contain rounded-lg shadow-xs mb-3"
               />
-              <h2 className="text-lg font-black text-zinc-900 tracking-tight uppercase">
+              <h2 id="auth-modal-title" className="text-lg font-black text-zinc-900 tracking-tight uppercase">
                 Silsilah Keluarga
               </h2>
-              <p className="text-[11px] font-mono text-zinc-400 mt-0.5 uppercase tracking-wider">
+              <p className="text-[11px] font-mono text-zinc-500 mt-0.5 uppercase tracking-wider">
                 Collaborative Tree Platform
               </p>
 
@@ -362,7 +369,7 @@ export default function AuthModal({
               {/* Divider */}
               <div className="relative flex items-center justify-center my-3">
                 <div className="border-t border-zinc-200 w-full" />
-                <span className="bg-white px-2.5 text-[10px] font-mono uppercase tracking-widest text-zinc-400 absolute">
+                <span className="bg-white px-2.5 text-[10px] font-mono uppercase tracking-widest text-zinc-500 font-semibold absolute">
                   ATAU DENGAN EMAIL
                 </span>
               </div>

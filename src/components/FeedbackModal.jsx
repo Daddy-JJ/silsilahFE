@@ -10,6 +10,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 const CATEGORIES = [
   {
@@ -60,6 +61,8 @@ export default function FeedbackModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -103,6 +106,9 @@ export default function FeedbackModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="feedback-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -116,7 +122,7 @@ export default function FeedbackModal({
               <MessageSquarePlus className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
+              <h2 id="feedback-modal-title" className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
                 Beri Masukan & Saran
               </h2>
               <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
@@ -127,6 +133,7 @@ export default function FeedbackModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup form masukan"
             className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Tutup"
           >

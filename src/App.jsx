@@ -51,12 +51,13 @@ import JumpEdge from './components/edges/JumpEdge';
 import KnotNode from './components/KnotNode';
 import { NODE_WIDTH, NODE_HEIGHT } from './utils/layout';
 
-import { Layers, Download } from 'lucide-react';
+import { Layers, Download, Loader2, X } from 'lucide-react';
 import logoApp from './assets/logo-nexus.svg';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isTreeLoading, setIsTreeLoading] = useState(false);
   const [limitModalConfig, setLimitModalConfig] = useState({
     isOpen: false,
     limitType: 'TREE_LIMIT',
@@ -284,6 +285,7 @@ export default function App() {
     async (treeId) => {
       if (!treeId) return;
 
+      setIsTreeLoading(true);
       try {
         const [canvasRes, membersRes, approvalsRes, marriagesRes] = await Promise.all([
           api.members.getCanvas(treeId),
@@ -680,6 +682,8 @@ export default function App() {
         }
       } catch (err) {
         showNotification(err.message, 'error');
+      } finally {
+        setIsTreeLoading(false);
       }
     },
     [setNodes, setEdges, activeMemberProfile, rfInstance, currentTree]
@@ -1000,13 +1004,23 @@ export default function App() {
       {/* Toast Notification */}
       {notification && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded border text-xs font-mono font-bold uppercase tracking-wider shadow-lg animate-in slide-in-from-bottom-5 duration-200 ${
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-2.5 rounded-lg border text-xs font-mono font-bold uppercase tracking-wider shadow-xl animate-in slide-in-from-bottom-5 duration-200 ${
             notification.type === 'error'
               ? 'bg-rose-950 text-rose-100 border-rose-800'
               : 'bg-zinc-900 text-[#f7e043] border-zinc-700'
           }`}
         >
-          {notification.message}
+          <span>{notification.message}</span>
+          <button
+            type="button"
+            onClick={() => setNotification(null)}
+            aria-label="Tutup notifikasi"
+            className="p-0.5 rounded hover:bg-white/20 transition-colors cursor-pointer ml-1"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
@@ -1208,6 +1222,16 @@ export default function App() {
             className="hidden md:block [@media(max-height:500px)]:hidden"
           />
         </ReactFlow>
+
+        {/* Loading Overlay saat pergantian semesta pohon silsilah */}
+        {isTreeLoading && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-100/40 backdrop-blur-2xs animate-in fade-in duration-150 pointer-events-none">
+            <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-zinc-900/95 text-white shadow-xl text-xs font-mono font-bold tracking-wider uppercase border border-zinc-800">
+              <Loader2 className="w-4 h-4 text-[#f7e043] animate-spin" />
+              <span>Memuat Silsilah...</span>
+            </div>
+          </div>
+        )}
 
         {/* Mobile Floating Action Button (FAB) */}
         <MobileQuickFab

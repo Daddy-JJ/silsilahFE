@@ -95,7 +95,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
             <span>PLATFORM SILSILAH KELUARGA MODERN & TERSTRUKTUR</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tight leading-tight max-w-4xl mx-auto uppercase">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-900 tracking-tight leading-tight max-w-4xl mx-auto uppercase text-balance">
             Aplikasi Online Silsilah & Bagan Pohon Keluarga Indonesia
           </h1>
 
@@ -125,7 +125,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
           {/* Interactive Visual Preview Mockup */}
           <div className="pt-10 max-w-4xl mx-auto">
             <div className="p-4 sm:p-6 bg-white rounded-xl border border-zinc-200 shadow-xl overflow-hidden relative">
-              <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center justify-between pb-4 border-b border-zinc-100">
+              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider flex items-center justify-between pb-4 border-b border-zinc-100">
                 <span>SIMULASI VISUALISASI KANVAS SILSILAH</span>
                 <span className="hidden sm:inline">ALGORITMA BOTTOM-UP SUBTREE</span>
               </div>
@@ -139,7 +139,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       LELUHUR • L
                     </span>
                     <div className="font-bold text-xs text-zinc-900 mt-1 truncate">Mbah Wiro Kakung</div>
-                    <div className="text-[10px] font-mono text-zinc-400">1920 — Solo</div>
+                    <div className="text-[10px] font-mono text-zinc-500">1920 — Solo</div>
                   </div>
 
                   <div className="w-7 h-7 rounded-full bg-pink-50 border border-pink-200 flex items-center justify-center text-xs text-pink-500 shadow-2xs">
@@ -151,7 +151,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       LELUHUR • P
                     </span>
                     <div className="font-bold text-xs text-zinc-900 mt-1 truncate">Mbah Wiro Putri</div>
-                    <div className="text-[10px] font-mono text-zinc-400">1923 — Solo</div>
+                    <div className="text-[10px] font-mono text-zinc-500">1923 — Solo</div>
                   </div>
                 </div>
 
@@ -174,7 +174,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                     </div>
                     <div className="font-black text-xs text-zinc-900">Ibunda Asmara</div>
                     <div className="text-[11px] font-semibold text-zinc-600 truncate">+ Arya Pratama</div>
-                    <div className="text-[9px] font-mono text-zinc-400 mt-0.5">1950 • Orang Tua Cucu Mbah Wiro</div>
+                    <div className="text-[9px] font-mono text-zinc-500 mt-0.5">1950 • Orang Tua Cucu Mbah Wiro</div>
                   </div>
 
                   {/* Anak 2: Bagas */}
@@ -183,7 +183,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       ANAK KE-2
                     </span>
                     <div className="font-bold text-xs text-zinc-900 mt-1">Bagas</div>
-                    <div className="text-[9px] font-mono text-zinc-400">1953 — Yogyakarta</div>
+                    <div className="text-[9px] font-mono text-zinc-500">1953 — Yogyakarta</div>
                   </div>
 
                   {/* Anak 3: Kenzo */}
@@ -192,7 +192,7 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       ANAK BUNGSU
                     </span>
                     <div className="font-bold text-xs text-zinc-900 mt-1">Kenzo</div>
-                    <div className="text-[9px] font-mono text-zinc-400">1957 — Jakarta</div>
+                    <div className="text-[9px] font-mono text-zinc-500">1957 — Jakarta</div>
                   </div>
                 </div>
 
@@ -213,10 +213,10 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-blue-50 text-blue-700">
                         CUCU MBAH WIRO • 1 SUKU KATA
                       </span>
-                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                      <span className="text-[9px] font-mono text-zinc-500">Gen-3</span>
                     </div>
                     <div className="font-black text-sm text-zinc-900 mt-1">El</div>
-                    <div className="text-[9px] font-mono text-zinc-400">Kelahiran 1978 • Jakarta</div>
+                    <div className="text-[9px] font-mono text-zinc-500">Kelahiran 1978 • Jakarta</div>
                   </div>
 
                   {/* Cucu 2: 2 Suku Kata / 2 Kata ("Nayla Kirana") */}
@@ -225,10 +225,10 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700">
                         CUCU MBAH WIRO • 2 SUKU KATA / 2 KATA
                       </span>
-                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                      <span className="text-[9px] font-mono text-zinc-500">Gen-3</span>
                     </div>
                     <div className="font-bold text-xs text-zinc-900 mt-1">Nayla Kirana</div>
-                    <div className="text-[9px] font-mono text-zinc-400">Kelahiran 1982 • Bandung</div>
+                    <div className="text-[9px] font-mono text-zinc-500">Kelahiran 1982 • Bandung</div>
                   </div>
 
                   {/* Cucu 3: 5 Suku Kata / 5 Kata Nama ("Muhammad Al Fatih Daniswara Putra") */}
@@ -237,12 +237,12 @@ export default function LandingPage({ onOpenAuth, onOpenAboutFaq }) {
                       <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-purple-50 text-purple-700">
                         CUCU MBAH WIRO • 5 KATA NAMA (PANJANG)
                       </span>
-                      <span className="text-[9px] font-mono text-zinc-400">Gen-3</span>
+                      <span className="text-[9px] font-mono text-zinc-500">Gen-3</span>
                     </div>
                     <div className="font-bold text-xs text-zinc-900 mt-1 leading-snug break-words" title="Muhammad Al Fatih Daniswara Putra">
                       Muhammad Al Fatih Daniswara Putra
                     </div>
-                    <div className="text-[9px] font-mono text-zinc-400 mt-0.5">Kelahiran 1986 • Surabaya</div>
+                    <div className="text-[9px] font-mono text-zinc-500 mt-0.5">Kelahiran 1986 • Surabaya</div>
                   </div>
                 </div>
               </div>

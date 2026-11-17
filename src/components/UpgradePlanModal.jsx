@@ -13,6 +13,7 @@ import {
   Users,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 // 3 Paket Resmi sesuai spesifikasi verifikasi Duitku
 const OFFICIAL_PLANS = [
@@ -102,6 +103,8 @@ export default function UpgradePlanModal({
   const [paymentMethod, setPaymentMethod] = useState('SP'); // SP = ShopeePay / QRIS via Duitku
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useBodyScrollLock(isOpen);
 
   // Muat data paket aktif dari backend (jika tersedia)
   useEffect(() => {
@@ -268,17 +271,21 @@ export default function UpgradePlanModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-plan-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border border-zinc-200 cursor-default flex flex-col max-h-[92vh]"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-zinc-200 cursor-default flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-150"
       >
         {/* Modal Header */}
         <div className="relative p-5 sm:p-6 bg-zinc-900 text-white border-b border-zinc-800 shrink-0">
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup modal upgrade paket"
             className="absolute right-4 top-4 p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             title="Tutup"
           >
@@ -295,10 +302,10 @@ export default function UpgradePlanModal({
             </span>
           </div>
 
-          <h2 className="text-lg sm:text-xl font-black tracking-tight uppercase font-mono">
+          <h2 id="upgrade-plan-title" className="text-lg sm:text-xl font-black tracking-tight uppercase font-mono text-balance">
             Upgrade Kuota & Paket Silsilah
           </h2>
-          <p className="text-xs text-zinc-400 mt-1 font-sans">
+          <p className="text-xs text-zinc-400 mt-1 font-sans text-balance">
             Status saat ini: <strong className="text-[#f7e043]">Kuota {currentMaxMembers} Anggota</strong>. Pilih paket untuk menambah kapasitas keluarga besar Anda.
           </p>
         </div>

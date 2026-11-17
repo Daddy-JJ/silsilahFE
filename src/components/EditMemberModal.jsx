@@ -3,6 +3,7 @@ import { X, Trash2, AlertCircle, Send, Upload, UserCircle } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import ImageCropperModal from './ImageCropperModal';
 import { fileToBase64, dataUrlToFile } from '../utils/cropUtils';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function EditMemberModal({
   isOpen,
@@ -24,6 +25,8 @@ export default function EditMemberModal({
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   // Avatar Upload States
   const fileInputRef = useRef(null);
@@ -176,6 +179,9 @@ export default function EditMemberModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-member-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -189,10 +195,10 @@ export default function EditMemberModal({
               ✎
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
+              <h3 id="edit-member-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
                 {isAdmin ? 'Ubah Data Anggota' : 'Usulkan Perubahan'}
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 NODE: {member.id.substring(0, 8)}... • VERSI: v{member.version}
               </div>
             </div>
@@ -200,7 +206,8 @@ export default function EditMemberModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup form ubah anggota"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

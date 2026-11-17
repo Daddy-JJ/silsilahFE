@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { getAllSpouses } from '../utils/marriageUtils';
 import { sortChildrenByOrder, saveChildOrder } from '../utils/orderUtils';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function MemberProfileDrawer({
   isOpen,
@@ -39,6 +40,8 @@ export default function MemberProfileDrawer({
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedSpouseToLink, setSelectedSpouseToLink] = useState('');
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen || !member) return null;
 
@@ -152,7 +155,7 @@ export default function MemberProfileDrawer({
               <h3 className="font-extrabold text-zinc-900 text-xs tracking-tight uppercase font-mono">
                 Profil Anggota Silsilah
               </h3>
-              <span className="text-[10px] font-mono text-zinc-400">
+              <span className="text-[10px] font-mono text-zinc-500 font-semibold">
                 ID: {member.id.substring(0, 8)}...
               </span>
             </div>
@@ -484,7 +487,7 @@ export default function MemberProfileDrawer({
                               type="button"
                               disabled={isFirst}
                               onClick={(e) => handleMoveChild(e, index, -1)}
-                              className="p-1 rounded hover:bg-zinc-200 text-zinc-600 disabled:opacity-20 disabled:hover:bg-transparent transition-colors"
+                              className="relative p-1.5 rounded hover:bg-zinc-200 text-zinc-600 active:scale-90 disabled:opacity-20 disabled:hover:bg-transparent transition-all after:absolute after:inset-[-6px] after:content-[''] cursor-pointer"
                               title="Geser ke nomor lebih awal (posisi lebih kiri)"
                             >
                               <ChevronUp className="w-3.5 h-3.5" />
@@ -493,7 +496,7 @@ export default function MemberProfileDrawer({
                               type="button"
                               disabled={isLast}
                               onClick={(e) => handleMoveChild(e, index, 1)}
-                              className="p-1 rounded hover:bg-zinc-200 text-zinc-600 disabled:opacity-20 disabled:hover:bg-transparent transition-colors"
+                              className="relative p-1.5 rounded hover:bg-zinc-200 text-zinc-600 active:scale-90 disabled:opacity-20 disabled:hover:bg-transparent transition-all after:absolute after:inset-[-6px] after:content-[''] cursor-pointer"
                               title="Geser ke nomor berikutnya (posisi lebih kanan)"
                             >
                               <ChevronDown className="w-3.5 h-3.5" />

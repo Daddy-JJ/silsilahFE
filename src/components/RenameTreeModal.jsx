@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, AlertCircle, Edit3 } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function RenameTreeModal({ isOpen, onClose, currentTree, onRenameTree }) {
   const [namaSilsilah, setNamaSilsilah] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (currentTree?.nama_silsilah) {
@@ -45,6 +48,9 @@ export default function RenameTreeModal({ isOpen, onClose, currentTree, onRename
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rename-tree-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -57,10 +63,10 @@ export default function RenameTreeModal({ isOpen, onClose, currentTree, onRename
               <Edit3 className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
+              <h3 id="rename-tree-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
                 Ubah Nama Semesta Silsilah
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider">
+              <div className="text-[10px] text-zinc-600 font-mono uppercase tracking-wider font-semibold">
                 RENAME TREE UNIVERSE
               </div>
             </div>
@@ -68,7 +74,8 @@ export default function RenameTreeModal({ isOpen, onClose, currentTree, onRename
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup form ubah nama semesta"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

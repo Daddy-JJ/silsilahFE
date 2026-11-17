@@ -20,12 +20,74 @@ html, body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
 }
 
 #root {
   width: 100%;
   height: 100%;
 }
+
+/* --- Global Tabular Figures & Typography --- */
+.font-mono, .tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* --- UI-Wiki Standard Keyframes & Animations (180ms ease-out natural) --- */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes drawerSlideBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes drawerSlideRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-modal-in {
+  animation: modalFadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1) both,
+             modalZoomIn 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-drawer-in-bottom {
+  animation: drawerSlideBottom 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-drawer-in-right {
+  animation: drawerSlideRight 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Compatibility aliases for Tailwind-style animation classes */
+.animate-in {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+.fade-in { animation-name: modalFadeIn; }
+.zoom-in-95 { animation-name: modalZoomIn; }
+.slide-in-from-top-2 { animation-name: modalFadeIn; }
+.slide-in-from-bottom { animation-name: drawerSlideBottom; }
+.slide-in-from-right { animation-name: drawerSlideRight; }
 
 /* Custom styling for React Flow controls and minimap to match the editorial architectural aesthetic */
 .react-flow__controls {

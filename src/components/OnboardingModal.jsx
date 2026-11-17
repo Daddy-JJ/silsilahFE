@@ -10,6 +10,7 @@ import {
   Shield,
   Sparkles,
 } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function OnboardingModal({
   isOpen,
@@ -28,6 +29,8 @@ export default function OnboardingModal({
   const [spouseBirthDate, setSpouseBirthDate] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -85,7 +88,12 @@ export default function OnboardingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none"
+    >
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-xl overflow-hidden border border-zinc-200 flex flex-col">
         {/* Header Ticker */}
         <div className="px-6 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/70">
@@ -97,7 +105,7 @@ export default function OnboardingModal({
               PANDUAN PENGGUNA BARU (ONBOARDING)
             </span>
           </div>
-          <div className="font-mono text-xs font-bold text-zinc-400">
+          <div className="font-mono text-xs font-bold text-zinc-500 font-semibold">
             LANGKAH {currentStep} / 4
           </div>
         </div>
@@ -126,7 +134,7 @@ export default function OnboardingModal({
                   <Sparkles className="w-3 h-3" />
                   SELAMAT DATANG DI SILSILAH KELUARGA
                 </div>
-                <h2 className="text-2xl font-black tracking-tight text-zinc-900 uppercase">
+                <h2 id="onboarding-modal-title" className="text-2xl font-black tracking-tight text-zinc-900 uppercase">
                   Halo, {userName}!
                 </h2>
                 <p className="text-xs text-zinc-500 mt-1 leading-relaxed">

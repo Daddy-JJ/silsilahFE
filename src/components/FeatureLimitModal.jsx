@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Sparkles, AlertCircle, CheckCircle2, Lock } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function FeatureLimitModal({
   isOpen,
@@ -8,6 +9,8 @@ export default function FeatureLimitModal({
   customMessage = '',
   onOpenUpgrade,
 }) {
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   const getLimitDetails = () => {
@@ -53,6 +56,9 @@ export default function FeatureLimitModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="limit-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -64,7 +70,8 @@ export default function FeatureLimitModal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-3.5 top-3.5 p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            aria-label="Tutup batasan fitur"
+            className="absolute right-3.5 top-3.5 p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
             title="Tutup"
           >
             <X className="w-4 h-4" />
@@ -79,7 +86,7 @@ export default function FeatureLimitModal({
             <Lock className="w-6 h-6" />
           </div>
 
-          <h2 className="text-xl font-black text-white tracking-tight uppercase font-mono">
+          <h2 id="limit-modal-title" className="text-xl font-black text-white tracking-tight uppercase font-mono">
             Under Development
           </h2>
           <p className="text-xs font-mono text-[#f7e043] font-bold mt-1 tracking-wide">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldCheck, RefreshCw, Lock, FileText, Mail, Phone, MapPin, CheckCircle2 } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function ComplianceModal({
   isOpen,
@@ -7,6 +8,20 @@ export default function ComplianceModal({
   initialTab = 'refund', // 'refund' | 'privacy'
 }) {
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  useBodyScrollLock(isOpen);
+
+  // ESC key listener untuk menutup modal kepatuhan secara responsif
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -19,6 +34,9 @@ export default function ComplianceModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="compliance-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -32,7 +50,7 @@ export default function ComplianceModal({
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
+              <h2 id="compliance-modal-title" className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
                 Pusat Kepatuhan & Informasi Resmi
               </h2>
               <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
@@ -43,7 +61,8 @@ export default function ComplianceModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            aria-label="Tutup modal kepatuhan"
+            className="p-1.5 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Tutup"
           >
             <X className="w-4 h-4" />

@@ -127,14 +127,14 @@ const CustomFamilyNode = ({ data }) => {
         </div>
 
         {/* Minimalist Architectural Action Buttons — 3 columns */}
-        <div className="flex items-center gap-1.5 pt-1.5 border-t border-zinc-100">
+        <div className="flex items-center gap-1.5 pt-1.5 border-t border-zinc-100 select-none">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               if (data.onEdit) data.onEdit(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer"
+            className="relative flex-1 flex items-center justify-center gap-1 py-2 px-2 min-h-[32px] rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer after:absolute after:inset-[-2px] after:content-['']"
             title="Edit / Usulkan Perubahan"
           >
             <Edit3 className="w-3 h-3 text-zinc-500" />
@@ -147,7 +147,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddSpouse) data.onAddSpouse(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-pink-50 hover:text-pink-900 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pink-500 cursor-pointer"
+            className="relative flex-1 flex items-center justify-center gap-1 py-2 px-2 min-h-[32px] rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-pink-50 hover:text-pink-900 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pink-500 cursor-pointer after:absolute after:inset-[-2px] after:content-['']"
             title="Tambah Pasangan (Suami/Istri)"
           >
             <Heart className="w-3 h-3 text-pink-500 fill-pink-500/20" />
@@ -160,7 +160,7 @@ const CustomFamilyNode = ({ data }) => {
               e.stopPropagation();
               if (data.onAddChild) data.onAddChild(data);
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer"
+            className="relative flex-1 flex items-center justify-center gap-1 py-2 px-2 min-h-[32px] rounded-md text-[11px] font-bold text-zinc-700 bg-zinc-100/90 hover:bg-zinc-200 hover:text-zinc-950 active:scale-[0.97] transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-800 cursor-pointer after:absolute after:inset-[-2px] after:content-['']"
             title="Tambah Anak Baru"
           >
             <Plus className="w-3 h-3 text-zinc-500" />

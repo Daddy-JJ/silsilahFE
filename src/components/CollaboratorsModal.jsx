@@ -14,6 +14,7 @@ import {
   Send,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function CollaboratorsModal({
   isOpen,
@@ -31,6 +32,8 @@ export default function CollaboratorsModal({
   const [actionLoading, setActionLoading] = useState({});
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen && currentTree?.id) {
@@ -158,6 +161,9 @@ export default function CollaboratorsModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="collaborators-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -171,10 +177,10 @@ export default function CollaboratorsModal({
               <Users className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase font-mono">
+              <h3 id="collaborators-modal-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase font-mono">
                 Kolaborator Pohon
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 SEMESTA: {currentTree.nama_silsilah}
               </div>
             </div>
@@ -182,7 +188,8 @@ export default function CollaboratorsModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup modal kolaborator"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

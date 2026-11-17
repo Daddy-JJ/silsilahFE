@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../utils/cropUtils';
 import { X, Check, Loader2, AlertCircle } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropComplete }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -9,6 +10,25 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  useBodyScrollLock(isOpen);
+
+  // Isolasi tombol Escape agar tidak mematikan modal induk (EditMemberModal)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        e.preventDefault();
+        if (!isProcessing && onClose) {
+          onClose();
+        }
+      }
+    };
+    // Menggunakan capture phase (true) agar dieksekusi sebelum listener global pada App.jsx
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [isOpen, onClose, isProcessing]);
 
   // PENTING: useCallback harus SELALU dipanggil sebelum early return
   // agar urutan pemanggilan hooks konsisten di setiap render (Rules of Hooks)
@@ -38,12 +58,25 @@ export default function ImageCropperModal({ isOpen, imageSrc, onClose, onCropCom
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 select-none">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cropper-modal-title"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 select-none"
+    >
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col h-[500px]">
         {/* Header */}
         <div className="px-4 py-3 border-b flex items-center justify-between bg-zinc-50">
-          <h3 className="font-bold text-sm uppercase tracking-wide">Posisikan Wajah</h3>
-          <button onClick={onClose} disabled={isProcessing} className="p-1 text-zinc-400 hover:text-black">
+          <h3 id="cropper-modal-title" className="font-bold text-sm uppercase tracking-wide">
+            Posisikan Wajah
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isProcessing}
+            aria-label="Tutup pemotong foto"
+            className="p-1 text-zinc-400 hover:text-black transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>

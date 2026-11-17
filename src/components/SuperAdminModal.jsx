@@ -22,6 +22,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 const AVAILABLE_PAYMENT_METHODS = [
   { id: 'SP', code: 'SHOPEEPAY', label: 'ShopeePay' },
@@ -344,6 +345,8 @@ export default function SuperAdminModal({
     );
   };
 
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   // Filtered lists
@@ -361,9 +364,16 @@ export default function SuperAdminModal({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200 select-none">
+    <div
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="super-admin-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200 select-none cursor-pointer"
+    >
       <div
-        className="bg-white rounded-xl shadow-2xl w-full max-w-6xl flex flex-col overflow-hidden border border-zinc-200 ring-1 ring-black/5 animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-xl shadow-2xl w-full max-w-6xl flex flex-col overflow-hidden border border-zinc-200 ring-1 ring-black/5 animate-in zoom-in-95 duration-200 cursor-default"
         style={{ height: '88vh', maxHeight: '900px' }}
       >
         {/* Header Modal */}
@@ -374,7 +384,7 @@ export default function SuperAdminModal({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
+                <h2 id="super-admin-title" className="text-sm sm:text-base font-black tracking-tight uppercase font-mono">
                   Portal Super Admin
                 </h2>
                 <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#f7e043] text-black">
@@ -389,6 +399,7 @@ export default function SuperAdminModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup portal super admin"
             className="p-1.5 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-md transition-colors cursor-pointer"
             title="Tutup"
           >

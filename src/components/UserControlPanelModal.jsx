@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { api, setToken } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function UserControlPanelModal({
   isOpen,
@@ -30,6 +31,8 @@ export default function UserControlPanelModal({
   onOpenFeedback,
 }) {
   const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'security', 'invitations', 'trees'
+
+  useBodyScrollLock(isOpen);
 
   // Tab 1: Profile State
   const [namaLengkap, setNamaLengkap] = useState('');
@@ -199,6 +202,9 @@ export default function UserControlPanelModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="user-panel-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -213,7 +219,7 @@ export default function UserControlPanelModal({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm sm:text-base font-black text-zinc-900 tracking-tight uppercase">
+                <h2 id="user-panel-title" className="text-sm sm:text-base font-black text-zinc-900 tracking-tight uppercase">
                   Pusat Kontrol Pengguna
                 </h2>
                 {user.system_role === 'SUPER_ADMIN' && (
@@ -231,6 +237,7 @@ export default function UserControlPanelModal({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup pusat kontrol pengguna"
             className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/70 transition-colors"
             title="Tutup"
           >

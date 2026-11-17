@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { KeyRound, CheckCircle2, AlertCircle, X, ShieldCheck } from 'lucide-react';
 import { api } from '../services/api';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function ResetPasswordModal({
   isOpen,
@@ -14,6 +15,8 @@ export default function ResetPasswordModal({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -66,6 +69,9 @@ export default function ResetPasswordModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reset-pass-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -78,6 +84,7 @@ export default function ResetPasswordModal({
             <button
               type="button"
               onClick={onClose}
+              aria-label="Tutup form reset kata sandi"
               className="absolute right-3 top-3 p-1.5 rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/70 transition-colors"
               title="Tutup"
             >
@@ -88,7 +95,7 @@ export default function ResetPasswordModal({
           <div className="w-10 h-10 mx-auto rounded-xs bg-[#f7e043] text-black border border-yellow-400 font-mono font-black text-base flex items-center justify-center shadow-xs mb-3">
             <KeyRound className="w-5 h-5" />
           </div>
-          <h2 className="text-base font-black text-zinc-900 tracking-tight uppercase">
+          <h2 id="reset-pass-title" className="text-base font-black text-zinc-900 tracking-tight uppercase">
             Atur Kata Sandi Baru
           </h2>
           <p className="text-[11px] font-mono text-zinc-500 mt-1">

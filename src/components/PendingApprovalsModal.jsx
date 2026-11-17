@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Check, XCircle, AlertCircle, Clock } from 'lucide-react';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 export default function PendingApprovalsModal({
   isOpen,
@@ -12,6 +13,8 @@ export default function PendingApprovalsModal({
   const [loadingId, setLoadingId] = useState(null);
   const [reviewNotes, setReviewNotes] = useState({});
   const [errorMsg, setErrorMsg] = useState('');
+
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
@@ -34,6 +37,9 @@ export default function PendingApprovalsModal({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="approvals-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200 select-none cursor-pointer"
     >
       <div
@@ -47,10 +53,10 @@ export default function PendingApprovalsModal({
               ✓
             </div>
             <div>
-              <h3 className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
+              <h3 id="approvals-modal-title" className="font-extrabold text-zinc-900 text-sm tracking-tight uppercase">
                 Persetujuan Usulan (Handover & Approval)
               </h3>
-              <div className="text-[10px] text-zinc-400 font-mono">
+              <div className="text-[10px] text-zinc-600 font-mono font-semibold">
                 OTORISASI PERUBAHAN OLEH ADMIN UTAMA
               </div>
             </div>
@@ -58,7 +64,8 @@ export default function PendingApprovalsModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
+            aria-label="Tutup persetujuan usulan"
+            className="p-1.5 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
